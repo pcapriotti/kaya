@@ -4,8 +4,8 @@ require 'games/chess/piece'
 
 class ChessStateTest < Test::Unit::TestCase
   def setup
-    @board = Board.new(Point.new(8, 8))
-    @state = ChessState.new(@board)
+    @board = Chess::Board.new(Point.new(8, 8))
+    @state = Chess::State.new(@board)
   end
   
   def test_board
@@ -28,6 +28,6 @@ class ChessStateTest < Test::Unit::TestCase
   private
   
   def assert_piece(color, type, x, y)
-    assert_equal ChessPiece.new(color, type), @board[Point.new(x, y)]
+    assert_equal Chess::Piece.new(color, type), @board[Point.new(x, y)]
   end
 end

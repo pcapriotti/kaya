@@ -1,5 +1,5 @@
 require 'test/unit'
-require 'games/chess/point'
+require 'point'
 
 class PointTest < Test::Unit::TestCase
   def test_getters

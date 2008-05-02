@@ -1,10 +1,11 @@
 require 'test/unit'
 require 'games/chess/board'
-require 'games/chess/point'
+require 'point'
+require 'enumerator'
 
 class BoardTest < Test::Unit::TestCase
   def setup
-    @board = Board.new(Point.new(8, 8))
+    @board = Chess::Board.new(Point.new(8, 8))
   end
   
   def test_empty_board
@@ -39,6 +40,27 @@ class BoardTest < Test::Unit::TestCase
   
   def test_size
     assert_equal Point.new(8, 8), @board.size
-    assert_equal Point.new(5, 23), Board.new(Point.new(5, 23)).size
+    assert_equal Point.new(5, 23), Chess::Board.new(Point.new(5, 23)).size
+  end
+  
+  def test_each_square
+    assert_equal 64, @board.to_enum(:each_square).to_a.size
+  end
+  
+  def test_each_item
+    assert_equal [], @board.to_enum(:each_item).to_a
+    
+    @board[Point.new(4, 5)] = 74
+    @board[Point.new(4, 7)] = 21
+    @board[Point.new(3, 1)] = 78
+    
+    assert_equal [78, 74, 21], @board.to_enum(:each_item).to_a
+  end
+  
+  def test_clear
+    @board[Point.new(1, 7)] = 99
+    assert_not_nil @board[Point.new(1, 7)]
+    @board.clear
+    assert_nil @board[Point.new(1, 7)]
   end
 end
