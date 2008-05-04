@@ -1,4 +1,5 @@
 require 'korundum4'
+require 'item'
 
 class Object
   def tap
@@ -72,10 +73,5 @@ class Qt::Pixmap
   def self.from_svg(size, file)
     renderer = Qt::SvgRenderer.new(file)
     Qt::Image.painted(size) {|p| renderer.render(p) }
-  end
-  
-  def to_item(scene)
-    Qt::GraphicsPixmapItem.new(self, nil, scene)
-  end
+  end  
 end
-

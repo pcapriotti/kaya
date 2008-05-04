@@ -12,4 +12,12 @@ class Point
   def ==(other)
     @x == other.x and @y == other.y
   end
+  
+  def eql?(other)
+    other.instance_of?(Point) and self == other
+  end
+  
+  def hash
+    [@x, @y].hash
+  end
 end

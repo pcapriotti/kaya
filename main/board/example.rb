@@ -3,6 +3,7 @@ require 'korundum4'
 require 'table'
 require 'themes/fantasy/fantasy'
 require 'themes/squares/default'
+require 'games/chess/chess'
 
 description = "KDE Board Game Suite"
 version = "1.5"
@@ -26,14 +27,13 @@ theme = Struct.new(:pieces, :background).new
 theme.pieces = FantasyTheme.new
 theme.background = DefaultBackground.new(Point.new(8, 8))
 
-chessboard = Chess::Board.new(Point.new(8, 8))
-state = Chess::State.new(chessboard)
-state.setup
+chess = Chess::Game.new
 
 scene = Qt::GraphicsScene.new
 
-board = Board.new(scene, theme, state)
+board = Board.new(scene, theme, chess)
 table = Table.new(scene, board)
+table.size = Qt::Size.new(500, 500)
 
 table.show
 

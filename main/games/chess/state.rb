@@ -3,9 +3,11 @@ require 'games/chess/piece'
 module Chess
   class State
     attr_reader :board
+    attr_accessor :turn
     
     def initialize(board)
       @board = board
+      @turn = :white
     end
     
     def setup
@@ -38,6 +40,31 @@ module Chess
     def each_color
       yield :white
       yield :black
+    end
+    
+    def validate!(move)
+      move.validate do |move|
+        true
+      end
+    end
+    
+    def perform!(move)
+      capture_on! move.dst
+      @board[move.dst] = @board[move.src]
+      @board[move.src] = nil
+      switch_turn!
+    end
+    
+    def capture_on!(p)
+      @board[p] = nil
+    end
+    
+    def switch_turn!
+      self.turn = opposite_turn turn
+    end
+    
+    def opposite_turn(t)
+      t == :white ? :black : :white
     end
   end
 end
