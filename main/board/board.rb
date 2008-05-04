@@ -1,9 +1,13 @@
 require 'animation_field'
+require 'board/square_tag.rb'
 
 class Board < Qt::GraphicsItemGroup
   BACKGROUND_ZVALUE = -10
+  
+  extend TaggableSquares
 
-  attr_reader :scene, :items
+  attr_reader :scene, :items, :to_logical, :to_real
+  square_tag :selection
 
   def initialize(scene, theme, game)
     super(nil, scene)
@@ -45,11 +49,11 @@ class Board < Qt::GraphicsItemGroup
   def add_item(key, pix, opts = {})
     remove_item key
     
-    item = Qt::GraphicsPixmapItem.new(pix, self, scene)
+    name = opts[:name] || key.to_s
+    item = Item.new(name, pix, self, scene)
     item.pos = opts[:pos] || Qt::PointF.new(0, 0)
     item.z_value = opts[:z] || 0
-    
-    @items[key] = Item.new(opts[:name] || key.to_s, item)
+    @items[key] = item
   end
   
   def add_piece(p, piece)
@@ -58,30 +62,38 @@ class Board < Qt::GraphicsItemGroup
              :name => piece.name
   end
   
-  def remove_item(key)
+  def remove_item(key, *args)
     if @items[key]
-      @scene.remove_item @items[key].item
+      @scene.remove_item @items[key] unless args.include? :keep
+      removed = @items[key]
       @items[key] = nil
+      removed
     end
+  end
+  
+  def move_item(src, dst)
+    remove_item dst
+    @items[dst] = @items[src]
+    @items[src] = nil
+    @items[dst]
   end
   
   def mousePressEvent(e)
     p = to_logical(e.pos)
     
-    if @action
-      move = @game.new_move(@action, p)
+    if selection
+      move = @game.new_move(selection, p)
       perform! move if @state.validate!(move)
       
-      @action = nil
+      self.selection = nil
     elsif @game.policy.movable?(@state, p)
-      @action = p
+      self.selection = p
     end
-    
-    puts "selection = #{@action}"
   end
   
   def perform!(move)
     @state.perform! move
+    
     animation = @animator.forward @state, move
     @field.run animation
   end
@@ -93,7 +105,6 @@ class Board < Qt::GraphicsItemGroup
   
   def to_real(p)
     res = Qt::PointF.new(p.x * @unit.x, p.y * @unit.y)
-    puts "to_real(#{p}) = #{res}"
     res
   end
 end

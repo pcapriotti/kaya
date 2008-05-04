@@ -66,5 +66,9 @@ module Chess
     def opposite_turn(t)
       t == :white ? :black : :white
     end
+    
+    def to_s
+      board.to_s + "\nturn = #{turn}"
+    end
   end
 end

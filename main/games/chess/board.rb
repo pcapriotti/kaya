@@ -1,3 +1,5 @@
+require 'point'
+
 module Chess
   class Board
     attr_reader :size
@@ -42,6 +44,14 @@ module Chess
     
     def clear
       @pieces = Array.new(@size.x * @size.y, nil)
+    end
+    
+    def to_s
+      (0...@size.y).map do |y|
+        (0...@size.x).map do |x| 
+          (piece = self[Point.new(x, y)]) ? piece.symbol : ' '
+        end.join(' ')
+      end.join("\n")
     end
   end
 end

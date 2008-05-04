@@ -14,6 +14,13 @@ class Qt::Painter
   ensure
     self.end
   end
+  
+  def saving
+    save
+    yield self
+  ensure
+    restore
+  end
 end
 
 class Qt::Image

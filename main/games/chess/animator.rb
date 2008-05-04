@@ -21,12 +21,15 @@ module Chess
           res << lambda { @board.remove_item p } if old_item
         end
       end
-            
-      group(*res)
+
+      group(res)
     end
     
     def forward(state, move)
-      warp state
+      captured = @board.remove_item(move.dst, :keep)
+      piece = @board.move_item(move.src, move.dst)
+      sequence group(disappear(captured), movement(piece, move)), 
+               warp(state)
     end
   end
 end

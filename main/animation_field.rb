@@ -1,28 +1,26 @@
 class SimpleAnimation
-  def initialize(start, length, before, animation, after)
-    @start = start
+  def initialize(length, before, animation, after = nil)
     @length = length
     @animation = animation
     @before = before
     @after = after
-    @started = false
+    @start = nil
   end
 
   def [](t)
-    unless @started
-      @started = true
+    unless @start
+      @start = t
       @before[] if @before
     end
     
     i = (t - @start).to_f / @length
-    @animation[i]
-    
     if i >= 1.0
       @after[] if @after
-      @started = false
+      @start = nil
       return true
     end
     
+    @animation[i]
     return false
   end
 end
@@ -49,6 +47,6 @@ class AnimationField < Qt::Object
   slots 'tick()'
   
   def run(action)
-    @actions << action
+    @actions << action if action
   end
 end
