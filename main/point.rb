@@ -1,4 +1,7 @@
+require 'qtutils'
+
 class Point
+  include PrintablePoint
   attr_reader :x, :y
   
   def initialize(x, y)

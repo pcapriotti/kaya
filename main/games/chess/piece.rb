@@ -10,5 +10,9 @@ module Chess
     def ==(other)
       @color == other.color and @type == other.type
     end
+    
+    def name
+      "#@color #@type"
+    end
   end
 end
