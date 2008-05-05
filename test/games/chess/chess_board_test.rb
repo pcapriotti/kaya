@@ -63,4 +63,30 @@ class BoardTest < Test::Unit::TestCase
     @board.clear
     assert_nil @board[Point.new(1, 7)]
   end
+  
+  def test_to_s
+    class << x = Object.new
+      def symbol
+        'x'
+      end
+    end
+    @board[Point.new(1, 7)] = x
+    @board[Point.new(2, 6)] = x
+    @board[Point.new(3, 6)] = x
+    @board[Point.new(5, 5)] = x
+    @board[Point.new(0, 0)] = x
+    
+    expected = <<EOF.chomp
+  x            
+    x x        
+          x    
+               
+               
+               
+               
+x              
+EOF
+    
+    assert_equal expected, @board.to_s
+  end
 end

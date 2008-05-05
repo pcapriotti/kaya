@@ -1,4 +1,5 @@
 require 'point'
+require 'enumerator'
 
 module Chess
   class Board
@@ -47,7 +48,7 @@ module Chess
     end
     
     def to_s
-      (0...@size.y).map do |y|
+      (@size.y - 1).to_enum(:downto, 0).map do |y|
         (0...@size.x).map do |x| 
           (piece = self[Point.new(x, y)]) ? piece.symbol : ' '
         end.join(' ')

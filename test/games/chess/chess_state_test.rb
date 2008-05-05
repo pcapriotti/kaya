@@ -1,6 +1,7 @@
 require 'test/unit'
 require 'games/chess/state'
 require 'games/chess/piece'
+require 'enumerator'
 
 class ChessStateTest < Test::Unit::TestCase
   def setup
@@ -23,6 +24,15 @@ class ChessStateTest < Test::Unit::TestCase
     assert_piece :white, :queen, 3, 7
     assert_piece :black, :bishop, 5, 0
     assert_piece :black, :rook, 0, 0
+  end
+  
+  def test_row
+    assert_equal 2, @state.row(2, :black)
+    assert_equal 5, @state.row(2, :white)
+  end
+  
+  def test_colors
+    assert_equal [:white, :black], @state.to_enum(:each_color).to_a
   end
   
   private
