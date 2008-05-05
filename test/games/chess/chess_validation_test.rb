@@ -73,6 +73,45 @@ class ChessValidationTest < Test::Unit::TestCase
     assert_not_valid 4, 4, 1, 1
     assert_valid 4, 4, 1, 7
     assert_not_valid 4, 4, 6, 6
+    assert_not_valid 4, 4, 6, 4
+    assert_not_valid 4, 4, 3, 6
+  end
+  
+  def test_rook_moves
+    @board.clear
+    @board[Point.new(4, 4)] = Chess::Piece.new(:white, :rook)
+    @board[Point.new(5, 5)] = Chess::Piece.new(:white, :pawn)
+    @board[Point.new(6, 4)] = Chess::Piece.new(:white, :bishop)
+    @board[Point.new(4, 1)] = Chess::Piece.new(:black, :queen)
+    
+    assert_valid 4, 4, 4, 5
+    assert_not_valid 4, 4, 3, 3
+    assert_valid 4, 4, 4, 1
+    assert_not_valid 4, 4, 4, 0
+    assert_valid 4, 4, 5, 4
+    assert_not_valid 4, 4, 6, 4
+    assert_not_valid 4, 4, 7, 4
+    assert_not_valid 4, 4, 3, 6
+  end
+  
+  def test_queen_moves
+    @board.clear
+    @board[Point.new(4, 4)] = Chess::Piece.new(:white, :queen)
+    @board[Point.new(2, 2)] = Chess::Piece.new(:white, :pawn)
+    @board[Point.new(6, 4)] = Chess::Piece.new(:white, :bishop)
+    @board[Point.new(4, 1)] = Chess::Piece.new(:black, :queen)
+    
+    assert_valid 4, 4, 4, 5
+    assert_valid 4, 4, 5, 5
+    assert_not_valid 4, 4, 2, 2
+    assert_not_valid 4, 4, 1, 1
+    assert_not_valid 4, 4, 2, 3
+    assert_not_valid 4, 4, 6, 4
+    assert_valid 4, 4, 4, 1
+    assert_not_valid 4, 4, 4, 0
+    assert_valid 4, 4, 4, 2
+    assert_valid 4, 4, 7, 7
+    assert_not_valid 4, 4, 4, 8
   end
   
   private
