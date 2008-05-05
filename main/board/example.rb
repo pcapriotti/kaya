@@ -1,6 +1,6 @@
 $:.unshift(File.join(File.dirname(__FILE__), '..'))
 require 'korundum4'
-require 'table'
+require 'board/table'
 require 'themes/fantasy/fantasy'
 require 'themes/squares/default'
 require 'games/chess/chess'

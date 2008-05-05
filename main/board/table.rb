@@ -1,4 +1,4 @@
-require 'board'
+require 'board/board'
 require 'games/chess/state'
 require 'games/chess/board'
 require 'point'
