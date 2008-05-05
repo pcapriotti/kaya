@@ -1,5 +1,5 @@
 module TaggableSquares
-  TAGS_ZVALUE = -1
+  TAGS_ZVALUE = -2
   
   def square_tag(name)
     define_method(name) do

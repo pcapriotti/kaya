@@ -32,7 +32,7 @@ class Qt::Image
     Qt::Image.new(size.x, size.y, Qt::Image::Format_ARGB32_Premultiplied).tap do |img|
       img.fill(0)
       Qt::Painter.new(img).paint(&blk)
-    end.to_pix
+    end
   end
 end
 
@@ -79,6 +79,6 @@ end
 class Qt::Pixmap
   def self.from_svg(size, file)
     renderer = Qt::SvgRenderer.new(file)
-    Qt::Image.painted(size) {|p| renderer.render(p) }
+    Qt::Image.painted(size) {|p| renderer.render(p) }.to_pix
   end  
 end
