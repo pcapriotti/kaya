@@ -46,5 +46,23 @@ module Chess
       move.delta.x.abs <= 1 and 
       move.delta.y.abs <= 1
     end
+    
+    def validate_bishop(piece, target, move)
+      range = move.range
+      range.diagonal? and
+      @state.board.clear_path? range
+    end
+    
+    def validate_rook(piece, target, move)
+      range = move.range
+      range.parallel? and
+      @state.board.clear_path? range
+    end
+    
+    def validate_queen(piece, target, move)
+      range = move.range
+      range.valid? and
+      @state.board.clear_path? range
+    end
   end
 end

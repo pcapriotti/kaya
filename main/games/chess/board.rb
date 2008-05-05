@@ -47,6 +47,10 @@ module Chess
       @pieces = Array.new(@size.x * @size.y, nil)
     end
     
+    def clear_path?(path)
+      path.all? {|p| p == path.src or not self[p] }
+    end
+    
     def to_s
       (@size.y - 1).to_enum(:downto, 0).map do |y|
         (0...@size.x).map do |x| 
