@@ -21,5 +21,9 @@ module Chess
       s.upcase! if color == :white
       s
     end
+    
+    def same_color_of(other)
+      other and other.color == color
+    end
   end
 end

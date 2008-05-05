@@ -5,12 +5,15 @@ module Chess
     end
   
     def [](move)
-      break false unless @state.board.valid? move.src
-      break false unless @state.board.valid? move.dst
+      return false unless @state.board.valid? move.src
+      return false unless @state.board.valid? move.dst
+      return false if move.dst == move.src
       
       piece = @state.board[move.src]
-      break false unless piece and piece.color == @state.turn
+      return false unless piece and piece.color == @state.turn
+      
       target = @state.board[move.dst]
+      return false if piece.same_color_of(target)
     
       m = "validate_#{piece.type}"
       if respond_to? m
@@ -23,7 +26,6 @@ module Chess
     def validate_pawn(piece, target, move)
       dir = @state.direction(piece.color)
       if target
-        target.color != piece.color and
         move.delta.y == dir.y and
         move.delta.x.abs == 1
       else
@@ -38,6 +40,11 @@ module Chess
           false
         end
       end
+    end
+    
+    def validate_king(piece, target, move)
+      move.delta.x.abs <= 1 and 
+      move.delta.y.abs <= 1
     end
   end
 end
