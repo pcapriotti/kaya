@@ -42,12 +42,6 @@ module Chess
       yield :black
     end
     
-    def validate!(move)
-      move.validate do |move|
-        true
-      end
-    end
-    
     def perform!(move)
       capture_on! move.dst
       @board[move.dst] = @board[move.src]
@@ -69,6 +63,10 @@ module Chess
     
     def to_s
       board.to_s + "\nturn = #{turn}"
+    end
+    
+    def direction(color)
+      Point.new(0, color == :white ? -1 : 1)
     end
   end
 end

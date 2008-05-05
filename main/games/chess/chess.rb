@@ -3,6 +3,7 @@ require 'games/chess/move'
 require 'games/chess/board'
 require 'games/chess/policy'
 require 'games/chess/animator'
+require 'games/chess/validator'
 
 module Chess
   class Game
@@ -29,6 +30,10 @@ module Chess
     def new_animator(board)
       @opts[:animator].new(board)
     end
+    
+    def new_validator(state)
+      @opts[:validator].new(state)
+    end
   end
   
   def self.chess_opts
@@ -38,7 +43,8 @@ module Chess
       :board => Board,
       :policy => Policy,
       :move => Move,
-      :animator => Animator
+      :animator => Animator,
+      :validator => Validator
     }
   end
 end

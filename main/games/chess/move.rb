@@ -10,6 +10,10 @@ module Chess
       @dst = dst
     end
     
+    def delta
+      dst - src
+    end
+    
     def capture_square
       dst
     end

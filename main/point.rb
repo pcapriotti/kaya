@@ -13,6 +13,14 @@ class Point
     @x == other.x and @y == other.y
   end
   
+  def +(other)
+    self.class.new(@x + other.x, @y + other.y)
+  end
+  
+  def -(other)
+    self.class.new(@x - other.x, @y - other.y)
+  end
+  
   def eql?(other)
     other.instance_of?(Point) and self == other
   end

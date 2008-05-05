@@ -83,7 +83,8 @@ class Board < Qt::GraphicsItemGroup
     
     if selection
       move = @game.new_move(selection, p)
-      perform! move if @state.validate!(move)
+      validate = @game.new_validator(@state)
+      perform! move if validate[move]
       
       self.selection = nil
     elsif @game.policy.movable?(@state, p)
