@@ -182,4 +182,102 @@ class ChessValidationTest < Test::Unit::TestCase
     assert_not_valid 0, 1, 0, 0
     assert_not_valid 0, 1, 1, 0
   end
+  
+  def test_king_side_castling
+    assert_not_valid 4, 7, 6, 7
+    
+    @board[Point.new(5, 7)] = nil
+    
+    assert_not_valid 4, 7, 6, 7
+    
+    @board[Point.new(6, 7)] = nil
+    
+    assert_valid 4, 7, 6, 7
+  end
+  
+  def test_castling_when_attacked
+    @board[Point.new(5, 7)] = nil
+    @board[Point.new(6, 7)] = nil
+    @board[Point.new(4, 6)] = Chess::Piece.new(:black, :pawn)
+    assert_not_valid 4, 7, 6, 7
+  end
+  
+  def test_castling_checked
+    @board[Point.new(5, 7)] = nil
+    @board[Point.new(6, 7)] = nil
+    @board[Point.new(3, 6)] = Chess::Piece.new(:black, :bishop)
+    assert_not_valid 4, 7, 6, 7
+  end
+  
+  def test_castling_king_moved
+    @board[Point.new(5, 7)] = nil
+    @board[Point.new(6, 7)] = nil
+    execute 4, 7, 5, 7
+    execute 0, 1, 0, 2
+    execute 5, 7, 4, 7
+    execute 0, 2, 0, 3
+    
+    assert_not_valid 4, 7, 6, 7
+  end
+  
+  def test_castling_rook_moved
+    @board[Point.new(5, 7)] = nil
+    @board[Point.new(6, 7)] = nil
+    execute 7, 7, 5, 7
+    execute 0, 1, 0, 2
+    execute 5, 7, 7, 7
+    execute 0, 2, 0, 3
+    
+    assert_not_valid 4, 7, 6, 7
+  end
+  
+  def test_castling_wrong_tower
+    execute 6, 6, 6, 4
+    execute 7, 1, 7, 3
+    execute 6, 4, 7, 3
+    execute 6, 1, 6, 3
+    execute 7, 3, 7, 2
+    execute 6, 3, 6, 4
+    execute 7, 2, 7, 1
+    execute 6, 4, 6, 5
+    execute 7, 1, 6, 0, :promotion => :rook
+    execute 6, 5, 7, 6
+    execute 6, 0, 7, 0
+    execute 7, 6, 6, 7, :promotion => :rook
+    execute 0, 6, 0, 5
+    execute 6, 7, 7, 7
+    execute 7, 0, 7, 7
+    execute 0, 1, 0, 2
+    execute 5, 7, 7, 5
+    execute 0, 2, 0, 3
+    
+    assert_not_valid 4, 7, 6, 7
+  end
+  
+  def test_queen_side_castling
+    @board[Point.new(3, 7)] = nil
+    @board[Point.new(2, 7)] = nil
+    @board[Point.new(1, 7)] = nil
+    
+    assert_valid 4, 7, 2, 7
+  end
+  
+  def test_black_king_side_castling
+    @board[Point.new(5, 0)] = nil
+    @board[Point.new(6, 0)] = nil
+    
+    execute 0, 6, 0, 5
+    
+    assert_valid 4, 0, 6, 0
+  end
+  
+  def test_black_queen_side_castling
+    @board[Point.new(3, 0)] = nil
+    @board[Point.new(2, 0)] = nil
+    @board[Point.new(1, 0)] = nil
+    
+    execute 0, 6, 0, 5
+    
+    assert_valid 4, 0, 2, 0
+  end
 end

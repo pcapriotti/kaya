@@ -2,12 +2,43 @@ require 'games/chess/piece'
 
 module Chess
   class State
-    attr_reader :board
+    attr_reader :board, :castling_rights
     attr_accessor :turn, :en_passant_square
+    
+    class CastlingRights
+      def initialize
+        @wk = @wq = @bq = @bk = true
+      end
+      
+      def king?(color)
+        color == :white ? @wk : @bk
+      end
+      
+      def queen?(color)
+        color == :white ? @wq : @bq
+      end
+      
+      def cancel_king(color)
+        if color == :white
+          @wk = false
+        else
+          @bk = false
+        end
+      end
+      
+      def cancel_queen(color)
+        if color == :white
+          @wq = false
+        else
+          @bq = false
+        end
+      end
+    end
     
     def initialize(board)
       @board = board
       @turn = :white
+      @castling_rights = CastlingRights.new
     end
     
     def setup
@@ -55,7 +86,19 @@ module Chess
         capture_on! move.dst
       end
       
-      basic_move move
+      piece = @board[move.src]
+      if piece and piece.type == :king
+        @castling_rights.cancel_king(turn)
+        @castling_rights.cancel_queen(turn)
+      end
+      each_color do |color|
+        [:src, :dst].each do |m|
+          @castling_rights.cancel_king(color) if move.send(m) == Point.new(7, row(0, color))
+          @castling_rights.cancel_queen(color) if move.send(m) == Point.new(0, row(0, color))
+        end
+      end
+      
+      basic_move(move)
       
       if move.type == :promotion and move.promotion
         promote_on! move.dst, move.promotion
@@ -92,6 +135,10 @@ module Chess
     
     def opposite_turn(t)
       t == :white ? :black : :white
+    end
+    
+    def king_starting_position(color)
+      Point.new(4, row(0, color))
     end
     
     def to_s

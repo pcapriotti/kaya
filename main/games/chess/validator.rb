@@ -59,8 +59,23 @@ module Chess
     end
     
     def validate_king(piece, target, move)
-      move.delta.x.abs <= 1 and 
-      move.delta.y.abs <= 1
+      standard = move.delta.x.abs <= 1 and 
+                 move.delta.y.abs <= 1
+                 
+      if not standard
+        delta = move.delta
+        valid = delta.x.abs == 2 && delta.y == 0
+        valid &&= move.src == @state.king_starting_position(piece.color)
+        valid &&= (delta.x > 0 ? [1,2] : [-1, -2, -3]).all? {|i| not @state.board[move.src + Point.new(i, 0)] }
+        if delta.x > 0
+          valid &&= !@state.castling_rights.king?(piece.color)
+        else
+          valid &&= !@state.castling_rights.queen?(piece.color)
+        end
+        return valid
+      end
+      
+      standard
     end
     
     def validate_bishop(piece, target, move)
