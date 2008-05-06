@@ -23,8 +23,8 @@ module Chess
       @opts[:board].new(size)
     end
     
-    def new_move(src, dst)
-      @opts[:move].new(src, dst)
+    def new_move(src, dst, opts = {})
+      @opts[:move].new(src, dst, opts)
     end
     
     def new_animator(board)
