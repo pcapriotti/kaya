@@ -5,7 +5,7 @@ module Chess
   class Move
     include Validable
     attr_reader :src, :dst
-    attr_accessor :type
+    attr_accessor :type, :promotion
     
     def initialize(src, dst)
       @src = src

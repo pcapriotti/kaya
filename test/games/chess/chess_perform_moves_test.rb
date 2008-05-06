@@ -60,16 +60,4 @@ class ChessPerformMovesTest < Test::Unit::TestCase
     assert_nil @board[Point.new(4, 3)]
     assert_nil @board[Point.new(3, 3)]
   end
-  
-  def test_late_en_passant_capture
-  
-  end
-  
-  private
-  
-  def execute(*args)
-    move = unpack_move(*args)
-    assert @validate[move]
-    @state.perform! move
-  end
 end

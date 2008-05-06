@@ -43,15 +43,22 @@ module Chess
     end
     
     def perform!(move)
-      # perform move type specific actions
-      if move.type
-        m = "perform_#{move.type}"
-        if respond_to? m
-          send(m, move)
-        end
+      if move.type == :en_passant_trigger
+        self.en_passant_square = move.src + direction(turn)
+      else
+        self.en_passant_square = nil
       end
       
-      capture_on! move.dst
+      if move.type == :en_passant_capture
+        capture_on! Point.new(move.dst.x, move.src.y)
+      else
+        capture_on! move.dst
+      end
+      
+      basic_move move
+    end
+    
+    def basic_move(move)
       @board[move.dst] = @board[move.src]
       @board[move.src] = nil
       switch_turn!
@@ -62,7 +69,7 @@ module Chess
     end
     
     def perform_en_passant_capture(move)
-      capture_on! Point.new(move.dst.x, move.src.y)
+      capture_on! 
     end
     
     def capture_on!(p)

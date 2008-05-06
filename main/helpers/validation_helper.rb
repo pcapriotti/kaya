@@ -19,4 +19,10 @@ module ValidationHelper
   def assert_not_valid(*args)
     assert ! @validate[unpack_move(*args)]
   end
+  
+  def execute(*args)
+    move = unpack_move(*args)
+    assert @validate[move]
+    @state.perform! move
+  end
 end

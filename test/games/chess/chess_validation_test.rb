@@ -143,4 +143,29 @@ class ChessValidationTest < Test::Unit::TestCase
     
     assert_equal :en_passant_trigger, move.type
   end
+  
+  def test_en_passant_capture
+    execute 4, 6, 4, 4
+    execute 0, 1, 0, 2
+    execute 4, 4, 4, 3
+    execute 3, 1, 3, 3
+    
+    assert_equal :white, @state.turn
+    move = unpack_move(4, 3, 3, 2)
+    assert @validate[move]
+    assert_equal :en_passant_capture, move.type
+  end
+  
+  def test_late_en_passant_capture
+    execute 4, 6, 4, 4
+    execute 0, 1, 0, 2
+    execute 4, 4, 4, 3
+    execute 3, 1, 3, 3
+    execute 0, 6, 0, 5
+    execute 0, 2, 0, 3
+    
+    assert_equal :white, @state.turn
+    move = unpack_move(4, 3, 3, 2)
+    assert !@validate[move]
+  end
 end
