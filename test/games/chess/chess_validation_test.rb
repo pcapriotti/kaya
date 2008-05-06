@@ -114,9 +114,16 @@ class ChessValidationTest < Test::Unit::TestCase
     assert_not_valid 4, 4, 4, 8
   end
   
+  def test_en_passant_push
+    move = unpack_move(4, 6, 4, 4)
+    assert @validate[move]
+    
+    assert_equal :en_passant_trigger, move.type
+  end
+  
   private
   
-  def unpack_move(args)
+  def unpack_move(*args)
     case args.size
     when 1
       args.first
@@ -130,10 +137,10 @@ class ChessValidationTest < Test::Unit::TestCase
   end
   
   def assert_valid(*args)
-    assert @validate[unpack_move(args)]
+    assert @validate[unpack_move(*args)]
   end
   
   def assert_not_valid(*args)
-    assert ! @validate[unpack_move(args)]
+    assert ! @validate[unpack_move(*args)]
   end
 end

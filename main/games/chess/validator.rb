@@ -33,9 +33,11 @@ module Chess
         when dir.y
           move.delta.x == 0
         when dir.y * 2
-          move.src.y == @state.row(1, piece.color) and 
-          move.delta.x == 0 and 
-          not @state.board[move.src + dir]
+          valid = move.src.y == @state.row(1, piece.color) and 
+                  move.delta.x == 0 and 
+                  not @state.board[move.src + dir]
+          move.type = :en_passant_trigger if valid
+          valid
         else
           false
         end
