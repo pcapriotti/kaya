@@ -16,10 +16,6 @@ module Chess
       dst - src
     end
     
-    def capture_square
-      dst
-    end
-    
     def range
       PointRange.new(src, dst)
     end

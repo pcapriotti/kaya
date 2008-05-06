@@ -3,7 +3,7 @@ require 'games/chess/piece'
 module Chess
   class State
     attr_reader :board
-    attr_accessor :turn
+    attr_accessor :turn, :en_passant_square
     
     def initialize(board)
       @board = board
@@ -43,10 +43,26 @@ module Chess
     end
     
     def perform!(move)
+      # perform move type specific actions
+      if move.type
+        m = "perform_#{move.type}"
+        if respond_to? m
+          send(m, move)
+        end
+      end
+      
       capture_on! move.dst
       @board[move.dst] = @board[move.src]
       @board[move.src] = nil
       switch_turn!
+    end
+     
+    def perform_en_passant_trigger(move)
+      self.en_passant_square = move.src + direction(turn)
+    end
+    
+    def perform_en_passant_capture(move)
+      capture_on! Point.new(move.dst.x, move.src.y)
     end
     
     def capture_on!(p)

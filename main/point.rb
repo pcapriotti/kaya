@@ -9,16 +9,24 @@ class Point
     @y = y
   end
   
-  def ==(other)
-    @x == other.x and @y == other.y
+  def == other
+    other and @x == other.x and @y == other.y
   end
   
-  def +(other)
+  def + other
     self.class.new(@x + other.x, @y + other.y)
   end
   
-  def -(other)
+  def - other
     self.class.new(@x - other.x, @y - other.y)
+  end
+  
+  def * factor
+    self.class.new(@x * factor, @y * factor)
+  end
+  
+  def / factor
+    self.class.new(@x / factor, @y / factor)
   end
   
   def eql?(other)
