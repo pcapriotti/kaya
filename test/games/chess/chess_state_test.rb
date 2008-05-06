@@ -24,6 +24,11 @@ class ChessStateTest < Test::Unit::TestCase
     assert_piece :white, :queen, 3, 7
     assert_piece :black, :bishop, 5, 0
     assert_piece :black, :rook, 0, 0
+    
+    assert_piece :white, :knight, 6, 7
+    assert_piece :white, :knight, 1, 7
+    assert_piece :black, :knight, 6, 0
+    assert_piece :black, :knight, 1, 0
   end
   
   def test_row

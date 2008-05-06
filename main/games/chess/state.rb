@@ -27,7 +27,7 @@ module Chess
     def setup_pieces
       [:white, :black].each do |color|
         y = row(0, color)
-        [:rook, :night, :bishop, :queen, :king, :bishop, :night, :rook].each_with_index do |type, x|
+        [:rook, :knight, :bishop, :queen, :king, :bishop, :knight, :rook].each_with_index do |type, x|
           @board[Point.new(x, y)] = Chess::Piece.new(color, type)
         end
       end

@@ -66,5 +66,9 @@ module Chess
       range.valid? and
       @state.board.clear_path? range
     end
+    
+    def validate_knight(piece, target, move)
+      [move.delta.x.abs, move.delta.y.abs].sort == [1, 2]
+    end
   end
 end

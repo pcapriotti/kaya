@@ -4,9 +4,12 @@ require 'games/chess/board'
 require 'games/chess/move'
 require 'games/chess/piece'
 require 'games/chess/validator'
+require 'helpers/validation_helper'
 require 'enumerator'
 
 class ChessValidationTest < Test::Unit::TestCase
+  include ValidationHelper
+  
   def setup
     @board = Chess::Board.new(Point.new(8, 8))
     @state = Chess::State.new(@board)
@@ -114,33 +117,30 @@ class ChessValidationTest < Test::Unit::TestCase
     assert_not_valid 4, 4, 4, 8
   end
   
+  def test_knight_moves
+    @board.clear
+    @board[Point.new(4, 4)] = Chess::Piece.new(:white, :knight)
+    @board[Point.new(2, 2)] = Chess::Piece.new(:white, :pawn)
+    @board[Point.new(6, 4)] = Chess::Piece.new(:white, :bishop)
+    @board[Point.new(5, 2)] = Chess::Piece.new(:black, :queen)
+    @board[Point.new(3, 6)] = Chess::Piece.new(:white, :queen)
+    
+    assert_valid 4, 4, 5, 6
+    assert_valid 4, 4, 5, 2
+    assert_valid 4, 4, 3, 2
+    assert_valid 4, 4, 2, 5
+    assert_not_valid 4, 4, 3, 6
+    assert_not_valid 4, 4, 2, 4
+    assert_not_valid 4, 4, 5, 4
+    assert_not_valid 4, 4, 6, 4
+    assert_not_valid 4, 4, 2, 4
+    assert_not_valid 4, 4, 6, 6
+  end
+  
   def test_en_passant_push
     move = unpack_move(4, 6, 4, 4)
     assert @validate[move]
     
     assert_equal :en_passant_trigger, move.type
-  end
-  
-  private
-  
-  def unpack_move(*args)
-    case args.size
-    when 1
-      args.first
-    when 2
-      Chess::Move.new(*args)
-    when 4
-      Chess::Move.new(*args.to_enum(:each_slice, 2).map{|x| Point.new(*x) })
-    else
-      raise ArgumentError.new("Could not unpack move using #{args.size} parameters")
-    end
-  end
-  
-  def assert_valid(*args)
-    assert @validate[unpack_move(*args)]
-  end
-  
-  def assert_not_valid(*args)
-    assert ! @validate[unpack_move(*args)]
   end
 end
