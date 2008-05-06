@@ -26,7 +26,8 @@ module Chess
     def validate_pawn(piece, target, move)
       dir = @state.direction(piece.color)
       en_passant = move.dst == @state.en_passant_square
-      if target or en_passant
+      
+      valid = if target or en_passant
         valid = move.delta.y == dir.y and
                 move.delta.x.abs == 1
         move.type = :en_passant_capture if valid and en_passant
@@ -45,6 +46,16 @@ module Chess
           false
         end
       end
+      
+      if valid and move.dst.y == @state.row(7, piece.color)
+        if move.promotion
+          move.type = :promotion
+        else
+          valid = false
+        end
+      end
+      
+      valid
     end
     
     def validate_king(piece, target, move)

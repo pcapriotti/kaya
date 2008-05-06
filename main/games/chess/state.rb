@@ -56,12 +56,22 @@ module Chess
       end
       
       basic_move move
+      
+      if move.type == :promotion and move.promotion
+        promote_on! move.dst, move.promotion
+      end
     end
     
     def basic_move(move)
       @board[move.dst] = @board[move.src]
       @board[move.src] = nil
       switch_turn!
+    end
+    
+    def promote_on!(p, type)
+      if @board[p]
+        @board[p] = Chess::Piece.new(@board[p].color, type)
+      end
     end
      
     def perform_en_passant_trigger(move)

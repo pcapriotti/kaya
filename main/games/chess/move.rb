@@ -7,9 +7,10 @@ module Chess
     attr_reader :src, :dst
     attr_accessor :type, :promotion
     
-    def initialize(src, dst)
+    def initialize(src, dst, opts = {})
       @src = src
       @dst = dst
+      @promotion = opts[:promotion]
     end
     
     def delta

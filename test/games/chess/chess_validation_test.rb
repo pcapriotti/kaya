@@ -164,8 +164,22 @@ class ChessValidationTest < Test::Unit::TestCase
     execute 0, 6, 0, 5
     execute 0, 2, 0, 3
     
-    assert_equal :white, @state.turn
-    move = unpack_move(4, 3, 3, 2)
-    assert !@validate[move]
+    assert_not_valid 4, 3, 3, 2
+  end
+  
+  def test_promotion
+    execute 0, 6, 0, 4 # a4
+    execute 1, 1, 1, 3 # b5
+    execute 0, 4, 1, 3 # axb5
+    execute 0, 1, 0, 2 # a6
+    execute 1, 3, 0, 2 # bxa6
+    execute 1, 0, 2, 2 # Nc6
+    execute 0, 2, 0, 1 # a7
+    execute 0, 0, 1, 0 # Rb8
+    
+    assert_valid 0, 1, 0, 0, :promotion => :rook
+    assert_valid 0, 1, 1, 0, :promotion => :bishop
+    assert_not_valid 0, 1, 0, 0
+    assert_not_valid 0, 1, 1, 0
   end
 end
