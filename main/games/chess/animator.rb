@@ -26,9 +26,13 @@ module Chess
     end
     
     def forward(state, move)
-      captured = @board.remove_item(move.dst, :keep)
-      piece = @board.move_item(move.src, move.dst)
-      sequence group(disappear(captured), movement(piece, move)), 
+#       extra = if move.type == :king_side_castling
+#         rook_move = move.dst + Point.new(1, 0), move.dst - Point.new(1, 0)
+#         rook = @board.move_item()
+#         movement(rook, 
+#       end
+      
+      sequence group(disappear_on!(move.dst), move!(move.src, move.dst)),
                warp(state)
     end
   end
