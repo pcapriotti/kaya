@@ -1,4 +1,5 @@
 require 'games/chess/piece'
+require 'point'
 
 module Chess
   class State
@@ -114,10 +115,14 @@ module Chess
         end
       end
       
-      basic_move(move)
+      basic_move move
       
-      if move.type == :promotion and move.promotion
-        promote_on! move.dst, move.promotion
+      if move.type == :promotion
+        promote_on!(move.dst, move.promotion) if move.promotion
+      elsif move.type == :king_side_castling
+        basic_move new_move(move.dst + Point.new(1, 0), move.dst - Point.new(1, 0))
+      elsif move.type == :queen_side_castling
+        basic_move new_move(move.dst - Point.new(2, 0), move.dst + Point.new(1, 0))
       end
     end
     

@@ -2,8 +2,11 @@ require 'test/unit'
 require 'games/chess/state'
 require 'games/chess/piece'
 require 'enumerator'
+require 'helpers/validation_helper'
 
 class ChessStateTest < Test::Unit::TestCase
+  include ValidationHelper
+  
   def setup
     @board = Chess::Board.new(Point.new(8, 8))
     @state = Chess::State.new(@board, Chess::Move, Chess::Piece)
@@ -38,11 +41,5 @@ class ChessStateTest < Test::Unit::TestCase
   
   def test_colors
     assert_equal [:white, :black], @state.to_enum(:each_color).to_a
-  end
-  
-  private
-  
-  def assert_piece(color, type, x, y)
-    assert_equal Chess::Piece.new(color, type), @board[Point.new(x, y)]
   end
 end

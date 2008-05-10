@@ -192,7 +192,9 @@ class ChessValidationTest < Test::Unit::TestCase
     
     @board[Point.new(6, 7)] = nil
     
-    assert_valid 4, 7, 6, 7
+    assert_valid 4, 7, 6, 7 do |move|
+      assert_equal :king_side_castling, move.type
+    end
   end
   
   def test_castling_when_attacked
@@ -262,7 +264,9 @@ class ChessValidationTest < Test::Unit::TestCase
     @board[Point.new(2, 7)] = nil
     @board[Point.new(1, 7)] = nil
     
-    assert_valid 4, 7, 2, 7
+    assert_valid 4, 7, 2, 7 do |move|
+      assert_equal :queen_side_castling, move.type
+    end
   end
   
   def test_black_king_side_castling
@@ -271,7 +275,9 @@ class ChessValidationTest < Test::Unit::TestCase
     
     execute 0, 6, 0, 5
     
-    assert_valid 4, 0, 6, 0
+    assert_valid 4, 0, 6, 0 do |move|
+      assert_equal :king_side_castling, move.type
+    end
   end
   
   def test_black_queen_side_castling
@@ -281,6 +287,8 @@ class ChessValidationTest < Test::Unit::TestCase
     
     execute 0, 6, 0, 5
     
-    assert_valid 4, 0, 2, 0
+    assert_valid 4, 0, 2, 0 do |move|
+      assert_equal :queen_side_castling, move.type
+    end
   end
 end

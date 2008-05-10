@@ -104,6 +104,7 @@ module Chess
         return false unless attack
 #         puts "attacks ok"
         
+        move.type = delta.x > 0 ? :king_side_castling : :queen_side_castling
         return true
       end
       
