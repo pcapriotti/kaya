@@ -16,13 +16,13 @@ module Chess
         old_item = @board.items[p]
         
         if new_piece
-          res << lambda { @board.add_piece p, new_piece } unless old_item && new_piece.name == old_item.name
+          res << Animation.new('insert') { @board.add_piece p, new_piece } unless old_item && new_piece.name == old_item.name
         else
-          res << lambda { @board.remove_item p } if old_item
+          res << Animation.new('remove') { @board.remove_item p } if old_item
         end
       end
 
-      group(res)
+      group(*res)
     end
     
     def forward(state, move)

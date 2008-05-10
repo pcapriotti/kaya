@@ -1,5 +1,27 @@
+module AnimationBase
+  def to_s
+    "#<#{self.class.name}:#{@name}>"
+  end
+end
+
+class Animation
+  include AnimationBase
+  
+  def initialize(name, &blk)
+    @name = name
+    @anim = blk
+  end
+  
+  def [](t)
+    @anim[t]
+  end
+end
+
 class SimpleAnimation
-  def initialize(length, before, animation, after = nil)
+  include AnimationBase
+  
+  def initialize(name, length, before, animation, after = nil)
+    @name = name
     @length = length
     @animation = animation
     @before = before

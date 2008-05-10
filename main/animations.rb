@@ -3,8 +3,10 @@ module Animations
   
   def group(*animations)
     anim = animations.dup.compact
-    lambda do |i|
-      anim.reject! {|a| a[i] }
+    Animation.new("group (#{anim.size})") do |i|
+      anim.reject! do |a| 
+        a[i]
+      end
       anim.empty?
     end
   end
@@ -12,8 +14,10 @@ module Animations
   def sequence(*animations)
     anim = animations.dup.compact
     return nil if anim.empty?
-    lambda do |i|
-      anim.shift if anim.first[i]
+    Animation.new("sequence (#{anim.size})") do |i|
+      if anim.first[i]
+        anim.shift
+      end
       anim.empty?
     end
   end
@@ -24,7 +28,7 @@ module Animations
       dst = @board.to_real move.dst
       delta = dst - src
       
-      SimpleAnimation.new LENGTH, nil,
+      SimpleAnimation.new "move to #{dst}", LENGTH, nil,
         lambda {|i| item.pos = src + delta * i },
         lambda { item.pos = dst }
     end
@@ -32,14 +36,14 @@ module Animations
   
   def disappear(item)
     if item
-      SimpleAnimation.new LENGTH, nil,
+      SimpleAnimation.new "disappear", LENGTH, nil,
         lambda {|i| item.opacity = 1.0 - i },
         lambda { item.remove }
     end
   end
   
   def appear(item)
-    SimpleAnimation.new LENGTH, nil
+    SimpleAnimation.new "appear", LENGTH, nil
       lambda {|i| item.opacity = 1.0 - i }  
   end
 end
