@@ -1,5 +1,5 @@
 module Animations
-  LENGTH = 200
+  LENGTH = 2000
   
   def group(*animations)
     anim = animations.dup.compact
@@ -43,7 +43,7 @@ module Animations
     if item
       SimpleAnimation.new "disappear", LENGTH,
         lambda { item.opacity = 1.0; item.visible = true },
-        lambda {|i| item.opacity = 1.0 - i },
+        lambda {|t| item.opacity = 1.0 - t },
         lambda { item.remove }
     end
   end
