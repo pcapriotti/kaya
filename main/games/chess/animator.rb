@@ -26,13 +26,13 @@ module Chess
     end
     
     def forward(state, move)
-#       extra = if move.type == :king_side_castling
-#         rook_move = move.dst + Point.new(1, 0), move.dst - Point.new(1, 0)
-#         rook = @board.move_item()
-#         movement(rook, 
-#       end
+      extra = if move.type == :king_side_castling
+        move! move.dst + Point.new(1, 0), move.dst - Point.new(1, 0)
+      elsif move.type == :queen_side_castling
+        move! move.dst - Point.new(2, 0), move.dst + Point.new(1, 0)
+      end
       
-      sequence group(disappear_on!(move.dst), move!(move.src, move.dst)),
+      sequence group(disappear_on!(move.dst), move!(move.src, move.dst), extra),
                warp(state)
     end
   end
