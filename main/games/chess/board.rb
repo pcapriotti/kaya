@@ -4,10 +4,17 @@ require 'enumerator'
 module Chess
   class Board
     attr_reader :size
+    attr_reader :pieces
+    protected :pieces
   
     def initialize(size)
       @size = size
       @pieces = Array.new(@size.x * @size.y, nil)
+    end
+    
+    def initialize_copy(other)
+      @size = other.size
+      @pieces = other.pieces.dup
     end
     
     def [](p)
@@ -52,11 +59,18 @@ module Chess
     end
     
     def to_s
-      (@size.y - 1).to_enum(:downto, 0).map do |y|
+      (0...@size.y).map do |y|
         (0...@size.x).map do |x| 
           (piece = self[Point.new(x, y)]) ? piece.symbol : ' '
         end.join(' ')
       end.join("\n")
+    end
+    
+    def find(piece)
+      each_square do |p|
+        return p if self[p] and self[p] == piece
+      end
+      nil
     end
   end
 end

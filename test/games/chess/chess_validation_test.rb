@@ -12,7 +12,7 @@ class ChessValidationTest < Test::Unit::TestCase
   
   def setup
     @board = Chess::Board.new(Point.new(8, 8))
-    @state = Chess::State.new(@board)
+    @state = Chess::State.new(@board, Chess::Move, Chess::Piece)
     @state.setup
     @validate = Chess::Validator.new(@state)
   end
@@ -67,7 +67,7 @@ class ChessValidationTest < Test::Unit::TestCase
   def test_bishop_moves
     @board.clear
     @board[Point.new(4, 4)] = Chess::Piece.new(:white, :bishop)
-    @board[Point.new(4, 5)] = Chess::Piece.new(:white, :pawn)
+    @board[Point.new(4, 5)] = Chess::Piece.new(:white, :king)
     @board[Point.new(6, 6)] = Chess::Piece.new(:white, :rook)
     @board[Point.new(2, 2)] = Chess::Piece.new(:black, :rook)
     
@@ -83,7 +83,7 @@ class ChessValidationTest < Test::Unit::TestCase
   def test_rook_moves
     @board.clear
     @board[Point.new(4, 4)] = Chess::Piece.new(:white, :rook)
-    @board[Point.new(5, 5)] = Chess::Piece.new(:white, :pawn)
+    @board[Point.new(5, 5)] = Chess::Piece.new(:white, :king)
     @board[Point.new(6, 4)] = Chess::Piece.new(:white, :bishop)
     @board[Point.new(4, 1)] = Chess::Piece.new(:black, :queen)
     
@@ -100,7 +100,7 @@ class ChessValidationTest < Test::Unit::TestCase
   def test_queen_moves
     @board.clear
     @board[Point.new(4, 4)] = Chess::Piece.new(:white, :queen)
-    @board[Point.new(2, 2)] = Chess::Piece.new(:white, :pawn)
+    @board[Point.new(2, 2)] = Chess::Piece.new(:white, :king)
     @board[Point.new(6, 4)] = Chess::Piece.new(:white, :bishop)
     @board[Point.new(4, 1)] = Chess::Piece.new(:black, :queen)
     
@@ -120,9 +120,9 @@ class ChessValidationTest < Test::Unit::TestCase
   def test_knight_moves
     @board.clear
     @board[Point.new(4, 4)] = Chess::Piece.new(:white, :knight)
-    @board[Point.new(2, 2)] = Chess::Piece.new(:white, :pawn)
+    @board[Point.new(2, 2)] = Chess::Piece.new(:white, :king)
     @board[Point.new(6, 4)] = Chess::Piece.new(:white, :bishop)
-    @board[Point.new(5, 2)] = Chess::Piece.new(:black, :queen)
+    @board[Point.new(5, 2)] = Chess::Piece.new(:black, :pawn)
     @board[Point.new(3, 6)] = Chess::Piece.new(:white, :queen)
     
     assert_valid 4, 4, 5, 6
@@ -249,6 +249,9 @@ class ChessValidationTest < Test::Unit::TestCase
     execute 7, 0, 7, 7
     execute 0, 1, 0, 2
     execute 5, 7, 7, 5
+    
+    assert_not_valid 4, 7, 6, 7
+    
     execute 0, 2, 0, 3
     
     assert_not_valid 4, 7, 6, 7

@@ -6,7 +6,7 @@ require 'enumerator'
 class ChessStateTest < Test::Unit::TestCase
   def setup
     @board = Chess::Board.new(Point.new(8, 8))
-    @state = Chess::State.new(@board)
+    @state = Chess::State.new(@board, Chess::Move, Chess::Piece)
   end
   
   def test_board

@@ -35,10 +35,26 @@ module Chess
       end
     end
     
-    def initialize(board)
+    def initialize(board, move_factory, piece_factory)
       @board = board
       @turn = :white
       @castling_rights = CastlingRights.new
+      
+      @move_factory = move_factory
+      @piece_factory = piece_factory
+    end
+    
+    def initialize_copy(other)
+      @board = other.board.dup
+      @castling_rights = other.castling_rights.dup
+    end
+    
+    def new_move(*args)
+      @move_factory.new(*args)
+    end
+    
+    def new_piece(*args)
+      @piece_factory.new(*args)
     end
     
     def setup
@@ -50,7 +66,7 @@ module Chess
       # place pawns
       (0...@board.size.x).each do |i|
         each_color do |color|
-          @board[Point.new(i, row(1, color))] = Chess::Piece.new(color, :pawn)
+          @board[Point.new(i, row(1, color))] = new_piece(color, :pawn)
         end
       end
     end
@@ -59,7 +75,7 @@ module Chess
       [:white, :black].each do |color|
         y = row(0, color)
         [:rook, :knight, :bishop, :queen, :king, :bishop, :knight, :rook].each_with_index do |type, x|
-          @board[Point.new(x, y)] = Chess::Piece.new(color, type)
+          @board[Point.new(x, y)] = new_piece(color, type)
         end
       end
     end
@@ -113,7 +129,7 @@ module Chess
     
     def promote_on!(p, type)
       if @board[p]
-        @board[p] = Chess::Piece.new(@board[p].color, type)
+        @board[p] = new_piece(@board[p].color, type)
       end
     end
      
@@ -147,6 +163,12 @@ module Chess
     
     def direction(color)
       Point.new(0, color == :white ? -1 : 1)
+    end
+    
+    def try(move)
+      tmp = dup
+      tmp.perform! move
+      yield tmp
     end
   end
 end

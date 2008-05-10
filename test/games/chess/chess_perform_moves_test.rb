@@ -7,7 +7,7 @@ class ChessPerformMovesTest < Test::Unit::TestCase
   
   def setup
     @board = Chess::Board.new(Point.new(8, 8))
-    @state = Chess::State.new(@board)
+    @state = Chess::State.new(@board, Chess::Move, Chess::Piece)
     @validate = Chess::Validator.new(@state)
     
     @state.setup

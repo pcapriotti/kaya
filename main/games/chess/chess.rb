@@ -16,7 +16,7 @@ module Chess
     end
     
     def new_state
-      @opts[:state].new(new_board)
+      @opts[:state].new(new_board, @opts[:move], @opts[:piece])
     end
     
     def new_board
@@ -44,7 +44,8 @@ module Chess
       :policy => Policy,
       :move => Move,
       :animator => Animator,
-      :validator => Validator
+      :validator => Validator,
+      :piece => Piece
     }
   end
 end

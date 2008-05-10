@@ -77,14 +77,14 @@ class BoardTest < Test::Unit::TestCase
     @board[Point.new(0, 0)] = x
     
     expected = <<EOF.chomp
-  x            
-    x x        
-          x    
-               
-               
-               
-               
 x              
+               
+               
+               
+               
+          x    
+    x x        
+  x            
 EOF
     
     assert_equal expected, @board.to_s

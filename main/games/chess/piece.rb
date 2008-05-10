@@ -18,12 +18,16 @@ module Chess
     
     def symbol
       s = SYMBOLS[type] || type.to_s[0, 1].downcase
-      s.upcase! if color == :white
+      s = s.upcase if color == :white
       s
     end
     
     def same_color_of(other)
       other and other.color == color
+    end
+    
+    def to_s
+      name
     end
   end
 end
