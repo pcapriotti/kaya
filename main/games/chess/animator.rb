@@ -8,7 +8,7 @@ module Chess
       @board = board
     end
   
-    def warp(state)
+    def warp(state, opts = { :instant => true })
       res = []
       
       state.board.each_square do |p|
@@ -16,9 +16,13 @@ module Chess
         old_item = @board.items[p]
         
         if new_piece
-          res << Animation.new('insert') { @board.add_piece p, new_piece } unless old_item && new_piece.name == old_item.name
+          if not old_item
+            res << appear_on!(p, new_piece, opts)
+          elsif new_piece.name != old_item.name
+            res << morph_on!(p, new_piece, opts)
+          end
         else
-          res << Animation.new('remove') { @board.remove_item p } if old_item
+          res << disappear_on!(p, opts) if old_item
         end
       end
 
@@ -26,14 +30,18 @@ module Chess
     end
     
     def forward(state, move)
+      capture = disappear_on! move.dst
+      actual_move = move! move.src, move.dst
       extra = if move.type == :king_side_castling
         move! move.dst + Point.new(1, 0), move.dst - Point.new(1, 0)
       elsif move.type == :queen_side_castling
         move! move.dst - Point.new(2, 0), move.dst + Point.new(1, 0)
+#       elsif move.type == :promotion
       end
+      rest = warp(state, :instant => false)
       
-      sequence group(disappear_on!(move.dst), move!(move.src, move.dst), extra),
-               warp(state)
+      main = group(capture, actual_move, extra)
+      sequence(main, rest)
     end
   end
 end

@@ -53,13 +53,14 @@ class Board < Qt::GraphicsItemGroup
     item = Item.new(name, pix, self, scene)
     item.pos = opts[:pos] || Qt::PointF.new(0, 0)
     item.z_value = opts[:z] || 0
+    item.visible = false if opts[:hidden]
     @items[key] = item
   end
   
-  def add_piece(p, piece)
-    add_item p, @theme.pieces.pixmap(piece, @unit),
-             :pos => Qt::PointF.new(@unit.x * p.x, @unit.y * p.y),
-             :name => piece.name
+  def add_piece(p, piece, opts = {})
+    opts = opts.merge :pos => Qt::PointF.new(@unit.x * p.x, @unit.y * p.y),
+                      :name => piece.name
+    add_item p, @theme.pieces.pixmap(piece, @unit), opts
   end
   
   def remove_item(key, *args)
