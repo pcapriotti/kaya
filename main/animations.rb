@@ -1,5 +1,5 @@
 module Animations
-  LENGTH = 2000
+  LENGTH = 100
   
   def group(*animations)
     anim = animations.dup.compact

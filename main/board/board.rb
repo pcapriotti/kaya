@@ -1,15 +1,17 @@
 require 'animation_field'
 require 'board/square_tag.rb'
+require 'observer'
 
 class Board < Qt::GraphicsItemGroup
   BACKGROUND_ZVALUE = -10
   
   extend TaggableSquares
+  include Observable
 
   attr_reader :scene, :items, :to_logical, :to_real
   square_tag :selection
 
-  def initialize(scene, theme, game)
+  def initialize(scene, theme, game, state = nil)
     super(nil, scene)
     @scene = scene
     @theme = theme
@@ -17,8 +19,11 @@ class Board < Qt::GraphicsItemGroup
     
     @game = game
     
-    @state = @game.new_state
-    @state.setup
+    @state = state
+    unless @state
+      @state = @game.new_state
+      @state.setup
+    end
     
     @animator = @game.new_animator(self)
     
@@ -98,6 +103,8 @@ class Board < Qt::GraphicsItemGroup
     
     animation = @animator.forward @state, move
     @field.run animation
+    changed
+    notify_observers :new_move => [@state, move]
   end
   
   def to_logical(p)

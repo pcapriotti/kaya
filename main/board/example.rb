@@ -4,6 +4,7 @@ require 'board/table'
 require 'themes/fantasy/fantasy'
 require 'themes/squares/default'
 require 'games/chess/chess'
+require 'history'
 
 description = "KDE Board Game Suite"
 version = "1.5"
@@ -31,7 +32,12 @@ chess = Chess::Game.new
 
 scene = Qt::GraphicsScene.new
 
-board = Board.new(scene, theme, chess)
+state = chess.new_state
+state.setup
+
+board = Board.new(scene, theme, chess, state)
+board.add_observer History.new(state)
+
 table = Table.new(scene, board)
 table.size = Qt::Size.new(500, 500)
 
