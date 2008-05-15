@@ -89,6 +89,7 @@ class ChessPerformMovesTest < Test::Unit::TestCase
     assert_piece :white, :rook, 5, 7
     assert_no_piece 4, 7
     assert_no_piece 7, 7
+    assert_equal :black, @state.turn
   end
   
   def test_queen_side_castling
@@ -102,6 +103,7 @@ class ChessPerformMovesTest < Test::Unit::TestCase
     assert_piece :white, :rook, 3, 7
     assert_no_piece 0, 7
     assert_no_piece 4, 7
+    assert_equal :black, @state.turn
   end
   
   def test_black_king_side_castling
@@ -115,6 +117,7 @@ class ChessPerformMovesTest < Test::Unit::TestCase
     assert_piece :black, :rook, 5, 0
     assert_no_piece 4, 0
     assert_no_piece 7, 0
+    assert_equal :white, @state.turn
   end
   
   def test_black_queen_side_castling
@@ -129,5 +132,6 @@ class ChessPerformMovesTest < Test::Unit::TestCase
     assert_piece :black, :rook, 3, 0
     assert_no_piece 0, 0
     assert_no_piece 4, 0
+    assert_equal :white, @state.turn
   end
 end

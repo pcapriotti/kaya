@@ -124,12 +124,13 @@ module Chess
       elsif move.type == :queen_side_castling
         basic_move new_move(move.dst - Point.new(2, 0), move.dst + Point.new(1, 0))
       end
+      
+      switch_turn!
     end
     
     def basic_move(move)
       @board[move.dst] = @board[move.src]
       @board[move.src] = nil
-      switch_turn!
     end
     
     def promote_on!(p, type)

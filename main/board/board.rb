@@ -127,6 +127,8 @@ class Board < Qt::GraphicsItemGroup
     animation = @animator.send(direction, @state, move)
     @field.run animation
     changed
+    
+    puts @state
   end
   
   def to_logical(p)
