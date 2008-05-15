@@ -8,7 +8,7 @@ class Board < Qt::GraphicsItemGroup
   extend TaggableSquares
   include Observable
 
-  attr_reader :scene, :items, :to_logical, :to_real
+  attr_reader :scene, :items, :state
   square_tag :selection
 
   def initialize(scene, theme, game, state = nil)
@@ -85,26 +85,48 @@ class Board < Qt::GraphicsItemGroup
   end
   
   def mousePressEvent(e)
-    p = to_logical(e.pos)
-    
-    if selection
-      move = @game.new_move(selection, p, :promotion => :queen)
-      validate = @game.new_validator(@state)
-      perform! move if validate[move]
-      
+    if e.button == Qt::RightButton
+      # go back using the right button
       self.selection = nil
-    elsif @game.policy.movable?(@state, p)
-      self.selection = p
+      changed
+      notify_observers :back => nil
+    else
+      p = to_logical(e.pos)
+      
+      if selection
+        move = @game.new_move(selection, p, :promotion => :queen)
+        validate = @game.new_validator(@state)
+        if validate[move]
+          perform! move
+          notify_observers :new_move => { :move => move, :state => @state }
+        end
+        
+        self.selection = nil
+      elsif @game.policy.movable?(@state, p)
+        self.selection = p
+      end
     end
   end
   
   def perform!(move)
     @state.perform! move
-    
-    animation = @animator.forward @state, move
+    animate 'forward', move
+  end
+  
+  def back(state, move)
+    @state = state
+    animate 'back', move
+  end
+  
+  def forward(state, move)
+    @state = state
+    animate 'forward', move
+  end
+  
+  def animate(direction, move)
+    animation = @animator.send(direction, @state, move)
     @field.run animation
     changed
-    notify_observers :new_move => [@state, move]
   end
   
   def to_logical(p)

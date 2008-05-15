@@ -45,15 +45,15 @@ module Chess
     end
     
     def back(state, move)
-      piece = state.board[move.dst]
-      restore_piece = unless piece
-        appear_on! move.dst, piece
-      end
-      
       actual_move = move! move.dst, move.src
       rest = warp(state, :instant => false)
-      main = group(restore_piece, actual_move)
+      extra = if move.type == :king_side_castling
+        move! move.dst - Point.new(1, 0), move.dst + Point.new(1, 0)
+      elsif move.type == :queen_side_castling
+        move! move.dst + Point.new(1, 0), move.dst - Point.new(2, 0)
+      end
       
+      main = group(actual_move, extra)
       sequence(main, rest)
     end
   end
