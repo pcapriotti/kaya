@@ -46,12 +46,12 @@ module Chess
     
     def back(state, move)
       actual_move = move! move.dst, move.src
-      rest = warp(state, :instant => false)
       extra = if move.type == :king_side_castling
         move! move.dst - Point.new(1, 0), move.dst + Point.new(1, 0)
       elsif move.type == :queen_side_castling
         move! move.dst + Point.new(1, 0), move.dst - Point.new(2, 0)
       end
+      rest = warp(state, :instant => false)
       
       main = group(actual_move, extra)
       sequence(main, rest)
