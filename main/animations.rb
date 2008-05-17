@@ -61,7 +61,8 @@ module Animations
   def appear(item, name = "appear")
     SimpleAnimation.new name, LENGTH,
       lambda { item.opacity = 0.0; item.visible = true },
-      lambda {|i| item.opacity = i }  
+      lambda {|i| item.opacity = i },
+      lambda { item.opacity = 1.0 }
   end
   
   def appear_on!(p, piece, opts = {})
