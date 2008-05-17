@@ -17,14 +17,14 @@ class Controller
   
   def on_back
     state, move = @history.back
-    @board.back(state, move)
+    @board.back(state.dup, move)
   rescue History::OutOfBound
     puts "error: first move"
   end
   
   def on_forward
     state, move = @history.forward
-    @board.forward(state, move)
+    @board.forward(state.dup, move)
   rescue History::OutOfBound
     puts "error: last move"
   end
