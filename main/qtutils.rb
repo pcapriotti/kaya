@@ -6,6 +6,16 @@ class Object
     yield self
     self
   end
+  
+  def metaclass
+    class << self
+      self
+    end
+  end
+  
+  def metaclass_eval(&blk)
+    metaclass.instance_eval(&blk)
+  end
 end
 
 class Qt::Painter
@@ -81,4 +91,22 @@ class Qt::Pixmap
     renderer = Qt::SvgRenderer.new(file)
     Qt::Image.painted(size) {|p| renderer.render(p) }.to_pix
   end  
+end
+
+class Qt::Object
+  def self.on(sign, &blk)
+    connect(SIGNAL(sign.to_s + '()', &blk))
+  end
+end
+
+class Qt::Timer
+  def self.every(interval, &blk)
+    time = Qt::Time.new
+    time.restart
+    
+    new.tap do |timer|
+      timer.on(:timeout) { blk[time.elapsed] }
+      timer.start(interval)
+    end
+  end
 end

@@ -1,3 +1,5 @@
+require 'qtutils'
+
 module AnimationBase
   def to_s
     "#<#{self.class.name}:#{@name}>"
@@ -47,26 +49,18 @@ class SimpleAnimation
   end
 end
 
-class AnimationField < Qt::Object
+
+class AnimationField
   def initialize(interval)
-    super(nil)
-    
-    @time = Qt::Time.new
-    @timer = Qt::Timer.new
-    
-    connect(@timer, SIGNAL('timeout()'), self, SLOT('tick()'))
-    
-    @time.restart
-    @timer.start(interval)
     @actions = []
+    Qt::Timer.every(interval) {|t| tick(t) }
   end
   
-  def tick
+  def tick(t)
     @actions.reject! do |action|
-      action[@time.elapsed]
+      action[t]
     end
   end
-  slots 'tick()'
   
   def run(action)
     @actions << action if action
