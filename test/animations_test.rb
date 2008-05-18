@@ -1,16 +1,30 @@
 require 'test/unit'
 require 'animations'
+require 'board/point_converter'
 require 'helpers/animation_test_helper'
 require 'helpers/stubs'
+require 'rubygems'
 
-class AnimationContainer
+class FakeAnimator
   include Animations
+  
+  class Board
+    include PointConverter
+    def initialize
+      @unit = Qt::Point.new(50, 50)
+    end
+  end
+  
+  attr_reader :board
+  def initialize
+    @board = Board.new
+  end
 end
 
 class AnimationsTest < Test::Unit::TestCase
   def setup
     @field = FakeAnimationField.new
-    @c = AnimationContainer.new
+    @c = FakeAnimator.new
   end
   
   def test_disappear
@@ -50,5 +64,26 @@ class AnimationsTest < Test::Unit::TestCase
     end
     
     assert_equal [], item.calls
+  end
+  
+  def test_movement
+    item = GeneralMock.new
+    @field.run @c.movement(item, Point.new(3, 4), Point.new(5, 6))
+    @field.run_test
+    
+    old_p = nil
+    while not item.calls.empty?
+      method, args = item.calls.shift
+      assert_equal :pos=, method
+      p = args.first
+      assert_not_nil p
+      if old_p
+        assert_operator old_p.x, :<=, p.x
+        assert_operator old_p.y, :<=, p.y
+        delta = p - old_p
+        assert_in_delta 1.0, (delta.y.to_f / delta.x), 1e-5 if delta.x.abs >= 1e-5
+      end
+      old_p = p
+    end
   end
 end

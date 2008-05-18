@@ -1,5 +1,4 @@
 require 'korundum4'
-require 'item'
 
 class Object
   def tap
@@ -48,13 +47,13 @@ end
 
 module PrintablePoint
   def to_s
-    "(#{x}, #{y})"
+    "(#{self.x}, #{self.y})"
   end
 end
 
 module PrintableRect
   def to_s
-    "[#{x}, #{y} - #{width}, #{height}]"
+    "[#{self.x}, #{self.y} - #{self.width}, #{self.height}]"
   end
 end
 
@@ -94,7 +93,7 @@ class Qt::Pixmap
 end
 
 class Qt::Object
-  def self.on(sign, &blk)
+  def on(sign, &blk)
     connect(SIGNAL(sign.to_s + '()', &blk))
   end
 end
@@ -104,9 +103,8 @@ class Qt::Timer
     time = Qt::Time.new
     time.restart
     
-    new.tap do |timer|
-      timer.on(:timeout) { blk[time.elapsed] }
-      timer.start(interval)
-    end
+    timer = new
+    timer.connect(SIGNAL('timeout()')) { blk[time.elapsed] }
+    timer.start(interval)
   end
 end

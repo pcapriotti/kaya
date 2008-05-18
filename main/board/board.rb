@@ -1,12 +1,15 @@
 require 'animation_field'
 require 'board/square_tag.rb'
 require 'observer'
+require 'board/point_converter.rb'
+require 'item'
 
 class Board < Qt::GraphicsItemGroup
   BACKGROUND_ZVALUE = -10
   
   extend TaggableSquares
   include Observable
+  include PointConverter
 
   attr_reader :scene, :items, :state
   square_tag :selection
@@ -127,17 +130,5 @@ class Board < Qt::GraphicsItemGroup
     animation = @animator.send(direction, @state, move)
     @field.run animation
     changed
-    
-    puts @state
-  end
-  
-  def to_logical(p)
-    Point.new((p.x.to_f / @unit.x).floor,
-              (p.y.to_f / @unit.y).floor)
-  end
-  
-  def to_real(p)
-    res = Qt::PointF.new(p.x * @unit.x, p.y * @unit.y)
-    res
   end
 end
