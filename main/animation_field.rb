@@ -51,9 +51,9 @@ end
 
 
 class AnimationField
-  def initialize(interval)
+  def initialize(interval, timer = Qt::Timer)
     @actions = []
-    Qt::Timer.every(interval) {|t| tick(t) }
+    timer.every(interval) {|t| tick(t) }
   end
   
   def tick(t)
