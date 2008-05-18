@@ -36,13 +36,13 @@ class SimpleAnimation
     end
     
     i = (t - @start).to_f / @length
+    @animation[i]
     if i >= 1.0
       @after[] if @after
       @start = nil
       return true
     end
     
-    @animation[i]
     return false
   end
 end
