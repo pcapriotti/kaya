@@ -42,4 +42,34 @@ class ChessStateTest < Test::Unit::TestCase
   def test_colors
     assert_equal [:white, :black], @state.to_enum(:each_color).to_a
   end
+  
+  def test_opposite_turn
+    assert_equal :white, @state.opposite_turn(:black)
+    assert_equal :black, @state.opposite_turn(:white)
+  end
+  
+  def test_king_starting_position
+    assert_equal Point.new(4, 7), @state.king_starting_position(:white)
+    assert_equal Point.new(4, 0), @state.king_starting_position(:black)
+  end
+  
+  def test_direction
+    assert_equal Point.new(0, -1), @state.direction(:white)
+    assert_equal Point.new(0, 1), @state.direction(:black)
+  end
+  
+  def test_dup
+    other = @state.dup
+    assert_not_same @state, other
+    assert_not_same @state.board, other.board
+    assert_not_same @state.castling_rights, other.castling_rights
+  end
+  
+  def test_new_piece
+    piece_factory = mock('piece factory') do |m|
+      m.expects(:new).with(:white, :knight)
+    end
+    @state = Chess::State.new(@board, Chess::Move, piece_factory)
+    @state.new_piece(:white, :knight)
+  end
 end
