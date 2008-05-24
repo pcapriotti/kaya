@@ -4,6 +4,8 @@ class History
   include Enumerable
   include Observer
   
+  attr_reader :current
+  
   Item = Struct.new(:state, :move)
   OutOfBound = Class.new(Exception)
 
@@ -24,7 +26,7 @@ class History
   end
   
   def forward
-    raise OutOfBound if @current >= @history.size
+    raise OutOfBound if @current >= @history.size - 1
     @current += 1
     item = @history[@current]
     [item.state, item.move]
@@ -35,5 +37,17 @@ class History
     move = @history[@current].move
     @current -= 1
     [@history[@current].state, move]
+  end
+  
+  def state
+    @history[current].state
+  end
+  
+  def move
+    @history[current].move
+  end
+  
+  def size
+    @history.size
   end
 end
