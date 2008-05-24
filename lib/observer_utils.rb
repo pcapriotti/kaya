@@ -1,3 +1,5 @@
+require 'observer'
+
 module Observer
   def update(data)
     data.each_key do |key|
