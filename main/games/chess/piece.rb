@@ -22,7 +22,7 @@ module Chess
       s
     end
     
-    def same_color_of(other)
+    def same_color_of?(other)
       other and other.color == color
     end
     

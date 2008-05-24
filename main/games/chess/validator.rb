@@ -26,7 +26,7 @@ module Chess
       return false if move.dst == move.src
       
       target ||= @state.board[move.dst]
-      return false if piece.same_color_of(target)
+      return false if piece.same_color_of?(target)
     
       m = "validate_#{piece.type}"
       valid = if respond_to? m
