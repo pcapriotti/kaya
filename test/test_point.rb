@@ -12,4 +12,24 @@ class TestPoint < Test::Unit::TestCase
     assert_equal Point.new(4, 5), Point.new(4, 5)
     assert_not_equal Point.new(4, 5), Point.new(1, 2)
   end
+  
+  def test_sum
+    assert_equal Point.new(7, 1), Point.new(3, 4) + Point.new(4, -3)
+  end
+  
+  def test_difference
+    assert_equal Point.new(4, 5), Point.new(10, 2) - Point.new(6, -3)
+  end
+  
+  def test_scaling
+    assert_equal Point.new(6, 2), Point.new(3, 1) * 2
+    assert_equal Point.new(3, 9), Point.new(12, 36) / 4
+  end
+  
+  def test_unit
+    assert_equal Point.new(1, 1), Point.new(3, 3).unit
+    assert_equal Point.new(1, 0), Point.new(4, 0).unit
+    assert_equal Point.new(0, 0), Point.new(0, 0).unit
+    assert_equal Point.new(-1, 1), Point.new(-5, 5).unit
+  end
 end
