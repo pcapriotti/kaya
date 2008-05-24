@@ -32,4 +32,43 @@ class ChessMoveTest < Test::Unit::TestCase
     move = Chess::Move.new(Point.new(2, 5), Point.new(6, 0))
     assert_not_nil move.range
   end
+  
+  def test_nonvalid
+    move = Chess::Move.new(Point.new(2, 5), Point.new(5, 5))
+    assert !move.validated?
+  end
+  
+  def test_validation_ok
+    move = Chess::Move.new(Point.new(2, 5), Point.new(5, 5))
+    move.validate do
+      true
+    end
+    
+    assert move.validated?
+    assert move.valid?
+  end
+  
+  def test_validation_failed
+    move = Chess::Move.new(Point.new(2, 5), Point.new(5, 5))
+    move.validate do
+      false
+    end
+    
+    assert move.validated?
+    assert !move.valid?  
+  end
+  
+  def test_revalidation
+    move = Chess::Move.new(Point.new(2, 5), Point.new(5, 5))
+    move.validate do
+      false
+    end
+    move.validate do
+      fail
+      true
+    end
+    
+    assert move.validated?
+    assert !move.valid?  
+  end
 end
