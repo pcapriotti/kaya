@@ -2,7 +2,7 @@ require 'test/unit'
 require 'animation_field'
 require 'qtutils'
 
-class AnimationFieldTest < Test::Unit::TestCase
+class TestAnimationField < Test::Unit::TestCase
   def setup
     # remove connection with timer
     Qt::Timer.stubs(:every) {}

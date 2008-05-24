@@ -1,7 +1,8 @@
 require 'test/unit'
 require 'games/chess/chess'
+require 'helpers/validation_helper'
 
-class ChessPolicyTest < Test::Unit::TestCase
+class TestChessPolicy < Test::Unit::TestCase
   include ValidationHelper
   
   def setup

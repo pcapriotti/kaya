@@ -3,7 +3,7 @@ require 'rubygems'
 require 'mocha'
 require 'qtutils'
 
-class QtUtilsTest < Test::Unit::TestCase
+class TestQtUtils < Test::Unit::TestCase
   def test_painter_bracket
     p = Qt::Painter.new
     p.expects(:fill_rect).once

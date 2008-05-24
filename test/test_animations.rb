@@ -21,7 +21,7 @@ class FakeAnimator
   end
 end
 
-class AnimationsTest < Test::Unit::TestCase
+class TestAnimations < Test::Unit::TestCase
   def setup
     @field = FakeAnimationField.new
     @c = FakeAnimator.new

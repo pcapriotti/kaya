@@ -1,7 +1,7 @@
 require 'test/unit'
 require 'games/chess/piece'
 
-class ChessPieceTest < Test::Unit::TestCase
+class TestChessPiece < Test::Unit::TestCase
   def test_fields
     piece = Chess::Piece.new(:white, :bishop)
     assert_equal :bishop, piece.type

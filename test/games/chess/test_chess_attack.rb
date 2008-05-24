@@ -7,7 +7,7 @@ require 'games/chess/validator'
 require 'helpers/validation_helper'
 require 'enumerator'
 
-class ChessAttackTest < Test::Unit::TestCase
+class TestChessAttack < Test::Unit::TestCase
   def setup
     @board = Chess::Board.new(Point.new(8, 8))
     @state = Chess::State.new(@board, Chess::Move, Chess::Piece)

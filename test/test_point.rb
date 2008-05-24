@@ -1,7 +1,7 @@
 require 'test/unit'
 require 'point'
 
-class PointTest < Test::Unit::TestCase
+class TestPoint < Test::Unit::TestCase
   def test_getters
     p = Point.new(3, 4)
     assert_equal 3, p.x

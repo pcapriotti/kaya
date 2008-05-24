@@ -1,9 +1,7 @@
 require 'test/unit'
 require 'games/chess/move'
 
-class ChessMoveTest < Test::Unit::TestCase
-  include ValidationHelper
-  
+class TestChessMove < Test::Unit::TestCase
   def test_simple_move_fields
     move = Chess::Move.new(Point.new(4, 6), Point.new(4, 4))
     assert_equal Point.new(4, 6), move.src

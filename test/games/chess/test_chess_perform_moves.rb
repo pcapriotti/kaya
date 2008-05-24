@@ -2,7 +2,7 @@ require 'test/unit'
 require 'games/chess/chess'
 require 'helpers/validation_helper'
 
-class ChessPerformMovesTest < Test::Unit::TestCase
+class TestChessPerformMoves < Test::Unit::TestCase
   include ValidationHelper
   
   def setup

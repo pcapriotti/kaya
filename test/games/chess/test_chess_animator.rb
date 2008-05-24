@@ -2,7 +2,7 @@ require 'test/unit'
 require 'games/chess/animator'
 require 'board/item_bag'
 
-class ChessAnimatorTest < Test::Unit::TestCase
+class TestChessAnimator < Test::Unit::TestCase
   class FakeBoard
     include ItemBag
     attr_reader :items

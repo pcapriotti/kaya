@@ -7,7 +7,7 @@ require 'games/chess/validator'
 require 'helpers/validation_helper'
 require 'enumerator'
 
-class ChessValidationTest < Test::Unit::TestCase
+class TestChessValidation < Test::Unit::TestCase
   include ValidationHelper
   
   def setup

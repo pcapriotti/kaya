@@ -3,7 +3,7 @@ require 'games/chess/board'
 require 'point'
 require 'enumerator'
 
-class BoardTest < Test::Unit::TestCase
+class TestChessBoard < Test::Unit::TestCase
   def setup
     @board = Chess::Board.new(Point.new(8, 8))
   end

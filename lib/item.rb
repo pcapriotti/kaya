@@ -1,3 +1,5 @@
+require 'qtutils'
+
 class Item < Qt::GraphicsPixmapItem
   attr_reader :name, :item
   attr_reader :opacity

@@ -1,7 +1,7 @@
 require 'test/unit'
 require 'point'
 
-class PointRangeTest < Test::Unit::TestCase
+class TestPointRange < Test::Unit::TestCase
   def test_horizontal_range
     range = PointRange.new(Point.new(3, 1), Point.new(7, 1))
     assert range.parallel?

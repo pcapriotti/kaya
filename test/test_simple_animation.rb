@@ -1,8 +1,9 @@
 require 'test/unit'
 require 'animation_field'
+require 'rubygems'
 require 'mocha'
 
-class SimpleAnimationTest < Test::Unit::TestCase
+class TestSimpleAnimation < Test::Unit::TestCase
   def test_init
     anim = SimpleAnimation.new "test", 10,
       mock("init") {|x| x.expects(:[]).once.with },
