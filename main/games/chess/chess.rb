@@ -34,6 +34,10 @@ module Chess
     def new_validator(state)
       @opts[:validator].new(state)
     end
+    
+    def new_piece(*args)
+      @opts[:piece].new(*args)
+    end
   end
   
   def self.chess_opts

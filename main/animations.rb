@@ -34,27 +34,12 @@ module Animations
     end
   end
   
-  def move!(src, dst)
-    piece = @board.move_item(src, dst)
-    movement(piece, src, dst)
-  end
-  
   def disappear(item, name = "disappear")
     if item
-      SimpleAnimation.new "disappear", LENGTH,
+      SimpleAnimation.new name, LENGTH,
         lambda { item.opacity = 1.0; item.visible = true },
         lambda {|t| item.opacity = 1.0 - t },
         lambda { item.remove }
-    end
-  end
-  
-  def disappear_on!(p, opts = {})
-    name = "disappear on #{p}"
-    if opts[:instant]
-      Animation.new(name) { @board.remove_item p }
-    else
-      item = @board.remove_item(p, :keep)
-      disappear(item, name)
     end
   end
   
@@ -65,25 +50,11 @@ module Animations
       lambda { item.opacity = 1.0 }
   end
   
-  def appear_on!(p, piece, opts = {})
-    name = "appear #{piece} on #{p}"
-    if opts[:instant]
-      Animation.new(name) { @board.add_piece p, piece }
-    else
-      item = @board.add_piece p, piece, :hidden => true
-      appear(item, name)
-    end
+  def instant_appear(p, piece, name = "appear")
+    Animation.new(name) { @board.add_piece p, piece }
   end
   
-  def morph_on!(p, piece, opts = {})
-    name = "morph to #{piece} on #{p}"
-    if opts[:instant]
-      Animation.new(name) { @board.add_piece p, piece }
-    else
-      old_item = @board.remove_item(p, :keep)
-      new_item = @board.add_piece p, piece, :hidden => true
-      group appear(new_item, name + " (appear)"),
-            disappear(old_item, name + " (disappear)")
-    end
+  def instant_disappear(p, name = "disappear")
+    Animation.new(name) { @board.remove_item p }
   end
 end

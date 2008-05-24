@@ -1,8 +1,8 @@
-require 'animations'
+require 'animator_helper'
 
 module Chess
   class Animator
-    include Animations
+    include AnimatorHelper
     
     def initialize(board)
       @board = board

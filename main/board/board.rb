@@ -3,6 +3,7 @@ require 'board/square_tag.rb'
 require 'observer'
 require 'board/point_converter.rb'
 require 'item'
+require 'board/item_bag'
 
 class Board < Qt::GraphicsItemGroup
   BACKGROUND_ZVALUE = -10
@@ -10,6 +11,7 @@ class Board < Qt::GraphicsItemGroup
   extend TaggableSquares
   include Observable
   include PointConverter
+  include ItemBag
 
   attr_reader :scene, :items, :state
   square_tag :selection
@@ -54,37 +56,23 @@ class Board < Qt::GraphicsItemGroup
              :z => BACKGROUND_ZVALUE
   end
   
-  def add_item(key, pix, opts = {})
-    remove_item key
-    
-    name = opts[:name] || key.to_s
-    item = Item.new(name, pix, self, scene)
-    item.pos = opts[:pos] || Qt::PointF.new(0, 0)
-    item.z_value = opts[:z] || 0
-    item.visible = false if opts[:hidden]
-    @items[key] = item
-  end
-  
   def add_piece(p, piece, opts = {})
     opts = opts.merge :pos => Qt::PointF.new(@unit.x * p.x, @unit.y * p.y),
                       :name => piece.name
     add_item p, @theme.pieces.pixmap(piece, @unit), opts
   end
   
-  def remove_item(key, *args)
-    if @items[key]
-      @scene.remove_item @items[key] unless args.include? :keep
-      removed = @items[key]
-      @items[key] = nil
-      removed
-    end
+  def create_item(key, pix, opts = {})
+    name = opts[:name] || key.to_s
+    item = Item.new(name, pix, self, scene)
+    item.pos = opts[:pos] || Qt::PointF.new(0, 0)
+    item.z_value = opts[:z] || 0
+    item.visible = false if opts[:hidden]
+    item
   end
   
-  def move_item(src, dst)
-    remove_item dst
-    @items[dst] = @items[src]
-    @items[src] = nil
-    @items[dst]
+  def destroy_item(item)
+    scene.remove_item item
   end
   
   def mousePressEvent(e)
