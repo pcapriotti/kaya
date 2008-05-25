@@ -32,4 +32,11 @@ class TestPoint < Test::Unit::TestCase
     assert_equal Point.new(0, 0), Point.new(0, 0).unit
     assert_equal Point.new(-1, 1), Point.new(-5, 5).unit
   end
+  
+  def test_numeric_unit
+    assert_equal -1, -5.unit
+    assert_equal 0, 0.unit
+    assert_equal 1, 83.unit
+    assert_equal -1, -0.34.unit
+  end
 end
