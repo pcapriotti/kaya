@@ -61,4 +61,30 @@ class TestChessAnimator < Test::Unit::TestCase
       assert_animation :disappear, disappear
     end    
   end
+  
+  def test_simple_forward
+    move = @state.new_move(Point.new(7, 7), Point.new(5, 5))
+    @state.board[Point.new(3, 4)] = @chess.new_piece(:white, :king)
+    @state.board[Point.new(3, 1)] = @chess.new_piece(:black, :king)
+    @state.board[Point.new(5, 5)] = @chess.new_piece(:black, :queen)
+    
+    anim = @animator.forward(@state, move)
+    
+    assert_animation(:sequence, anim) do |args|
+      assert_equal 2, args.size
+      
+      warp, main = args.sort_by {|a| a.args.size }
+      
+      assert_animation(:group, warp) {|a| assert_equal [], a }
+      assert_animation(:group, main) do |args|
+        mov = args.find {|a| a.animation == :movement }
+        assert_animation(:movement, mov) do |args|
+          piece, src, dst = args
+          assert_equal @chess.new_piece(:black, :queen), piece
+          assert_equal Point.new(7, 7), src
+          assert_equal Point.new(5, 5), dst
+        end
+      end
+    end
+  end
 end
