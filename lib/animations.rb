@@ -1,3 +1,5 @@
+require 'animation_field'
+
 module Animations
   LENGTH = 100
   
@@ -24,8 +26,8 @@ module Animations
   
   def movement(item, src, dst)
     if item
-      src = @board.to_real(src)
-      dst = @board.to_real(dst)
+      src = board.to_real(src)
+      dst = board.to_real(dst)
       delta = dst - src
       
       SimpleAnimation.new "move to #{dst}", LENGTH, nil,
@@ -51,10 +53,10 @@ module Animations
   end
   
   def instant_appear(p, piece, name = "appear")
-    Animation.new(name) { @board.add_piece p, piece }
+    Animation.new(name) { board.add_piece p, piece }
   end
   
   def instant_disappear(p, name = "disappear")
-    Animation.new(name) { @board.remove_item p }
+    Animation.new(name) { board.remove_item p }
   end
 end

@@ -3,6 +3,7 @@ require 'animator_helper'
 module Chess
   class Animator
     include AnimatorHelper
+    attr_reader :board
     
     def initialize(board)
       @board = board

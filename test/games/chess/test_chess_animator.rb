@@ -1,44 +1,10 @@
 require 'test/unit'
-require 'games/chess/animator'
-require 'board/item_bag'
+require 'games/chess/chess'
+require 'helpers/animation_test_helper'
 
 class TestChessAnimator < Test::Unit::TestCase
-  class FakeBoard
-    include ItemBag
-    attr_reader :items
-    
-    def initialize(items)
-      @items = items
-    end
-    
-    def add_piece(p, piece, opts = {})
-      add_item p, piece
-    end
-    
-    def create_item(key, piece)
-      piece
-    end
-    
-    def destroy_item(piece)
-    end
-  end
+  include AnimationAssertions
   
-  class FakeAnimation
-    attr_reader :animation, :args
-    def initialize(animation, args)
-      @animation = animation
-      @args = args
-    end
-    
-    def <=>(other)
-      animation.to_s <=> other.animation.to_s
-    end
-    
-    def to_s
-      "#{animation}(#{args.join(', ')}"
-    end
-  end
-
   def setup
     @chess = Chess::Game.new
     @items = {
@@ -50,16 +16,7 @@ class TestChessAnimator < Test::Unit::TestCase
     
     @animator = @chess.new_animator(@board)
     class << @animator
-      def self.stub_methods(*methods)
-        methods.each do |method|
-          eval %{
-            def #{method}(*args)
-              FakeAnimation.new(:#{method}, args)
-            end
-          }
-        end
-      end
-      stub_methods :group, :appear, :disappear, :instant_appear, :instant_disappear
+      include StubbedAnimations
     end
     @state = @chess.new_state
   end
@@ -103,12 +60,5 @@ class TestChessAnimator < Test::Unit::TestCase
       assert_animation :appear, appear
       assert_animation :disappear, disappear
     end    
-  end
-  
-  private
-  
-  def assert_animation(type, x)
-    assert_equal type, x.animation
-    yield x.args if block_given?
   end
 end

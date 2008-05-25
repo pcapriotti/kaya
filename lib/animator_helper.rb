@@ -4,7 +4,7 @@ module AnimatorHelper
   include Animations
   
   def move!(src, dst)
-    piece = @board.move_item(src, dst)
+    piece = board.move_item(src, dst)
     movement(piece, src, dst)
   end
   
@@ -13,7 +13,7 @@ module AnimatorHelper
     if opts[:instant]
       instant_disappear p, name
     else
-      item = @board.remove_item(p, :keep)
+      item = board.remove_item(p, :keep)
       disappear(item, name)
     end
   end
@@ -23,7 +23,7 @@ module AnimatorHelper
     if opts[:instant]
       instant_appear p, piece, name
     else
-      item = @board.add_piece p, piece, :hidden => true
+      item = board.add_piece p, piece, :hidden => true
       appear(item, name)
     end
   end
@@ -33,8 +33,8 @@ module AnimatorHelper
     if opts[:instant]
       instant_appear p, piece, name
     else
-      old_item = @board.remove_item(p, :keep)
-      new_item = @board.add_piece p, piece, :hidden => true
+      old_item = board.remove_item(p, :keep)
+      new_item = board.add_piece p, piece, :hidden => true
       group appear(new_item, name + " (appear)"),
             disappear(old_item, name + " (disappear)")
     end
