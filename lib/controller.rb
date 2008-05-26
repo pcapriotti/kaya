@@ -4,9 +4,11 @@ require 'history'
 class Controller
   include Observer
   
-  def initialize(board)
+  attr_reader :history
+  
+  def initialize(board, history)
     @board = board
-    @history = History.new(board.state)
+    @history = history
     
     board.add_observer self
   end
