@@ -46,6 +46,10 @@ class Qt::Image
 end
 
 module PrintablePoint
+  def ==(other)
+    self.x == other.x and self.y == other.y
+  end
+  
   def to_s
     "(#{self.x}, #{self.y})"
   end

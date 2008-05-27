@@ -9,7 +9,7 @@ module TaggableSquares
     define_method("#{name}=") do |val|
       instance_variable_set("@#{name}", val)
       if val
-        add_item name, @theme.background.selection(@unit),
+        add_item name, theme.background.selection(unit),
                  :pos => to_real(val),
                  :z => TAGS_ZVALUE
       else
