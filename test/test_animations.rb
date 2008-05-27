@@ -10,8 +10,8 @@ class FakeAnimator
   
   class Board
     include PointConverter
-    def initialize
-      @unit = Qt::Point.new(50, 50)
+    def unit
+      Qt::Point.new(50, 50)
     end
   end
   
