@@ -90,10 +90,20 @@ class Qt::RectF
 end
 
 class Qt::Pixmap
-  def self.from_svg(size, file)
-    renderer = Qt::SvgRenderer.new(file)
-    Qt::Image.painted(size) {|p| renderer.render(p) }.to_pix
-  end  
+  def self.from_svg(size, file, id = nil)
+    from_renderer(Qt::SvgRenderer.new(file))
+  end
+  
+  def self.from_renderer(size, renderer, id = nil)
+    img = Qt::Image.painted(size) do |p| 
+      if id
+        renderer.render(p, id)
+      else
+        renderer.render(p)
+      end
+    end
+    img.to_pix
+  end
 end
 
 class Qt::Object

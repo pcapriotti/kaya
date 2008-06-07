@@ -13,7 +13,7 @@ class Board < Qt::GraphicsItemGroup
   include PointConverter
   include ItemBag
 
-  attr_reader :scene, :items, :state
+  attr_reader :scene, :items, :state, :unit, :theme
   square_tag :selection
 
   def initialize(scene, theme, game, state = nil)
