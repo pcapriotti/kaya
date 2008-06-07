@@ -11,6 +11,8 @@ class DefaultBackground
   include Theme
   HALO_DELTA = 0.1
   
+  theme :name => 'Default'
+  
   def initialize(squares)
     @squares = squares
   end

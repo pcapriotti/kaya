@@ -1,8 +1,7 @@
 $:.unshift(File.join(File.dirname(__FILE__), '..'))
 require 'korundum4'
 require 'board/table'
-require 'themes/celtic/celtic'
-require 'themes/squares/default'
+require 'themes/loader'
 require 'games/chess/chess'
 require 'controller'
 require 'history'
@@ -25,9 +24,10 @@ class Scene < Qt::GraphicsScene
   end
 end
 
+theme_loader = ThemeLoader.new
 theme = Struct.new(:pieces, :background).new
-theme.pieces = CelticTheme.new
-theme.background = DefaultBackground.new(Point.new(8, 8))
+theme.pieces = theme_loader.get('Celtic')
+theme.background = theme_loader.get('Default', Point.new(8, 8))
 
 chess = Chess::Game.new
 
