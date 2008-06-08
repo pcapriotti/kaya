@@ -120,5 +120,9 @@ class Qt::Timer
     timer = new
     timer.connect(SIGNAL('timeout()')) { blk[time.elapsed] }
     timer.start(interval)
+    # return the timer, so that the caller
+    # has a chance to keep it referenced, so
+    # that it is not garbage collected
+    timer
   end
 end
