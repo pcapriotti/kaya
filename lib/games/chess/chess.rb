@@ -9,7 +9,7 @@ module Chess
   class Game
     attr_reader :size, :policy
     
-    def initialize(opts = Chess::chess_opts)
+    def initialize(opts = self.class.opts)
       @opts = opts
       @policy = @opts[:policy].new
       @size = @opts[:size]
@@ -38,18 +38,27 @@ module Chess
     def new_piece(*args)
       @opts[:piece].new(*args)
     end
+
+    def self.opts
+      {
+        :size => Point.new(8, 8),
+        :state => State,
+        :board => Board,
+        :policy => Policy,
+        :move => Move,
+        :animator => Animator,
+        :validator => Validator,
+        :piece => Piece
+      }
+    end
   end
-  
-  def self.chess_opts
-    {
-      :size => Point.new(8, 8),
-      :state => State,
-      :board => Board,
-      :policy => Policy,
-      :move => Move,
-      :animator => Animator,
-      :validator => Validator,
-      :piece => Piece
-    }
+end
+
+
+module Chess5x5
+  class Game < Chess::Game
+    def self.opts
+      Chess::Game.opts.merge(:size => Point.new(5, 5))
+    end
   end
 end

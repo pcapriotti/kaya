@@ -29,7 +29,7 @@ theme = Struct.new(:pieces, :background).new
 theme.pieces = theme_loader.get('Celtic')
 theme.background = theme_loader.get('Default', Point.new(8, 8))
 
-chess = Chess::Game.new
+chess = Chess5x5::Game.new
 
 scene = Qt::GraphicsScene.new
 
@@ -37,10 +37,13 @@ state = chess.new_state
 state.setup
 
 board = Board.new(scene, theme, chess, state)
+board.observe :new_move do |data|
+  move = data[:move]
+  puts "execute #{move.src.x}, #{move.src.y}, #{move.dst.x}, #{move.dst.y}"
+end
 
 table = Table.new(scene, board)
 table.size = Qt::Size.new(500, 500)
-
 
 history = History.new(state)
 controller = Controller.new(board, history)
