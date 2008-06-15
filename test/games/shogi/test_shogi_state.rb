@@ -46,4 +46,9 @@ class TestShogiState < Test::Unit::TestCase
     assert_equal :white, @state.opposite_color(:black)
     assert_equal :black, @state.opposite_color(:white)
   end
+  
+  def test_direction
+    assert_equal Point.new(0, -1), @state.direction(:black)
+    assert_equal Point.new(0, 1), @state.direction(:white)
+  end
 end

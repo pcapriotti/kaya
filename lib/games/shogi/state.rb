@@ -47,5 +47,9 @@ module Shogi
     def opposite_color(color)
       color == :black ? :white : :black
     end
+    
+    def direction(color)
+      Point.new(0, color == :black ? -1 : 1)
+    end
   end
 end
