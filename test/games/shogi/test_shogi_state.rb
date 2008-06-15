@@ -41,4 +41,9 @@ class TestShogiState < Test::Unit::TestCase
     assert_equal 3, @state.row(3, :white)
     assert_equal 5, @state.row(3, :black)
   end
+  
+  def test_opposite_color
+    assert_equal :white, @state.opposite_color(:black)
+    assert_equal :black, @state.opposite_color(:white)
+  end
 end

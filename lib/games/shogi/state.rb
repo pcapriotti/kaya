@@ -43,5 +43,9 @@ module Shogi
     def row(i, color)
       color == :black ? @board.size.y - 1 - i : i
     end
+    
+    def opposite_color(color)
+      color == :black ? :white : :black
+    end
   end
 end
