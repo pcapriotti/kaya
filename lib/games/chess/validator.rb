@@ -65,7 +65,7 @@ module Chess
         end
       end
       
-      if valid and move.dst.y == @state.row(7, piece.color)
+      if valid and move.dst.y == @state.row(0, @state.opposite_turn(piece.color))
         if move.promotion
           move.type = :promotion
         else
@@ -142,7 +142,8 @@ module Chess
     def each_move(src, dst, target)
       piece = @state.board[src]
       if piece
-        moves = if piece.type == :pawn and dst.y == @state.row(7, piece.color)
+        moves = if piece.type == :pawn and 
+                   dst.y == @state.row(0, @state.opposite_turn(piece.color))
           [:knight, :bishop, :rook, :queen].map do |type|
             @state.new_move(src, dst, :promotion => type)
           end

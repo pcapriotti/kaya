@@ -61,6 +61,24 @@ class TestChessPerformMoves < Test::Unit::TestCase
                  @board[Point.new(0, 0)]
   end
   
+  def test_promotion_5x5
+    @board = Chess::Board.new(Point.new(5, 5))
+    @state = Chess::State.new(@board, Chess::Move, Chess::Piece)
+    @validate = Chess::Validator.new(@state)
+    
+    @state.setup
+    
+    execute 0, 3, 0, 2
+    execute 1, 1, 0, 2
+    execute 1, 3, 1, 2
+    execute 0, 2, 0, 3
+    execute 2, 4, 0, 2
+    execute 0, 3, 1, 4, :promotion => :bishop
+    
+    assert_equal Chess::Piece.new(:black, :bishop),
+                 @board[Point.new(1, 4)]
+  end
+  
   def test_promotion_capture
     execute 0, 6, 0, 4 # a4
     execute 1, 1, 1, 3 # b5
