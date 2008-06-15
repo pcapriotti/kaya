@@ -1,16 +1,14 @@
+require 'games/validator_base'
+
 module Chess
-  class Validator
+  class Validator < ValidatorBase
     def initialize(state)
-      @state = state
+      super
     end
   
     def [](move, target = nil)
-      return false unless @state.board.valid? move.src
-      return false unless @state.board.valid? move.dst
-      
+      return false unless proper?(move)
       piece = @state.board[move.src]
-      return false unless piece and piece.color == @state.turn
-      
       return false unless check_pseudolegality(piece, target, move)
       
       @state.try(move) do |tmp|
@@ -21,26 +19,7 @@ module Chess
       
       true
     end
-    
-    def check_pseudolegality(piece, target, move)
-      return false if move.dst == move.src
-      
-      target ||= @state.board[move.dst]
-      return false if piece.same_color_of?(target)
-    
-      m = "validate_#{piece.type}"
-      valid = if respond_to? m
-        send(m, piece, target, move)
-      end
-    end
-    
-    def check_legality(piece, target, move)
-      king_pos = @state.board.find(@state.new_piece(piece.color, :king))
-      if king_pos
-        not attacked?(king_pos)
-      end
-    end
-    
+
     def validate_pawn(piece, target, move)
       dir = @state.direction(piece.color)
       en_passant = move.dst == @state.en_passant_square
@@ -131,12 +110,6 @@ module Chess
     
     def validate_knight(piece, target, move)
       [move.delta.x.abs, move.delta.y.abs].sort == [1, 2]
-    end
-    
-    def attacked?(dst, target = nil)
-      @state.board.to_enum(:each_square).any? do |src|
-        to_enum(:each_move, src, dst, target).any? { true }
-      end
     end
     
     def each_move(src, dst, target)

@@ -3,10 +3,9 @@ require 'point'
 require 'games/state_base'
 
 module Chess
-  class State
-    include StateBase
-    attr_reader :board, :castling_rights
-    attr_accessor :turn, :en_passant_square
+  class State < StateBase
+    attr_reader :castling_rights
+    attr_accessor :en_passant_square
     
     class CastlingRights
       def initialize
@@ -39,12 +38,9 @@ module Chess
     end
     
     def initialize(board, move_factory, piece_factory)
-      @board = board
+      super
       @turn = :white
       @castling_rights = CastlingRights.new
-      
-      @move_factory = move_factory
-      @piece_factory = piece_factory
     end
     
     def initialize_copy(other)
@@ -111,17 +107,6 @@ module Chess
       
       switch_turn!
     end
-    
-    def basic_move(move)
-      @board[move.dst] = @board[move.src]
-      @board[move.src] = nil
-    end
-    
-    def promote_on!(p, type)
-      if @board[p]
-        @board[p] = new_piece(@board[p].color, type)
-      end
-    end
      
     def perform_en_passant_trigger(move)
       self.en_passant_square = move.src + direction(turn)
@@ -153,12 +138,6 @@ module Chess
     
     def direction(color)
       Point.new(0, color == :white ? -1 : 1)
-    end
-    
-    def try(move)
-      tmp = dup
-      tmp.perform! move
-      yield tmp
     end
   end
 end
