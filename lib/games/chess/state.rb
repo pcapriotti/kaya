@@ -1,8 +1,10 @@
 require 'games/chess/piece'
 require 'point'
+require 'games/state_base'
 
 module Chess
   class State
+    include StateBase
     attr_reader :board, :castling_rights
     attr_accessor :turn, :en_passant_square
     
@@ -50,30 +52,12 @@ module Chess
       @castling_rights = other.castling_rights.dup
     end
     
-    def new_move(*args)
-      @move_factory.new(*args)
-    end
-    
-    def new_piece(*args)
-      @piece_factory.new(*args)
-    end
-    
     def setup
-      setup_pawns
-      setup_pieces
-    end
-    
-    def setup_pawns
       # place pawns
-      (0...@board.size.x).each do |i|
-        each_color do |color|
+      each_color do |color|
+        (0...@board.size.x).each do |i|
           @board[Point.new(i, row(1, color))] = new_piece(color, :pawn)
         end
-      end
-    end
-    
-    def setup_pieces
-      each_color do |color|
         y = row(0, color)
         [:rook, :knight, :bishop, :queen, :king, :bishop, :knight, :rook].each_with_index do |type, x|
           @board[Point.new(x, y)] = new_piece(color, type)

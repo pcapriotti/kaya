@@ -1,5 +1,9 @@
+require 'games/state_base'
+require 'point'
+
 module Shogi
   class State
+    include StateBase
     attr_reader :turn, :board
   
     def initialize(board, move_factory, piece_factory)
@@ -29,10 +33,6 @@ module Shogi
         set_piece[7, :knight]
         set_piece[8, :lance]
       end
-    end
-    
-    def new_piece(*args)
-      @piece_factory.new(*args)
     end
     
     def each_color(&blk)
