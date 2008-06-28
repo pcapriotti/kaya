@@ -30,8 +30,13 @@ module Shogi
     
     def validate_lance(piece, target, move)
       move.delta.x == 0 and
-      move.delta.y * @state.direction(piece.color).y > 0 and
+      move.delta.y.unit == @state.direction(piece.color).y and
       @state.board.clear_path? move.range
+    end
+    
+    def validate_horse(piece, target, move)
+      move.delta.x.abs == 1 and
+      move.delta.y == 2 * @state.direction(piece.color).y
     end
     
     def each_move(src, dst, target)

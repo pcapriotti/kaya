@@ -60,4 +60,16 @@ class TestShogiValidation < Test::Unit::TestCase
     assert_not_valid 0, 8, 1, 8
     assert_not_valid 0, 8, 1, 7
   end
+  
+  def test_horse_move
+    @board[Point.new(0, 6)] = nil
+    
+    assert_valid 1, 8, 0, 6
+    assert_not_valid 1, 8, 2, 6
+    assert_not_valid 1, 8, 3, 7
+    
+    @board[Point.new(0, 6)] = Chess::Piece.new(:white, :bishop)
+    
+    assert_valid 1, 8, 0, 6
+  end
 end
