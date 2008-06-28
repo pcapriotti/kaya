@@ -32,4 +32,9 @@ class StateBase
       @board[p] = new_piece(@board[p].color, type)
     end
   end
+  
+  def to_s
+    [@board.to_s,
+     "turn #{@turn.to_s}"].join("\n")
+  end
 end

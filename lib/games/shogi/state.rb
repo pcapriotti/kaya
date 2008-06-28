@@ -19,13 +19,13 @@ module Shogi
           @board[Point.new(x, r)] = new_piece(color, type)
         end
         set_piece[0, :lance]
-        set_piece[1, :knight]
+        set_piece[1, :horse]
         set_piece[2, :silver]
         set_piece[3, :gold]
         set_piece[4, :king]
         set_piece[5, :gold]
         set_piece[6, :silver]
-        set_piece[7, :knight]
+        set_piece[7, :horse]
         set_piece[8, :lance]
         
         r = row(1, color)

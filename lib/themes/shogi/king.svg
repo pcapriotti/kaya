@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.0"
+   width="468pt"
+   height="468pt"
+   viewBox="0 0 468 468"
+   preserveAspectRatio="xMidYMid meet"
+   id="svg1566"
+   sodipodi:version="0.32"
+   inkscape:version="0.43"
+   sodipodi:docbase="/home/monge/shogi/pieces"
+   sodipodi:docname="shogiking-piece.svg">
+  <defs
+     id="defs1587" />
+  <sodipodi:namedview
+     inkscape:window-height="548"
+     inkscape:window-width="962"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base"
+     inkscape:zoom="0.63931624"
+     inkscape:cx="292.5"
+     inkscape:cy="292.5"
+     inkscape:window-x="310"
+     inkscape:window-y="0"
+     inkscape:current-layer="svg1566" />
+  <metadata
+     id="metadata1568">
+Created by potrace 1.7, written by Peter Selinger 2001-2005
+<rdf:RDF>
+  <cc:Work
+     rdf:about="">
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type
+       rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+  </cc:Work>
+</rdf:RDF>
+</metadata>
+  <g
+     transform="translate(0,468) scale(0.468000,-0.468000)"
+     fill="#000000"
+     stroke="none"
+     id="g1570">
+    <path
+       d="M585 821 c-3 -6 -51 -7 -114 -4 -79 4 -110 3 -116 -6 -11 -19 2 -25 63 -31 l57 -5 3 -37 3 -38 -55 0 c-30 0 -57 -4 -61 -9 -10 -17 26 -28 71 -23 l44 5 0 -57 0 -56 -74 0 c-41 0 -77 -4 -81 -9 -13 -22 40 -31 185 -31 125 0 152 3 156 15 10 24 -14 47 -36 35 -10 -6 -41 -10 -69 -10 l-51 0 0 55 0 55 60 0 c33 0 60 4 60 8 0 21 -26 30 -71 25 l-49 -6 0 42 0 41 59 0 c64 0 86 14 56 37 -22 15 -32 16 -40 4z"
+       id="path1574" />
+    <path
+       d="M550 650 c0 -18 32 -60 46 -60 25 0 25 20 0 45 -26 26 -46 32 -46 15z"
+       id="path1576" />
+    <path
+       d="M595 490 c-11 -5 -35 -9 -53 -9 -28 -1 -32 -4 -28 -19 4 -12 -3 -27 -19 -42 -14 -13 -25 -29 -25 -37 0 -14 22 -18 34 -5 4 4 26 7 48 8 40 0 40 0 19 -17 -12 -10 -27 -19 -34 -22 -6 -2 -9 -7 -6 -11 8 -8 116 31 125 46 13 21 -28 39 -73 32 -35 -5 -43 -3 -43 10 0 21 31 36 74 36 24 0 36 5 36 14 0 11 -24 29 -33 25 -1 0 -11 -4 -22 -9z"
+       id="path1578" />
+    <path
+       d="M388 454 c-4 -47 -28 -59 -28 -15 0 28 -7 36 -27 29 -4 -2 -6 -15 -4 -30 2 -24 -1 -28 -24 -28 -24 0 -26 -2 -15 -15 9 -11 27 -15 54 -13 l41 3 -3 -40 c-2 -22 -8 -57 -13 -78 -8 -31 -13 -37 -30 -32 -25 8 -24 -7 2 -31 15 -14 24 -16 37 -8 17 11 20 23 41 171 6 40 12 78 13 84 2 6 -7 17 -19 26 -21 14 -22 13 -25 -23z"
+       id="path1580" />
+    <path
+       d="M260 340 c0 -5 9 -14 21 -20 19 -11 20 -13 4 -37 -14 -21 -15 -27 -4 -34 17 -11 49 24 49 52 0 11 7 22 15 25 8 4 12 10 9 15 -7 12 -94 12 -94 -1z"
+       id="path1582" />
+    <path
+       d="M619 335 c-10 -10 -47 -17 -107 -21 -89 -7 -92 -8 -76 -25 13 -15 26 -17 58 -13 l41 7 -33 -35 c-48 -51 -19 -69 37 -22 25 20 29 29 21 44 -8 14 -5 19 13 24 12 3 32 6 45 6 20 0 22 -5 22 -51 l0 -51 -30 6 c-41 8 -38 -11 6 -31 55 -26 70 -11 65 66 l-3 62 28 -3 c21 -2 29 1 29 12 0 10 -13 17 -40 20 -22 3 -45 9 -51 12 -6 4 -17 1 -25 -7z"
+       id="path1584" />
+  </g>
+</svg>

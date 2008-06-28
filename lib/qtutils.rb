@@ -91,7 +91,7 @@ end
 
 class Qt::Pixmap
   def self.from_svg(size, file, id = nil)
-    from_renderer(Qt::SvgRenderer.new(file))
+    from_renderer(size, Qt::SvgRenderer.new(file), id)
   end
   
   def self.from_renderer(size, renderer, id = nil)

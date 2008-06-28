@@ -27,7 +27,7 @@ class TestShogiState < Test::Unit::TestCase
     end
     
     assert_piece :black, :lance, 0, 8
-    assert_piece :black, :knight, 1, 8
+    assert_piece :black, :horse, 1, 8
     assert_piece :black, :king, 4, 8
     assert_piece :white, :silver, 6, 0
     assert_piece :white, :gold, 3, 0

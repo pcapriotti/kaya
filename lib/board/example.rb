@@ -2,7 +2,7 @@ $:.unshift(File.join(File.dirname(__FILE__), '..'))
 require 'korundum4'
 require 'board/table'
 require 'themes/loader'
-require 'games/chess/chess'
+require 'games/shogi/game'
 require 'controller'
 require 'history'
 
@@ -24,19 +24,19 @@ class Scene < Qt::GraphicsScene
   end
 end
 
+game = Shogi::Game.new
+
 theme_loader = ThemeLoader.new
 theme = Struct.new(:pieces, :background).new
-theme.pieces = theme_loader.get('Celtic')
-theme.background = theme_loader.get('Default', Point.new(8, 8))
-
-chess = Chess5x5::Game.new
+theme.pieces = theme_loader.get('Shogi')
+theme.background = theme_loader.get('Default', game.new_board.size)
 
 scene = Qt::GraphicsScene.new
 
-state = chess.new_state
+state = game.new_state
 state.setup
 
-board = Board.new(scene, theme, chess, state)
+board = Board.new(scene, theme, game, state)
 board.observe :new_move do |data|
   move = data[:move]
   puts "execute #{move.src.x}, #{move.src.y}, #{move.dst.x}, #{move.dst.y}"

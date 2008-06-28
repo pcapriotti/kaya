@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.0"
+   width="468pt"
+   height="468pt"
+   viewBox="0 0 468 468"
+   preserveAspectRatio="xMidYMid meet"
+   id="svg1428"
+   sodipodi:version="0.32"
+   inkscape:version="0.43"
+   sodipodi:docbase="/home/monge/shogi/pieces"
+   sodipodi:docname="pbishop-piece.svg">
+  <defs
+     id="defs1445" />
+  <sodipodi:namedview
+     inkscape:window-height="548"
+     inkscape:window-width="962"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base"
+     inkscape:zoom="0.63931624"
+     inkscape:cx="292.5"
+     inkscape:cy="292.5"
+     inkscape:window-x="310"
+     inkscape:window-y="0"
+     inkscape:current-layer="svg1428" />
+  <metadata
+     id="metadata1430">
+Created by potrace 1.7, written by Peter Selinger 2001-2005
+<rdf:RDF>
+  <cc:Work
+     rdf:about="">
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type
+       rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+  </cc:Work>
+</rdf:RDF>
+</metadata>
+  <g
+     transform="translate(0,468) scale(0.468000,-0.468000)"
+     fill="#000000"
+     stroke="none"
+     id="g1432">
+    <path
+       d="M508 808 c7 -7 12 -31 12 -54 0 -39 -5 -47 -57 -93 -59 -53 -68 -57 -77 -42 -10 15 4 38 30 49 26 12 33 32 10 32 -7 0 -16 11 -18 25 -4 18 1 29 19 40 20 13 22 19 12 31 -16 20 -43 17 -64 -6 -10 -11 -29 -20 -42 -20 -31 0 -29 -10 7 -45 28 -27 29 -30 13 -47 -9 -10 -24 -18 -34 -18 -27 0 -34 -21 -10 -27 26 -7 26 -20 1 -58 -23 -35 -26 -75 -5 -75 8 0 19 17 26 40 14 47 35 68 50 53 8 -8 7 -18 -1 -33 -10 -18 -9 -24 1 -31 8 -5 17 -9 21 -9 11 0 28 36 28 58 0 22 63 82 85 82 19 0 19 -9 -1 -31 -21 -23 -10 -39 27 -39 24 0 29 -4 29 -24 0 -28 -26 -52 -52 -48 -22 4 -24 -11 -3 -28 22 -18 53 -3 83 42 l26 40 -27 24 c-15 13 -27 32 -27 43 0 11 -4 23 -10 26 -19 12 -10 32 25 51 42 23 46 39 6 31 -35 -7 -42 -1 -32 27 12 32 3 46 -32 46 -24 0 -28 -3 -19 -12z"
+       id="path1436" />
+    <path
+       d="M643 736 l-1 -33 34 10 c38 12 44 31 15 47 -35 18 -47 12 -48 -24z"
+       id="path1438" />
+    <path
+       d="M445 429 c-22 -4 -56 -5 -75 -2 l-35 5 27 -27 26 -28 48 17 c60 20 94 21 94 1 0 -13 7 -12 40 5 23 12 38 25 35 30 -7 12 -103 11 -160 -1z"
+       id="path1440" />
+    <path
+       d="M430 351 c0 -6 5 -13 11 -16 7 -5 5 -13 -6 -25 -28 -31 -9 -42 54 -35 48 5 61 3 81 -13 29 -23 22 -45 -22 -72 -42 -25 -93 -27 -84 -4 6 16 -18 41 -54 55 -22 9 -57 -6 -70 -31 -28 -52 99 -108 184 -80 44 14 106 82 106 115 0 36 -43 60 -102 58 -53 -2 -56 7 -8 27 16 7 27 16 24 21 -7 12 -114 12 -114 0z m-12 -153 c18 -18 15 -38 -6 -38 -21 0 -42 18 -42 37 0 16 32 17 48 1z"
+       id="path1442" />
+  </g>
+</svg>
