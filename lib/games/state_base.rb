@@ -8,6 +8,10 @@ class StateBase
     @piece_factory = piece_factory
   end
   
+  def initialize_copy(other)
+    @board = other.board.dup
+  end
+  
   def new_piece(*args)
     @piece_factory.new(*args)
   end

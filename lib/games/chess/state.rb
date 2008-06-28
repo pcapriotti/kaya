@@ -44,7 +44,7 @@ module Chess
     end
     
     def initialize_copy(other)
-      @board = other.board.dup
+      super
       @castling_rights = other.castling_rights.dup
     end
     
