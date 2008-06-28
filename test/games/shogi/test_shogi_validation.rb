@@ -46,4 +46,18 @@ class TestShogiValidation < Test::Unit::TestCase
     @board[Point.new(3, 5)] = @board[Point.new(3, 2)]
     assert_not_valid 4, 6, 3, 5
   end
+  
+  def test_lance_move
+    @board[Point.new(0, 6)] = nil
+    @board[Point.new(1, 7)] = nil
+    @board[Point.new(1, 8)] = nil
+    
+    assert_valid 0, 8, 0, 4
+    assert_valid 0, 8, 0, 2
+    assert_not_valid 0, 8, 0, 1
+    assert_not_valid 0, 8, 0, 0
+    
+    assert_not_valid 0, 8, 1, 8
+    assert_not_valid 0, 8, 1, 7
+  end
 end

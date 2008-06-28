@@ -28,6 +28,12 @@ module Shogi
       move.delta == @state.direction(piece.color)
     end
     
+    def validate_lance(piece, target, move)
+      move.delta.x == 0 and
+      move.delta.y * @state.direction(piece.color).y > 0 and
+      @state.board.clear_path? move.range
+    end
+    
     def each_move(src, dst, target)
       piece = @state.board[src]
       if piece
