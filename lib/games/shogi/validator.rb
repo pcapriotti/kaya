@@ -45,6 +45,12 @@ module Shogi
       (move.delta.x.abs == 1 and move.delta.y == -dir)
     end
     
+    def validate_gold(piece, target, move)
+      dir = @state.direction(piece.color).y
+      move.delta.y == dir or
+      move.delta.x.abs + move.delta.y.abs == 1
+    end
+    
     def each_move(src, dst, target)
       piece = @state.board[src]
       if piece
