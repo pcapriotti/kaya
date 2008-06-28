@@ -72,4 +72,38 @@ class TestShogiValidation < Test::Unit::TestCase
     
     assert_valid 1, 8, 0, 6
   end
+  
+  def test_white_silver_move
+    @board[Point.new(4, 4)] = Chess::Piece.new(:white, :silver)
+    @state.turn = :white
+    
+    assert_valid 4, 4, 5, 3
+    assert_valid 4, 4, 3, 3
+    assert_valid 4, 4, 3, 5
+    assert_valid 4, 4, 4, 5
+    assert_valid 4, 4, 5, 5
+    
+    assert_not_valid 4, 4, 4, 3
+    assert_not_valid 4, 4, 3, 4
+    assert_not_valid 4, 4, 5, 4
+    
+    @board[Point.new(5, 3)] = Chess::Piece.new(:black, :rook)
+    assert_valid 4, 4, 5, 3
+  end
+  
+  def test_silver_move
+    @board[Point.new(4, 4)] = Chess::Piece.new(:black, :silver)
+    assert_valid 4, 4, 5, 5
+    assert_valid 4, 4, 3, 5
+    assert_valid 4, 4, 3, 3
+    assert_valid 4, 4, 4, 3
+    assert_valid 4, 4, 5, 3
+    
+    assert_not_valid 4, 4, 4, 5
+    assert_not_valid 4, 4, 3, 4
+    assert_not_valid 4, 4, 5, 4
+    
+    @board[Point.new(3, 5)] = Chess::Piece.new(:white, :rook)
+    assert_valid 4, 4, 3, 5
+  end
 end

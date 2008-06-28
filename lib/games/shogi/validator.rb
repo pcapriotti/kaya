@@ -39,6 +39,12 @@ module Shogi
       move.delta.y == 2 * @state.direction(piece.color).y
     end
     
+    def validate_silver(piece, target, move)
+      dir = @state.direction(piece.color).y
+      move.delta.y == dir or
+      (move.delta.x.abs == 1 and move.delta.y == -dir)
+    end
+    
     def each_move(src, dst, target)
       piece = @state.board[src]
       if piece
