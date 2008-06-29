@@ -7,13 +7,18 @@ module Shogi
     end
     
     def [](move, target = nil)
-      return false unless @state.board.valid? move.src
+      return false unless move.dropped || @state.board.valid?(move.src)
       return false unless @state.board.valid? move.dst
       
-      piece = @state.board[move.src]
-      return false unless piece and piece.color == @state.turn
-      
-      return false unless check_pseudolegality(piece, target, move)
+      piece = move.dropped
+      if piece
+        return false unless piece.color == @state.turn
+        return false unless @state.pool(piece.color).has_piece?(piece)
+      else
+        piece = @state.board[move.src]
+        return false unless piece and piece.color == @state.turn
+        return false unless check_pseudolegality(piece, target, move)
+      end
       
       @state.try(move) do |tmp|
         validator = self.class.new(tmp)

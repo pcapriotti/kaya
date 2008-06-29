@@ -1,19 +1,17 @@
 require 'test/unit'
-require 'games/shogi/state'
-require 'games/shogi/validator'
-require 'games/shogi/move'
-require 'games/chess/piece'
-require 'games/chess/board'
+require 'games/shogi/game'
 require 'helpers/validation_helper'
 
 class TestShogiValidation < Test::Unit::TestCase
   include ValidationHelper
   
   def setup
-    @board = Chess::Board.new(Point.new(9, 9))
-    @state = Shogi::State.new(@board, Shogi::Move, Chess::Piece)
+    @game = Shogi::Game.new
+    @state = @game.new_state
     @state.setup
-    @validate = Shogi::Validator.new(@state)
+    
+    @validate = @game.new_validator(@state)
+    @board = @state.board
   end
   
   def test_invalid_move
@@ -160,5 +158,10 @@ class TestShogiValidation < Test::Unit::TestCase
     assert_valid 4, 8, 5, 7
     assert_valid 4, 8, 3, 7
     assert_not_valid 4, 8, 4, 7
+  end
+  
+  def test_drop_with_empty_pool
+    assert_not_valid @state.new_drop(@state.new_piece(:black, :rook),
+                                     Point.new(4, 4))
   end
 end

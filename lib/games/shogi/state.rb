@@ -3,9 +3,22 @@ require 'point'
 
 module Shogi
   class State < StateBase
-    def initialize(board, move_factory, piece_factory)
-      super
+    def initialize(board, pool_factory, move_factory, piece_factory)
+      super(board, move_factory, piece_factory)
+      @pools = to_enum(:each_color).inject({}) do |res, c|
+        res[c] = pool_factory.new
+        res
+      end
       @turn = :black
+    end
+    
+    def initialize_copy(other)
+      super
+      @pools = to_enum(:each_color).map{|c| other.pool(c).dup }
+    end
+    
+    def pool(color)
+      @pools[color]
     end
     
     def setup
@@ -32,6 +45,10 @@ module Shogi
         @board[Point.new(r, r)] = new_piece(color, :rook)
         @board[Point.new(@board.size.x - r - 1, r)] = new_piece(color, :bishop)
       end
+    end
+    
+    def new_drop(*args)
+      @move_factory.drop(*args)
     end
     
     def each_color(&blk)

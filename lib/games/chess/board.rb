@@ -33,7 +33,7 @@ module Chess
     end
     
     def valid?(p)
-      p.x >= 0 && p.x < @size.x && p.y >= 0 && p.y < @size.y
+      p && p.x >= 0 && p.x < @size.x && p.y >= 0 && p.y < @size.y
     end
     
     def each_square

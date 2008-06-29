@@ -10,9 +10,9 @@ module ValidationHelper
     when 1
       args.first
     when 2
-      Chess::Move.new(*(args + [opts]))
+      @state.new_move(*(args + [opts]))
     when 4
-      Chess::Move.new(*(args.to_enum(:each_slice, 2).map{|x| Point.new(*x) } + [opts]))
+      @state.new_move(*(args.to_enum(:each_slice, 2).map{|x| Point.new(*x) } + [opts]))
     else
       raise ArgumentError.new("Could not unpack move using #{args.size} parameters")
     end

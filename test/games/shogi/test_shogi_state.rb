@@ -1,16 +1,14 @@
 require 'test/unit'
-require 'games/shogi/state'
-require 'games/chess/board'
-require 'games/chess/piece'
-require 'games/chess/move'
+require 'games/shogi/game'
 require 'helpers/validation_helper'
 
 class TestShogiState < Test::Unit::TestCase
   include ValidationHelper
 
   def setup
-    @board = Chess::Board.new(Point.new(9, 9))
-    @state = Shogi::State.new(@board, Chess::Move, Chess::Piece)
+    @game = Shogi::Game.new
+    @state = @game.new_state
+    @board = @state.board
   end
   
   def test_initialize
