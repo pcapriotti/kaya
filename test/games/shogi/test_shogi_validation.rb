@@ -154,4 +154,11 @@ class TestShogiValidation < Test::Unit::TestCase
     assert_not_valid 4, 4, 2, 2
     assert_not_valid 4, 4, 4, 4
   end
+  
+  def test_illegal_move
+    @board[Point.new(4, 6)] = Chess::Piece.new(:white, :pawn)
+    assert_valid 4, 8, 5, 7
+    assert_valid 4, 8, 3, 7
+    assert_not_valid 4, 8, 4, 7
+  end
 end
