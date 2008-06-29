@@ -164,4 +164,10 @@ class TestShogiValidation < Test::Unit::TestCase
     assert_not_valid @state.new_drop(@state.new_piece(:black, :rook),
                                      Point.new(4, 4))
   end
+  
+  def test_simple_drop
+    @state.pool(:black).add(@state.new_piece(:black, :rook))
+    assert_valid @state.new_drop(@state.new_piece(:black, :rook),
+                                 Point.new(4, 4))
+  end
 end

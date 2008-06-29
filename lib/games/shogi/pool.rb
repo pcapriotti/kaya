@@ -13,5 +13,14 @@ module Shogi
     def has_piece?(piece)
       @pieces[piece] > 0
     end
+    
+    def add(piece)
+      @pieces[piece] += 1
+    end
+    
+    def remove(piece)
+      @pieces[piece] -= 1
+      @pieces.delete(piece) if @pieces[piece] <= 0
+    end
   end
 end

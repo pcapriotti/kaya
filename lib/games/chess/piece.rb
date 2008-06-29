@@ -29,5 +29,13 @@ module Chess
     def to_s
       name
     end
+    
+    def eql?(other)
+      other.instance_of?(Piece) and self == other
+    end
+    
+    def hash
+      [@color, @type].hash
+    end
   end
 end
