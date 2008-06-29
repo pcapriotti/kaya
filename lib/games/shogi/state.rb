@@ -53,6 +53,11 @@ module Shogi
     
     def perform!(move)
       basic_move(move)
+      switch_turn!
+    end
+    
+    def switch_turn!
+      @turn = opposite_color(@turn)
     end
     
     def in_promotion_zone?(p, color)
