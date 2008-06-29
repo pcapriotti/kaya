@@ -100,6 +100,7 @@ class Board < Qt::GraphicsItemGroup
   end
   
   def perform!(move)
+    @state.perform!(move)
     animate 'forward', move
   end
   
