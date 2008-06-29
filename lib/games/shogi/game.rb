@@ -2,7 +2,7 @@ require 'games/chess/chess'
 require 'games/shogi/state'
 require 'games/chess/board'
 require 'games/chess/policy'
-require 'games/chess/move'
+require 'games/shogi/move'
 require 'games/chess/animator'
 require 'games/shogi/validator'
 require 'games/chess/piece'
@@ -15,7 +15,7 @@ module Shogi
         :state => State,
         :board => Chess::Board,
         :policy => Chess::Policy,
-        :move => Chess::Move,
+        :move => Move,
         :animator => Chess::Animator,
         :validator => Shogi::Validator,
         :piece => Chess::Piece
