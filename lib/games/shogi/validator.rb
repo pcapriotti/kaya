@@ -51,6 +51,11 @@ module Shogi
       move.delta.x.abs + move.delta.y.abs == 1
     end
     
+    def validate_king(piece, target, move)
+      move.delta.x.abs <= 1 and
+      move.delta.y.abs <= 1
+    end
+    
     def each_move(src, dst, target)
       piece = @state.board[src]
       if piece

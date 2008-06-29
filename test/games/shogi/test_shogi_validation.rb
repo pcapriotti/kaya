@@ -141,4 +141,17 @@ class TestShogiValidation < Test::Unit::TestCase
     @board[Point.new(4, 3)] = Chess::Piece.new(:black, :rook)
     assert_valid 4, 4, 4, 3
   end
+  
+  def test_king_move
+    @board[Point.new(4, 4)] = Chess::Piece.new(:black, :king)
+    
+    assert_valid 4, 4, 5, 4
+    assert_valid 4, 4, 5, 5
+    assert_valid 4, 4, 4, 5
+    assert_valid 4, 4, 3, 5
+    
+    assert_not_valid 4, 4, 3, 6
+    assert_not_valid 4, 4, 2, 2
+    assert_not_valid 4, 4, 4, 4
+  end
 end
