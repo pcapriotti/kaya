@@ -5,11 +5,22 @@ class FantasyTheme
   include Theme
   BASE_DIR = File.dirname(__FILE__)
   TYPES = { :knight => 'n' }
+  NUDE_TILE = File.join(BASE_DIR, 'nude_tile.svg')
 
   theme :name => 'Shogi'
 
   def pixmap(piece, size)
-    Qt::Pixmap.from_svg(size, filename(piece))
+    tile = Qt::SvgRenderer.new(NUDE_TILE)
+    kanji = Qt::SvgRenderer.new(filename(piece))
+    img = Qt::Image.painted(size) do |p|
+      if piece.color == :white
+        p.translate(size)
+        p.rotate(180)
+      end
+      kanji.render(p)
+      tile.render(p)
+    end
+    img.to_pix
   end
   
   def filename(piece)
