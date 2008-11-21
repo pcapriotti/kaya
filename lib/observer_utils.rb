@@ -26,6 +26,14 @@ module Observable
   def observe(event, &blk)
     add_observer SimpleObserver.new(event, &blk)
   end
+
+  def fire(events)
+    changed
+    if events.is_a? Symbol
+      events = { events => nil }
+    end
+    notify_observers events
+  end
 end
 
 class SimpleObserver
