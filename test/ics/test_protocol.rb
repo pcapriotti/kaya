@@ -22,4 +22,22 @@ class TestProtocol < Test::Unit::TestCase
     assert_equal 3, game_info[:time]
     assert_equal 0, game_info[:increment]
   end
+
+  def test_login
+    fired = false
+    @protocol.observe :login_prompt do
+      fired = true
+    end
+    @protocol.process_partial("login: ")
+    assert fired
+  end
+
+  def test_login
+    fired = false
+    @protocol.observe :login_prompt do
+      fired = true
+    end
+    @protocol.process("login: ")
+    assert !fired
+  end
 end

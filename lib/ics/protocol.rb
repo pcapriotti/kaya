@@ -21,7 +21,10 @@ class Protocol
   end
 
   def process(line)
-    execute_action @@actions, line
+    processed = execute_action @@actions, line
+    if not processed
+      fire :text => line
+    end
   end
 
   def process_partial(line)
@@ -30,7 +33,7 @@ class Protocol
 
   on %r{^Creating:\s+(\S+)\s+\((\S*)\)\s+(\S+)\s+\((\S*)\)
      \s+(\S+)\s+(\S+)\s+(\d+)\s+(\d+)}x do |match|
-    fire :create_game => {
+    @incoming_game = {
       :white => { 
         :name => match[1],
         :score => match[2].to_i },
@@ -41,6 +44,40 @@ class Protocol
       :type => match[6],
       :time => match[7].to_i,
       :increment => match[8].to_i }
+    fire :creating_game => @incoming_game
+  end
+
+  on /^\{Game\s+(\d+)\s+\((\S+)\s+vs\.\s+(\S+)\)
+      \s+(\S+.*)\}(.*)/ do |match|
+    if match[4] =~ /^(Creating)|(Continuing)/
+      if not @incoming_game
+        # this should not happen
+        info = match[4].split(/\s+/)
+        if info.size >= 3
+          @incoming_game = { 
+            :white => { :name => match[2] },
+            :black => { :name => match[3] },
+            :rated => info[1],
+            :type => info[2],
+            # no time information available
+            :time => 0, 
+            :increment => 0 }
+        end
+      end
+      if @incoming_game
+        num = match[1].to_i
+        @incoming_game[:number] = num
+        @games[num] = @incoming_game
+      end
+    else
+      if not @incoming_game
+        num = match[1].to_i
+        @games.delete(num)
+        fire :end_game => {
+          :message => match[4],
+          :result => match[5].strip }
+      end
+    end
   end
 
   on /^login:/, :partial do
@@ -53,6 +90,10 @@ class Protocol
 
   on /^Press return/ do
     fire :press_return_prompt
+  end
+  
+  on(/^\S+% /, :partial) do |match|
+    fire :prompt => match[0]
   end
 
   private
