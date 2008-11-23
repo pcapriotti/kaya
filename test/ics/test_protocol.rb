@@ -9,8 +9,7 @@ class TestProtocol < Test::Unit::TestCase
   def test_create_game
     example = "Creating: azsxdc (++++) Hispanico (1684) unrated crazyhouse 3 0"
     game_info = nil
-    @protocol.observe :create_game do |game_info|
-    end
+    @protocol.observe(:creating_game) { |game_info| }
     @protocol.process(example)
     assert_not_nil game_info
     assert_equal 'azsxdc', game_info[:white][:name]

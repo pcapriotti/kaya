@@ -27,14 +27,20 @@ class Connection
     @socket = @create_socket[]
 
     Thread.new do
-      loop do
-        break if @stop_flag
-        data = @socket.recv(1024)
-        break unless data
-        read_chunk data
+      begin
+        loop do
+          break if @stop_flag
+          data = @socket.recv(1024)
+          break unless data
+          read_chunk data
+        end
+        
+        @state = :stopped
+      rescue Exception => e
+        puts "Connection thread died!!"
+        puts e
+        puts e.backtrace
       end
-
-      @state = :stopped
     end
   end
 
@@ -66,7 +72,8 @@ class Connection
     end
     if not chunks.last.empty?
       @last_chunk = chunks.last
-      @ignore_pending = @protocol.process_partial @last_chunk
+      processed = @protocol.process_partial chunks.last
+      @last_chunk = '' if processed
     end
   end
 end

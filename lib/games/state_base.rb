@@ -41,4 +41,9 @@ class StateBase
     [@board.to_s,
      "turn #{@turn.to_s}"].join("\n")
   end
+
+  def ==(other)
+    @board == other.board &&
+      @turn == other.turn
+  end
 end

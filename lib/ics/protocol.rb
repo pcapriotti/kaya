@@ -48,7 +48,7 @@ class Protocol
   end
 
   on /^\{Game\s+(\d+)\s+\((\S+)\s+vs\.\s+(\S+)\)
-      \s+(\S+.*)\}(.*)/ do |match|
+      \s+(\S+.*)\}(.*)/x do |match|
     if match[4] =~ /^(Creating)|(Continuing)/
       if not @incoming_game
         # this should not happen
@@ -110,6 +110,10 @@ class Protocol
     return false
   end
 
+  def startup
+    
+  end
+
 end
 
 class AuthModule
@@ -131,6 +135,28 @@ class AuthModule
 
   def on_press_return_prompt
     @connection.send('')
+  end
+end
+
+class StartupModule
+  include Observer
+  
+  def initialize(connection)
+    @connection = connection
+    @startup = false
+  end
+
+  def on_prompt
+    if not @startup
+      puts "starting up!"
+      @connection.send("alias $ @");
+      @connection.send("iset startpos 1");
+      @connection.send("iset ms 1");
+      @connection.send("iset lock 1");
+      @connection.send("set interface Tagua-2.1 (http://www.tagua-project.org)");
+      @connection.send("set style 12");
+      @startup = true
+    end
   end
 end
 

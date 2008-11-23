@@ -72,5 +72,9 @@ module Chess
       end
       nil
     end
+
+    def ==(other)
+      @pieces == other.pieces
+    end
   end
 end

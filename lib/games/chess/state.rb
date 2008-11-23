@@ -35,6 +35,13 @@ module Chess
           @bq = false
         end
       end
+
+      def ==(other)
+        @wk == other.king?(:white) &&
+          @wq = other.queen?(:white) &&
+          @bk = other.king?(:black) &&
+          @bq = other.queen?(:black)
+      end
     end
     
     def initialize(board, move_factory, piece_factory)
@@ -138,6 +145,11 @@ module Chess
     
     def direction(color)
       Point.new(0, color == :white ? -1 : 1)
+    end
+
+    def ==(other)
+      super(other) &&
+        @castling_rights == other.castling_rights
     end
   end
 end
