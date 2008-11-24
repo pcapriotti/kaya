@@ -1,3 +1,5 @@
+require 'games/games'
+
 module ICS
 
 # Style 12 was designed by Daniel Sleator 
@@ -20,7 +22,7 @@ class Style12
     ([01])\s+                     # castle rights
     ([01])\s+                     # castle rights
     (-?\d+)\s+                    # 50 moves made
-    (\d+)\s+                      # game num
+    (\d+)\s+                      # game number
     (\S+)\s+                      # white name
     (\S+)\s+                      # black name
     (-[1-4]|[0-2])\s+             # status
@@ -58,7 +60,16 @@ class Style12
   LAST_MOVE = 29
   FLIP = 30
 
-  def self.from_match(match, icsapi)
+  def self.from_match(match, games)
+    game_number = match[GAME_NUMBER].to_i
+    current_game = games[game_number]
+    game = if current_game
+             current_game[:game]
+           else
+             Games.dummy
+           end
+    icsapi = ICSApi.new(game)
+
     state = 
       icsapi.new_state(:turn => match[TURN] == 'W' ? :white : :black,
                        :en_passant => match[EN_PASSANT].to_i,
@@ -73,13 +84,15 @@ class Style12
       end
     end
 
-    new state
+    style12 = new(:state => state,
+                  :game_number => match[GAME_NUMBER].to_i)
   end
 
   attr_reader :state
 
-  def initialize(state)
-    @state = state
+  def initialize(opts)
+    @state = opts[:state]
+    @game_number = opts[:game_number]
   end
 end
 

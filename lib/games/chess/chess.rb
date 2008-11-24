@@ -4,9 +4,13 @@ require 'games/chess/board'
 require 'games/chess/policy'
 require 'games/chess/animator'
 require 'games/chess/validator'
+require 'games/plugin'
 
 module Chess
   class Game
+    include Games::Plugin
+    game :chess
+
     attr_reader :size, :policy
     
     def initialize(opts = self.class.opts)
@@ -57,6 +61,7 @@ end
 
 module Chess5x5
   class Game < Chess::Game
+    game :chess5x5
     def self.opts
       Chess::Game.opts.merge(:size => Point.new(5, 5))
     end

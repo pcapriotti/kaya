@@ -6,7 +6,8 @@ require 'games/chess/chess'
 class TestStyle12 < Test::Unit::TestCase
   def setup
     @chess = Chess::Game.new
-    @icsapi = ICS::ICSApi.new(@chess)
+    @games = {
+      257 => { :game => @chess } }
   end
   
   def test_initial_position
@@ -15,7 +16,7 @@ class TestStyle12 < Test::Unit::TestCase
       '120000 120000 1 none (0:00.000) none 0 0 0'
     m = ICS::Style12::PATTERN.match(line)
     assert_not_nil m
-    s12 = ICS::Style12.from_match(m, @icsapi)
+    s12 = ICS::Style12.from_match(m, @games)
     assert_equal @chess.new_state.tap{|b| b.setup }, s12.state
   end
 end

@@ -1,4 +1,5 @@
 require 'observer_utils'
+require 'ics/style12'
 
 module ICS
 
@@ -7,6 +8,10 @@ class Protocol
   @@last_action = nil
   @@actions = []
   @@partial_actions = []
+  GAME_TYPES = {
+    :standard => :chess,
+    :blitz => :chess,
+    :lightning => :chess }
 
   def self.on(regex, type = :full, &blk)
     # ugly hack to work around the missing
@@ -18,6 +23,10 @@ class Protocol
       @@actions << [mname, regex]
     end
     define_method mname, &blk
+  end
+
+  def initialize
+    @games = {}
   end
 
   def process(line)
@@ -42,6 +51,7 @@ class Protocol
         :score => match[4].to_i },
       :rated => match[5],
       :type => match[6],
+      :game => game_from_type(match[6]),
       :time => match[7].to_i,
       :increment => match[8].to_i }
     fire :creating_game => @incoming_game
@@ -96,6 +106,10 @@ class Protocol
     fire :prompt => match[0]
   end
 
+  on(Style12::PATTERN) do |match|
+    style12 = Style12.from_match(match, @games)
+  end
+
   private
   
   def execute_action(actions, line)
@@ -109,11 +123,10 @@ class Protocol
 
     return false
   end
-
-  def startup
-    
+  
+  def game_from_type(type)
+    Games.get(GAME_TYPES[type] || :dummy)
   end
-
 end
 
 class AuthModule
