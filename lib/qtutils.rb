@@ -107,8 +107,17 @@ class Qt::Pixmap
 end
 
 class Qt::Base
-  def on(sign, &blk)
-    connect(SIGNAL(sign.to_s + '()'), &blk)
+  def self.signal_map(sigmap)
+    @signal_map = sigmap
+    signals *sigmap.map{|k, v| v || k }
+  end
+
+  def self.get_signal(sig)
+    (@signal_map || {})[sig] || sig
+  end
+
+  def on(sig, &blk)
+    connect(SIGNAL(self.class.get_signal(sig)), &blk)
   end  
 
   def in(interval, &blk)

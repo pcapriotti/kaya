@@ -18,8 +18,8 @@ class Window < Qt::Widget
     r = lambda do |text, off|
       puts "received (#{off}): #{text}"
     end
-    @conn.on_received_line(&r)
-    @conn.on_received_text(&r)
+    @conn.on(:received_line, &r)
+    @conn.on(:received_text, &r)
   end
   
   def start

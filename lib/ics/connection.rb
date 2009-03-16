@@ -8,9 +8,10 @@ module ICS
 class Connection < Qt::Object
   attr_accessor :debug
 
-  signals :hostFound, :established,
-  'receivedLine(QString, int)',
-  'receivedText(QString, int)'
+  signal_map(:hostFound => nil,
+             :established => nil,
+             :received_line => 'receivedLine(QString, int)',
+             :received_text => 'receivedText(QString, int)')
 
   def initialize(host, port)
     super nil
@@ -73,14 +74,6 @@ class Connection < Qt::Object
     process_line
     os = Qt::TextStream(@socket)
     os << text + "\n"
-  end
-
-  def on_received_line(&blk)
-    connect(self, SIGNAL('receivedLine(QString, int)'), &blk)
-  end
-
-  def on_received_text(&blk)
-    connect(self, SIGNAL('receivedText(QString, int)'), &blk)
   end
 end
 
