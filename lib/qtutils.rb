@@ -106,9 +106,17 @@ class Qt::Pixmap
   end
 end
 
-class Qt::Object
+class Qt::Base
   def on(sign, &blk)
-    connect(SIGNAL(sign.to_s + '()', &blk))
+    connect(SIGNAL(sign.to_s + '()'), &blk)
+  end  
+
+  def in(interval, &blk)
+    Qt::Timer.in(interval, self, &blk)
+  end
+
+  def run_later(&blk)
+    self.in(0, &blk)
   end
 end
 
@@ -124,5 +132,11 @@ class Qt::Timer
     # has a chance to keep it referenced, so
     # that it is not garbage collected
     timer
+  end
+
+  def self.in(interval, target = nil, &blk)
+    single_shot(interval,
+                Qt::BlockInvocation.new(target, blk, 'invoke()'),
+                SLOT('invoke()'))
   end
 end

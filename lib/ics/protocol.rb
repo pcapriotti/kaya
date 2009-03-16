@@ -9,9 +9,9 @@ class Protocol
   @@actions = []
   @@partial_actions = []
   GAME_TYPES = {
-    :standard => :chess,
-    :blitz => :chess,
-    :lightning => :chess }
+    'standard' => :chess,
+    'blitz' => :chess,
+    'lightning' => :chess }
 
   def self.on(regex, type = :full, &blk)
     # ugly hack to work around the missing
@@ -161,7 +161,6 @@ class StartupModule
 
   def on_prompt
     if not @startup
-      puts "starting up!"
       @connection.send("alias $ @");
       @connection.send("iset startpos 1");
       @connection.send("iset ms 1");
