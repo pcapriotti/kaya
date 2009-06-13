@@ -1,11 +1,6 @@
 require 'themes/theme'
 require 'enumerator'
-
-begin
-  require 'ext/expblur'
-rescue LoadError
-  def expblur(img, radius) end
-end
+require 'ext/loader'
 
 class DefaultBackground
   include Theme
@@ -46,7 +41,7 @@ class DefaultBackground
         p.draw_line Qt::LineF.new(src, dst)
       end
     end
-    expblur(img, size.x * HALO_DELTA)
+    img.exp_blur(size.x * HALO_DELTA)
     img.to_pix
   end
   

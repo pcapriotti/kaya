@@ -5,7 +5,7 @@
 TEMPLATE = app
 TARGET = 
 DEPENDPATH += .
-INCLUDEPATH += .
+INCLUDEPATH += /usr/lib/ruby/1.8/i486-linux/ /usr/include/smoke
 
 # Input
 SOURCES += expblur.cpp

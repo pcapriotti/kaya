@@ -1,0 +1,5 @@
+Makefile
+expblur.o
+extensions.o
+extensions.so
+moc_extensions.*

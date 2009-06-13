@@ -1,15 +1,16 @@
 #include <QImage>
-#include <ruby.h>
 #include <cmath>
 #include <QPainter>
-#include <smoke.h>
 
+#include "extensions.h"
+
+/*
 struct ruby_object {
     bool allocated;
     Smoke* smoke;
     int classId;
     void* ptr;
-};
+};*/
 
 template<int aprec, int zprec>
 static inline void blurinner(unsigned char *bptr, int &zR,
@@ -130,11 +131,12 @@ static inline void blurcol(QImage & im, int col, int alpha)
 
 }
 
-
-void expBlur(QImage& img, int radius) {
-  return expblur<15,7>(img, radius);
+void Extensions::exp_blur(QImage* img, int radius) const {
+  return expblur<15,7>(*img, radius);
 }
 
+
+/*
 static ruby_object* get_object(VALUE val) {
   if (TYPE(val) != T_DATA) {
     return 0;
@@ -157,4 +159,4 @@ extern "C" VALUE test_expblur(VALUE self, VALUE val, VALUE radius) {
 
 extern "C" void Init_expblur() {
   rb_define_method(Qnil, "expblur", (VALUE (*)(...))test_expblur, 2);
-}
+}*/
