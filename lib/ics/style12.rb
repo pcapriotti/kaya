@@ -64,13 +64,11 @@ class Style12
   def self.from_match(match, games)
     game_number = match[GAME_NUMBER].to_i
     current_game = games[game_number]
-    puts "current_game = #{current_game.inspect}"
     game = if current_game
              current_game[:game]
            else
              Game.dummy
            end
-    puts "game = #{game}"
     icsapi = ICSApi.new(game)
 
     state = 
