@@ -12,6 +12,8 @@ class Protocol
     'standard' => :chess,
     'blitz' => :chess,
     'lightning' => :chess }
+    
+  attr_reader :connection
 
   def self.on(regex, type = :full, &blk)
     # ugly hack to work around the missing
@@ -30,6 +32,8 @@ class Protocol
   end
 
   def link_to(connection)
+    raise "protocol already linked" if @connection
+    @connection = connection
     connection.on(:received_line) do |line, offset|
       process line
     end
@@ -49,8 +53,12 @@ class Protocol
     execute_action @@partial_actions, line
   end
 
+  # This is the first of two messages issued by the server when a new game
+  # is starting. Many of the information contained here is repeated in the
+  # second message, but some, like time information, is only present here
   on %r{^Creating:\s+(\S+)\s+\((\S*)\)\s+(\S+)\s+\((\S*)\)
      \s+(\S+)\s+(\S+)\s+(\d+)\s+(\d+)}x do |match|
+    game = game_from_type(match[6])
     @incoming_game = {
       :white => { 
         :name => match[1],
@@ -60,17 +68,22 @@ class Protocol
         :score => match[4].to_i },
       :rated => match[5],
       :type => match[6],
-      :game => game_from_type(match[6]),
+      :game => game,
+      :icsapi => ICSApi.new(game),
       :time => match[7].to_i,
       :increment => match[8].to_i }
-    fire :creating_game => @incoming_game
+    
   end
-
+  
+  # This is the second message of a game creation.
+  # The game number is contained here.
   on /^\{Game\s+(\d+)\s+\((\S+)\s+vs\.\s+(\S+)\)
       \s+(\S+.*)\}(.*)/x do |match|
     if match[4] =~ /^(Creating)|(Continuing)/
       if not @incoming_game
-        # this should not happen
+        # if this happens, it means that the first message has
+        # been somehow lost
+        # continue anyway, gathering as much information as possible
         info = match[4].split(/\s+/)
         if info.size >= 3
           @incoming_game = { 
@@ -84,9 +97,13 @@ class Protocol
         end
       end
       if @incoming_game
+        # now we know the game number, so we can save
+        # all the game information in the @games hash
         num = match[1].to_i
         @incoming_game[:number] = num
         @games[num] = @incoming_game
+        fire :creating_game => @incoming_game
+        @incoming_game = nil
       end
     else
       if not @incoming_game
@@ -116,7 +133,6 @@ class Protocol
   end
 
   on(Style12::PATTERN) do |match|
-    puts "matched style12"
     style12 = Style12.from_match(match, @games)
     fire :style12 => style12
   end

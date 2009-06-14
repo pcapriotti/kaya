@@ -12,7 +12,7 @@ module Chess
       @dst = dst
       @promotion = opts[:promotion]
     end
-    
+
     def delta
       dst - src
     end
@@ -23,6 +23,15 @@ module Chess
     
     def to_s
       "#{src} -> #{dst}"
+    end
+    
+    # SAN
+    def self.from_san(san)
+      # TODO
+    end
+    
+    def to_san
+      "" # TODO
     end
   end
 end

@@ -7,6 +7,9 @@ end
 class Match
   include Observable
   
+  attr_reader :game
+  attr_reader :state
+  
   def initialize(game)
     @game = game
     @players = { } # player => ready
@@ -40,8 +43,13 @@ class Match
   
   def move(player, move)
     return false unless @state
-    return false unless @players.has_key?(player)
-    return false unless player.color == @state.turn
+    # if player is nil, assume the current player is moving
+    if player == nil
+      player = current_player
+    else
+      return false unless @players.has_key?(player)
+      return false unless player.color == @state.turn
+    end
     
     return false unless @validate[move]
     @state.perform!(move)
@@ -68,5 +76,9 @@ class Match
     @players.each_key do |p|
       p.update any_to_event(event) unless p == player
     end
+  end
+  
+  def current_player
+    @players.keys.find {|p| p.color == @state.color }
   end
 end

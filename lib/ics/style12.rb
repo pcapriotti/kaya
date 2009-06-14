@@ -60,17 +60,21 @@ class Style12
   TIME_USED = 28
   LAST_MOVE = 29
   FLIP = 30
+  
+  class Relation
+    MOVE_LIST_START = -4
+    ISOLATED_POSITION = -3
+    OBSERVING_EXAMINED = -2
+    NOT_MY_MOVE = -1
+    OBSERVING_PLAYED = 0
+    MY_MOVE = 1
+    EXAMINING = 2
+  end
 
   def self.from_match(match, games)
     game_number = match[GAME_NUMBER].to_i
     current_game = games[game_number]
-    game = if current_game
-             current_game[:game]
-           else
-             Game.dummy
-           end
-    icsapi = ICSApi.new(game)
-
+    icsapi = current_game[:icsapi]
     state = 
       icsapi.new_state(:turn => match[TURN] == 'W' ? :white : :black,
                        :en_passant => match[EN_PASSANT].to_i,
@@ -89,7 +93,10 @@ class Style12
                   :game_number => match[GAME_NUMBER].to_i,
                   :move_index => match[MOVE_ORDINAL].to_i,
                   :white_player => match[WHITE_PLAYER],
-                  :black_player => match[BLACK_PLAYER])
+                  :black_player => match[BLACK_PLAYER],
+                  :relation => match[RELATION].to_i,
+                  :last_move => match[LAST_MOVE_VERBOSE]
+                  )
   end
 
   attr_reader :state
