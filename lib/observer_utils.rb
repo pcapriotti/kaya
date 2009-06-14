@@ -27,12 +27,17 @@ module Observable
     add_observer SimpleObserver.new(event, &blk)
   end
 
-  def fire(events)
+  def fire(e)
     changed
-    if events.is_a? Symbol
-      events = { events => nil }
+    notify_observers any_to_event(e)
+  end
+  
+  def any_to_event(e)
+    if e.is_a? Symbol
+      { e => nil }
+    else
+      e
     end
-    notify_observers events
   end
 end
 
