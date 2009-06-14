@@ -20,7 +20,7 @@ class ICSApi
       if opts[:en_passant] != -1
         Point.new(opts[:en_passant], 
                   state.turn == :white ? 
-                  state.size.y - 3 : 2)
+                  state.board.size.y - 3 : 2)
       end
     state.castling_rights.cancel_king(:white) unless opts[:wk_castling]
     state.castling_rights.cancel_queen(:white) unless opts[:wq_castling]

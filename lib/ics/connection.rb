@@ -28,7 +28,6 @@ class Connection < Qt::Object
   end
 
   def process_line
-    puts "processing line"
     unless @socket
       puts "no socket!"
       return
@@ -37,6 +36,7 @@ class Connection < Qt::Object
     while @socket.can_read_line
       line = @socket.read_line.to_s
       line = @buffer + line.gsub("\r", '')
+      line.chomp!
       emit receivedLine(line, @buffer.size)
       @buffer = ''
     end
@@ -72,8 +72,9 @@ class Connection < Qt::Object
     end
     
     process_line
-    os = Qt::TextStream(@socket)
-    os << text + "\n"
+    os = Qt::TextStream.new(@socket)
+    os << text << "\n"
+    os.flush
   end
 end
 

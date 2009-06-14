@@ -10,17 +10,16 @@ require 'ics/protocol'
 require 'console'
 
 protocol = ICS::Protocol.new
-c = ICS::Connection.new('freechess.org', 5000, protocol)
-protocol.add_observer ICS::AuthModule.new(c, 'guest', '')
+c = ICS::Connection.new('freechess.org', 23)
+c.debug = true
+protocol.add_observer ICS::AuthModule.new(c, 'capriotti', 'hzelei')
 protocol.add_observer ICS::StartupModule.new(c)
+protocol.link_to c
 
 description = "KDE Board Game Suite"
 version = "1.5"
 about = KDE::AboutData.new("tagua", "Tagua", KDE.ki18n("Tagua"),
     version, KDE.ki18n(description),KDE::AboutData::License_GPL,KDE.ki18n("(C) 2003 whoever the author is"))
-
-about.addAuthor(KDE.ki18n("author1"), KDE.ki18n("whatever they did"), "email@somedomain")
-about.addAuthor(KDE.ki18n("author2"), KDE.ki18n("they did something else"), "another@email.address")
 
 KDE::CmdLineArgs.init(ARGV, about)
 
@@ -59,11 +58,11 @@ console = Console.new(nil)
 console.show
 
 protocol.observe :text do |text|
-  console.run_later { console.append(text) }
+  console.append(text)
 end
 
 console.observe :input do |text|
-  c.send(text)
+  c.send_text text
 end
 
 board.observe :new_move do |data|
@@ -73,11 +72,7 @@ board.observe :new_move do |data|
     ('a'[0] + move.dst.x).chr +
     (8 - move.dst.y).to_s
   puts m
-  c.send m
-end
-
-protocol.observe :style12 do |style12|
-  puts style12.inspect
+  c.send_text m
 end
 
 c.start

@@ -29,6 +29,15 @@ class Protocol
     @games = {}
   end
 
+  def link_to(connection)
+    connection.on(:received_line) do |line, offset|
+      process line
+    end
+    connection.on(:received_text) do |text, offset|
+      process_partial text[offset..-1]
+    end
+  end
+
   def process(line)
     processed = execute_action @@actions, line
     if not processed
@@ -107,7 +116,9 @@ class Protocol
   end
 
   on(Style12::PATTERN) do |match|
+    puts "matched style12"
     style12 = Style12.from_match(match, @games)
+    fire :style12 => style12
   end
 
   private
@@ -139,15 +150,15 @@ class AuthModule
   end
 
   def on_login_prompt
-    @connection.send(@username)
+    @connection.send_text(@username)
   end
 
   def on_password_prompt
-    @connection.send(@password)
+    @connection.send_text(@password)
   end
 
   def on_press_return_prompt
-    @connection.send('')
+    @connection.send_text('')
   end
 end
 
@@ -161,12 +172,12 @@ class StartupModule
 
   def on_prompt
     if not @startup
-      @connection.send("alias $ @");
-      @connection.send("iset startpos 1");
-      @connection.send("iset ms 1");
-      @connection.send("iset lock 1");
-      @connection.send("set interface Tagua-2.1 (http://www.tagua-project.org)");
-      @connection.send("set style 12");
+      @connection.send_text("alias $ @");
+      @connection.send_text("iset startpos 1");
+      @connection.send_text("iset ms 1");
+      @connection.send_text("iset lock 1");
+      @connection.send_text("set interface Tagua-2.1 (http://www.tagua-project.org)");
+      @connection.send_text("set style 12");
       @startup = true
     end
   end

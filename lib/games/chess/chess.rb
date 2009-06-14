@@ -21,7 +21,6 @@ Game.add :chess, Game.new(
   :piece => Piece,
   :players => [:white, :black])
 
-
 Game.add :chess5x5, Game.get(:chess).extend(
   :size => Point.new(5, 5))
 

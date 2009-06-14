@@ -88,7 +88,10 @@ class Style12
     end
 
     style12 = new(:state => state,
-                  :game_number => match[GAME_NUMBER].to_i)
+                  :game_number => match[GAME_NUMBER].to_i,
+                  :move_index => match[MOVE_ORDINAL].to_i,
+                  :white_player => match[WHITE_PLAYER],
+                  :black_player => match[BLACK_PLAYER])
   end
 
   attr_reader :state
@@ -96,6 +99,9 @@ class Style12
   def initialize(opts)
     @state = opts[:state]
     @game_number = opts[:game_number]
+    @move_index = opts[:move_index]
+    @white_player = opts[:white_player]
+    @black_player = opts[:black_player]
   end
 end
 
