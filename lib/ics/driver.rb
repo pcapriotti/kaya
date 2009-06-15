@@ -36,11 +36,11 @@ theme = Struct.new(:pieces, :background).new
 theme.pieces = theme_loader.get('Celtic')
 theme.background = theme_loader.get('Default', Point.new(8, 8))
 
-chess = Chess::Game.new
+chess = Game.get(:chess)
 
 scene = Qt::GraphicsScene.new
 
-state = chess.new_state
+state = chess.state.new
 state.setup
 
 board = Board.new(scene, theme, chess, state)

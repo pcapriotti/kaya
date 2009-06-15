@@ -1,3 +1,4 @@
+require 'games/games'
 require 'games/chess/state'
 require 'games/chess/move'
 require 'games/chess/board'

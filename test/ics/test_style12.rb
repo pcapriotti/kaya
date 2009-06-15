@@ -7,7 +7,8 @@ class TestStyle12 < Test::Unit::TestCase
   def setup
     @chess = Game.get(:chess)
     @games = {
-      257 => { :game => @chess } }
+      257 => { :game => @chess,
+               :icsapi => ICS::ICSApi.new(@chess) } }
   end
   
   def test_initial_position

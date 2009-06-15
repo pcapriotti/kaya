@@ -34,8 +34,8 @@ class Match
     
     @players[player] = true
     if @players.values.all? {|x| x }
-      @state = @game.new_state
-      @validate = @game.new_validator(@state)
+      @state = @game.state.new
+      @validate = @game.validator.new(@state)
       fire :started
     end
     true

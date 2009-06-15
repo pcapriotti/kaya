@@ -1,10 +1,11 @@
 require 'test/unit'
 require 'interaction/match'
 require 'games/chess/chess'
+require 'games/games'
 
 class TestMatch < Test::Unit::TestCase
   def setup
-    @match = Match.new Chess::Game.new
+    @match = Match.new Game.get(:chess)
   end
 
   def test_register

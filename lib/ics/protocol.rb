@@ -72,7 +72,6 @@ class Protocol
       :icsapi => ICSApi.new(game),
       :time => match[7].to_i,
       :increment => match[8].to_i }
-    
   end
   
   # This is the second message of a game creation.
