@@ -1,10 +1,10 @@
-require 'games/games'
 require 'games/chess/state'
 require 'games/chess/move'
 require 'games/chess/board'
 require 'games/chess/policy'
 require 'games/chess/animator'
 require 'games/chess/validator'
+require 'games/chess/serializer'
 require 'games/factory'
 
 module Chess
@@ -20,7 +20,8 @@ Game.add :chess, Game.new(
   :animator => Animator,
   :validator => Validator,
   :piece => Piece,
-  :players => [:white, :black])
+  :players => [:white, :black],
+  :serializer => lambda {|rep| Serializer.new(rep, validator, move, piece) })
 
 Game.add :chess5x5, Game.get(:chess).extend(
   :size => Point.new(5, 5))

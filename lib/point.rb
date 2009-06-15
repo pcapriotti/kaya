@@ -40,6 +40,32 @@ class Point
   def unit
     Point.new(@x.unit, @y.unit)
   end
+  
+  def =~(other)
+    other.nil? or
+    (((not other.x) or other.x == x) and
+      ((not other.y) or other.y == y))
+  end
+  
+  def to_coord(ysize)
+    "#{(x + ?a).chr if x}#{(ysize - y) if y}"
+  end
+  
+  def self.from_coord(s, ysize)
+    if s =~ /^([a-zA-Z]?)(\d*)/
+      letter = $1
+      number = $2
+      y = unless letter.empty? 
+        if letter =~ /[a-z]/
+          letter[0] - ?a
+        else 
+          letter[0] - ?A
+        end
+      end
+      x = number.to_i unless number.empty?
+      new x, y
+    end
+  end
 end
 
 class PointRange

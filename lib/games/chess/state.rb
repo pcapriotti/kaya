@@ -77,6 +77,14 @@ module Chess
       yield :black
     end
     
+    def capture_square(move)
+      if move.type == :en_passant_capture
+        Point.new(move.dst.x, move.src.y)
+      else
+        move.dst
+      end
+    end
+    
     def perform!(move)
       if move.type == :en_passant_trigger
         self.en_passant_square = move.src + direction(turn)
@@ -84,11 +92,7 @@ module Chess
         self.en_passant_square = nil
       end
       
-      if move.type == :en_passant_capture
-        capture_on! Point.new(move.dst.x, move.src.y)
-      else
-        capture_on! move.dst
-      end
+      capture_on! capture_square(move)
       
       piece = @board[move.src]
       if piece and piece.type == :king

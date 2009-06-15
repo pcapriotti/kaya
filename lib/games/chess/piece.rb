@@ -1,7 +1,13 @@
 module Chess
   class Piece
     attr_reader :color, :type
-    SYMBOLS = { :knight => 'n' }
+    SYMBOLS = { :knight => 'N' }
+    TYPES = { 'P' => :pawn,
+              'R' => :rook,
+              'B' => :bishop,
+              'N' => :knight,
+              'Q' => :queen,
+              'K' => :king }
   
     def initialize(color, type)
       @color = color
@@ -17,8 +23,8 @@ module Chess
     end
     
     def symbol
-      s = SYMBOLS[type] || type.to_s[0, 1].downcase
-      s = s.upcase if color == :white
+      s = self.class.symbol(type)
+      s = s.downcase if color == :black
       s
     end
     
@@ -36,6 +42,14 @@ module Chess
     
     def hash
       [@color, @type].hash
+    end
+    
+    def self.symbol(type)
+      SYMBOLS[type] || type.to_s[0, 1].upcase
+    end
+    
+    def self.type_from_symbol(sym)
+      TYPES[sym.upcase]
     end
   end
 end

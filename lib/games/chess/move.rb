@@ -25,13 +25,10 @@ module Chess
       "#{src} -> #{dst}"
     end
     
-    # SAN
-    def self.from_san(san)
-      # TODO
-    end
-    
-    def to_san
-      "" # TODO
+    def == other
+      other and @src == other.src and 
+      @dst == other.dst and @promotion == other.promotion and
+      @type == other.type
     end
   end
 end
