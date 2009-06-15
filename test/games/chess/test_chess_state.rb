@@ -70,6 +70,6 @@ class TestChessState < Test::Unit::TestCase
       m.expects(:new).with(:white, :knight)
     end
     @state = Chess::State.new(@board, Chess::Move, piece_factory)
-    @state.new_piece(:white, :knight)
+    @state.piece_factory.new(:white, :knight)
   end
 end

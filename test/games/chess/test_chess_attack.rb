@@ -24,7 +24,7 @@ class TestChessAttack < Test::Unit::TestCase
     assert @validate.attacked?(Point.new(6, 2))
     assert @validate.attacked?(Point.new(6, 3))
     
-    assert !@validate.attacked?(Point.new(6, 2), @state.new_piece(:black, :rook))
-    assert @validate.attacked?(Point.new(6, 2), @state.new_piece(:white, :rook))
+    assert !@validate.attacked?(Point.new(6, 2), @state.piece_factory.new(:black, :rook))
+    assert @validate.attacked?(Point.new(6, 2), @state.piece_factory.new(:white, :rook))
   end
 end

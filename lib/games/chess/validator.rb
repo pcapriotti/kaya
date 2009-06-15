@@ -118,10 +118,10 @@ module Chess
         moves = if piece.type == :pawn and 
                    dst.y == @state.row(0, @state.opposite_turn(piece.color))
           [:knight, :bishop, :rook, :queen].map do |type|
-            @state.new_move(src, dst, :promotion => type)
+            @state.move_factory.new(src, dst, :promotion => type)
           end
         else
-          [@state.new_move(src, dst)]
+          [@state.move_factory.new(src, dst)]
         end
         
         moves.each do |m|

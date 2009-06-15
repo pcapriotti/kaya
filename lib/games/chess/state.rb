@@ -59,11 +59,11 @@ module Chess
       # place pawns
       each_color do |color|
         (0...@board.size.x).each do |i|
-          @board[Point.new(i, row(1, color))] = new_piece(color, :pawn)
+          @board[Point.new(i, row(1, color))] = piece_factory.new(color, :pawn)
         end
         y = row(0, color)
         [:rook, :knight, :bishop, :queen, :king, :bishop, :knight, :rook].each_with_index do |type, x|
-          @board[Point.new(x, y)] = new_piece(color, type)
+          @board[Point.new(x, y)] = piece_factory.new(color, type)
         end
       end
     end
@@ -107,9 +107,9 @@ module Chess
       if move.type == :promotion
         promote_on!(move.dst, move.promotion) if move.promotion
       elsif move.type == :king_side_castling
-        basic_move new_move(move.dst + Point.new(1, 0), move.dst - Point.new(1, 0))
+        basic_move move_factory.new(move.dst + Point.new(1, 0), move.dst - Point.new(1, 0))
       elsif move.type == :queen_side_castling
-        basic_move new_move(move.dst - Point.new(2, 0), move.dst + Point.new(1, 0))
+        basic_move move_factory.new(move.dst - Point.new(2, 0), move.dst + Point.new(1, 0))
       end
       
       switch_turn!

@@ -1,13 +1,13 @@
 require 'test/unit'
-require 'games/shogi/game'
+require 'games/games'
 require 'helpers/validation_helper'
 
 class TestShogiState < Test::Unit::TestCase
   include ValidationHelper
 
   def setup
-    @game = Shogi::Game.new
-    @state = @game.new_state
+    @game = Game.get(:shogi)
+    @state = @game.state.new
     @board = @state.board
   end
   

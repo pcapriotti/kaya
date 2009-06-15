@@ -2,8 +2,8 @@ $:.unshift(File.join(File.dirname(__FILE__), '..'))
 require 'korundum4'
 require 'board/table'
 require 'themes/loader'
-require 'games/chess/chess'
 require 'controller'
+require 'games/games'
 require 'history'
 
 description = "KDE Board Game Suite"
@@ -29,11 +29,11 @@ theme = Struct.new(:pieces, :background).new
 theme.pieces = theme_loader.get('Celtic')
 theme.background = theme_loader.get('Default', Point.new(8, 8))
 
-chess = Chess::Game.new
+chess = Game.get(:chess)
 
 scene = Qt::GraphicsScene.new
 
-state = chess.new_state
+state = chess.state.new
 state.setup
 
 board = Board.new(scene, theme, chess, state)

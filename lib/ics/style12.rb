@@ -66,7 +66,7 @@ class Style12
     game = if current_game
              current_game[:game]
            else
-             Games.dummy
+             Game.dummy
            end
     icsapi = ICSApi.new(game)
 

@@ -16,7 +16,7 @@ class ValidatorBase
   end
   
   def check_legality(piece, target, move)
-    king_pos = @state.board.find(@state.new_piece(piece.color, :king))
+    king_pos = @state.board.find(@state.piece_factory.new(piece.color, :king))
     if king_pos
       not attacked?(king_pos)
     end

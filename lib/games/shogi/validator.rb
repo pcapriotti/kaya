@@ -64,9 +64,9 @@ module Shogi
     def each_move(src, dst, target)
       piece = @state.board[src]
       if piece
-        moves = [@state.new_move(src, dst)]
+        moves = [@state.move_factory.new(src, dst)]
         if @state.in_promotion_zone?(dst, piece.color)
-          moves << @state.new_move(src, dst, :promotion => true)
+          moves << @state.move_factory.new(src, dst, :promotion => true)
         end
         moves.each do |m|
           yield m if check_pseudolegality(piece, target, m)

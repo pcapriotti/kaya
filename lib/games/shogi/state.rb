@@ -24,12 +24,12 @@ module Shogi
     def setup
       each_color do |color|
         (0...@board.size.x).each do |i|
-          @board[Point.new(i, row(2, color))] = new_piece(color, :pawn)
+          @board[Point.new(i, row(2, color))] = piece_factory.new(color, :pawn)
         end
         
         r = row(0, color)
         set_piece = lambda do |x, type|
-          @board[Point.new(x, r)] = new_piece(color, type)
+          @board[Point.new(x, r)] = piece_factory.new(color, type)
         end
         set_piece[0, :lance]
         set_piece[1, :horse]
@@ -42,13 +42,9 @@ module Shogi
         set_piece[8, :lance]
         
         r = row(1, color)
-        @board[Point.new(r, r)] = new_piece(color, :rook)
-        @board[Point.new(@board.size.x - r - 1, r)] = new_piece(color, :bishop)
+        @board[Point.new(r, r)] = piece_factory.new(color, :rook)
+        @board[Point.new(@board.size.x - r - 1, r)] = piece_factory.new(color, :bishop)
       end
-    end
-    
-    def new_drop(*args)
-      @move_factory.drop(*args)
     end
     
     def each_color(&blk)

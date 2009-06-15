@@ -125,7 +125,7 @@ class Protocol
   end
   
   def game_from_type(type)
-    Games.get(GAME_TYPES[type] || :dummy)
+    Game.get(GAME_TYPES[type] || :dummy)
   end
 end
 

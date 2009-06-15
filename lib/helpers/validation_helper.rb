@@ -10,9 +10,9 @@ module ValidationHelper
     when 1
       args.first
     when 2
-      @state.new_move(*(args + [opts]))
+      @state.move_factory.new(*(args + [opts]))
     when 4
-      @state.new_move(*(args.to_enum(:each_slice, 2).map{|x| Point.new(*x) } + [opts]))
+      @state.move_factory.new(*(args.to_enum(:each_slice, 2).map{|x| Point.new(*x) } + [opts]))
     else
       raise ArgumentError.new("Could not unpack move using #{args.size} parameters")
     end
@@ -40,7 +40,7 @@ module ValidationHelper
   def assert_piece(color, type, *point)
     p = unpack_point(*point)
     piece = @board[p]
-    exp = @state.new_piece(color, type)
+    exp = @state.piece_factory.new(color, type)
     assert_not_nil piece, "#{exp} expected on #{p}, nothing found"
     assert_equal exp, piece, "#{exp} expected on #{p}, #{piece} found"
     yield piece if block_given?

@@ -1,6 +1,7 @@
 class StateBase
   attr_accessor :turn
   attr_reader :board
+  attr_reader :move_factory, :piece_factory
 
   def initialize(board, move_factory, piece_factory)
     @board = board
@@ -10,14 +11,6 @@ class StateBase
   
   def initialize_copy(other)
     @board = other.board.dup
-  end
-  
-  def new_piece(*args)
-    @piece_factory.new(*args)
-  end
-  
-  def new_move(*args)
-    @move_factory.new(*args)
   end
   
   def try(move)
@@ -33,7 +26,7 @@ class StateBase
   
   def promote_on!(p, type)
     if @board[p]
-      @board[p] = new_piece(@board[p].color, type)
+      @board[p] = piece_factory.new(@board[p].color, type)
     end
   end
   

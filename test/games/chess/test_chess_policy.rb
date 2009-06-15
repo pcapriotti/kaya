@@ -1,14 +1,14 @@
 require 'test/unit'
-require 'games/chess/chess'
+require 'games/games'
 require 'helpers/validation_helper'
 
 class TestChessPolicy < Test::Unit::TestCase
   include ValidationHelper
   
   def setup
-    @chess = Chess::Game.new
+    @chess = Game.get(:chess)
     @policy = @chess.policy
-    @state = @chess.new_state
+    @state = @chess.state.new
   end
   
   def test_movable

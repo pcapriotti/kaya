@@ -1,16 +1,16 @@
 require 'test/unit'
-require 'games/shogi/game'
+require 'games/games'
 require 'helpers/validation_helper'
 
 class TestShogiValidation < Test::Unit::TestCase
   include ValidationHelper
   
   def setup
-    @game = Shogi::Game.new
-    @state = @game.new_state
+    @game = Game.get(:shogi)
+    @state = @game.state.new
     @state.setup
     
-    @validate = @game.new_validator(@state)
+    @validate = @game.validator.new(@state)
     @board = @state.board
   end
   
@@ -161,13 +161,15 @@ class TestShogiValidation < Test::Unit::TestCase
   end
   
   def test_drop_with_empty_pool
-    assert_not_valid @state.new_drop(@state.new_piece(:black, :rook),
-                                     Point.new(4, 4))
+    assert_not_valid @state.move_factory.drop(
+      @state.piece_factory.new(:black, :rook),
+      Point.new(4, 4))
   end
   
   def test_simple_drop
-    @state.pool(:black).add(@state.new_piece(:black, :rook))
-    assert_valid @state.new_drop(@state.new_piece(:black, :rook),
-                                 Point.new(4, 4))
+    @state.pool(:black).add(@state.piece_factory.new(:black, :rook))
+    assert_valid @state.move_factory.drop(
+      @state.piece_factory.new(:black, :rook),
+      Point.new(4, 4))
   end
 end

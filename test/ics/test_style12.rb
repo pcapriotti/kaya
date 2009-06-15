@@ -1,11 +1,11 @@
 require 'test/unit'
 require 'ics/style12'
 require 'ics/icsapi'
-require 'games/chess/chess'
+require 'games/games'
 
 class TestStyle12 < Test::Unit::TestCase
   def setup
-    @chess = Chess::Game.new
+    @chess = Game.get(:chess)
     @games = {
       257 => { :game => @chess } }
   end
@@ -17,7 +17,7 @@ class TestStyle12 < Test::Unit::TestCase
     m = ICS::Style12::PATTERN.match(line)
     assert_not_nil m
     s12 = ICS::Style12.from_match(m, @games)
-    assert_equal @chess.new_state.tap{|b| b.setup }, s12.state
+    assert_equal @chess.state.new.tap{|b| b.setup }, s12.state
   end
 end
       

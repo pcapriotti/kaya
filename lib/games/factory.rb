@@ -1,5 +1,3 @@
-module Games
-
 class Factory
   def initialize(&blk)
     @blk = blk

@@ -14,7 +14,7 @@ class ICSApi
   end
 
   def new_state(opts)
-    state = @game.new_state
+    state = @game.state.new
     state.turn = opts[:turn]
     state.en_passant_square = 
       if opts[:en_passant] != -1
@@ -33,7 +33,7 @@ class ICSApi
     return nil if p == '-'
     color = p =~ /[a-z]/ ? :black : :white
     type = PIECES[p.downcase]
-    @game.new_piece(color, type)
+    @game.piece.new(color, type)
   end
 end
 

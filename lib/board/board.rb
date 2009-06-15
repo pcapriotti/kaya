@@ -26,11 +26,11 @@ class Board < Qt::GraphicsItemGroup
     
     @state = state
     unless @state
-      @state = @game.new_state
+      @state = @game.state.new
       @state.setup
     end
     
-    @animator = @game.new_animator(self)
+    @animator = @game.animator.new(self)
     
     @field = AnimationField.new(20)
   end
@@ -85,8 +85,8 @@ class Board < Qt::GraphicsItemGroup
       p = to_logical(e.pos)
       
       if selection
-        move = @game.new_move(selection, p, :promotion => :queen)
-        validate = @game.new_validator(@state)
+        move = @game.move_factory.new(selection, p, :promotion => :queen)
+        validate = @game.validator.new(@state)
         if validate[move]
           perform! move
           notify_observers :new_move => { :move => move, :state => @state }

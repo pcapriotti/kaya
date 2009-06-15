@@ -6,16 +6,22 @@ require 'games/chess/animator'
 require 'games/chess/validator'
 require 'games/factory'
 
-Games.add :chess,
-  :size => Point.new(8, 8)
-  :policy => Policy,
-  :state => Factory.new { State.new(board.new, move, piece) },
-  :board => Factory.new { Board.new(size) },
+module Chess
+
+Game.add :chess, Game.new(
+  :size => Point.new(8, 8),
+  :policy => Policy.new,
+  :state_component => State,
+  :state => lambda { state_component.new(board.new, move, piece) },
+  :board_component => Board,
+  :board => lambda { board_component.new(size) },
   :move => Move,
   :animator => Animator,
   :validator => Validator,
   :piece => Piece,
-  :players => [:white, :black]
+  :players => [:white, :black])
 
-Game.add(:chess, Game.extend :chess5x5,
+Game.add :chess5x5, Game.get(:chess).extend(
   :size => Point.new(5, 5))
+
+end

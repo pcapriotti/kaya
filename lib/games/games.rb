@@ -1,6 +1,4 @@
-require 'ostruct'
-
-module Games
+class Game
   GAMES = { }
 
   def self.dummy
@@ -12,15 +10,47 @@ module Games
     GAMES[name]
   end
 
-  def self.add(name, fields)
-    GAMES[name] = OpenStruct.new(fields)
+  def self.add(name, game)
+    GAMES[name] = game
   end
   
-  def self.extend(game, fields)
-    get(game).dup.tap |g|
-      fields.each do |field, value|
-        g.send("#{field}=", value)
+  def initialize(fields)
+    # @fields = fields
+    add_fields(fields)
+  end
+  
+  def extend(fields)
+    dup.tap do |game|
+      game.add_fields(fields)
+    end
+  end
+  
+  class Component
+    attr_reader :klass, :blk
+    def initialize(klass, blk)
+      @klass = klass
+      @blk = blk
+    end
+  end
+  
+  protected
+  
+  def add_fields(fields)
+    fields.each do |field, value|
+      case value
+      when Proc
+        f_method = "__#{field}"
+        f = Factory.new {|*args| send(f_method, *args) }
+        metaclass_eval do
+          define_method(field) { f }
+          define_method(f_method, value)
+        end
+      else
+        metaclass_eval do
+          define_method(field) { value }
+        end
       end
     end
   end
 end
+
