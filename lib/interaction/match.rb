@@ -9,6 +9,7 @@ class Match
   
   attr_reader :game
   attr_reader :state
+  attr_reader :index
   
   def initialize(game)
     @game = game
@@ -33,15 +34,17 @@ class Match
     return false unless @players[player] == false
     
     @players[player] = true
-    if @players.values.all? {|x| x }
+    if @players.values.all?
       @state = @game.state.new
-      @validate = @game.validator.new(@state)
+      @state.setup
+      @index = 0
       fire :started
     end
+    
     true
   end
   
-  def move(player, move)
+  def move(player, move, state)
     return false unless @state
     # if player is nil, assume the current player is moving
     if player == nil
@@ -50,12 +53,25 @@ class Match
       return false unless @players.has_key?(player)
       return false unless player.color == @state.turn
     end
+
+    validate = @game.validator.new(@state)
+    valid = validate[move]
+    return false unless valid
     
-    return false unless @validate[move]
-    @state.perform!(move)
-    broadcast player,
-              :player => player,
-              :move => move
+    old_state = @state
+    if state
+      @state = state.dup
+    else
+      old_state = @state.dup
+      @state.perform!(move)
+    end
+    
+    @index += 1
+    broadcast player, :move => {
+      :player => player,
+      :move => move,
+      :state => @state,
+      :old_state => old_state}
     true
   end
   
@@ -79,6 +95,6 @@ class Match
   end
   
   def current_player
-    @players.keys.find {|p| p.color == @state.color }
+    @players.keys.find {|p| p.color == @state.turn }
   end
 end

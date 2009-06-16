@@ -24,38 +24,50 @@ class MatchHandler
   end
   
   def on_style12(style12)
-    match, icsapi = @matches[style12[:game_number]]
+    match, icsapi = @matches[style12.game_number]
     return if match == nil
     
     if match.started?
-      last_move = icsapi.parse_verbose(style12[:last_move], style12[:state])
-      move = match.game.read_move(style12[:last_move_san], style12[:state])
-      if last_move != move
-        warn "[server inconsistency] " +
-             "SAN for last move is different from verbose notation"
+      puts "match.index = #{match.index}"
+      puts "move index = #{style12.move_index}"
+      puts "current state = #{match.state}"
+      if match.index < style12.move_index
+        # last_move = icsapi.parse_verbose(style12.last_move, match.state)
+        move = match.game.serializer.new(:compact).deserialize(style12.last_move_san, match.state)
+#         if last_move != move
+#           warn "[server inconsistency] " +
+#                 "SAN for last move is different from verbose notation"
+#         end
+        if move
+          match.move(nil, move, style12.state)
+        else
+          warn "Received invalid move from ICS: #{style12.last_move_san}"
+        end
       end
-      
-      match.move(nil, move)
     else
-      rel = style12[:relation]
-      state = style12[:state]
+      rel = style12.relation
+      state = style12.state
       turns = [state.turn, state.opposite_turn(state.turn)]
-      user_color, opponent_color =
+      @user.color, opponent_color =
         if rel == Style12::Relation::MY_MOVE
           turns
         else
           turns.reverse
         end
-      @user.reset(user_color, match)
       opponent = ICSPlayer.new(
         lambda {|msg| @protocol.connection.send_text(msg) },
-        opponent_color)
+        opponent_color,
+        match.game.serializer.new(:compact))
       
       match.register(@user)
       match.register(opponent)
       
       match.start(@user)
       match.start(opponent)
+      
+      raise "couldn't start match" unless match.started?
+      
+      @user.reset(match)
     end
     
     

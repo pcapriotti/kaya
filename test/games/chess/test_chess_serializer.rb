@@ -12,6 +12,7 @@ class TestChessSerializer < Test::Unit::TestCase
     @san = @game.serializer.new(:compact)
     @dec = @game.serializer.new(:decorated)
     @state = @game.state.new
+    @validate = @game.validator.new(@state)
   end
 
   def test_simple_serialization
@@ -25,6 +26,11 @@ class TestChessSerializer < Test::Unit::TestCase
   def test_san_serialization_pawn
     @state.setup
     assert_equal 'e4', serialize(@san, 4, 6, 4, 4)
+    
+    execute 4, 6, 4, 4
+    assert_equal 'e5', serialize(@san, 4, 1, 4, 3)
+    
+    @state.setup
     @state.board[Point.new(3, 5)] = @game.piece.new(:black, :rook)
     assert_equal 'exd3', serialize(@san, 4, 6, 3, 5)
   end
@@ -54,6 +60,16 @@ class TestChessSerializer < Test::Unit::TestCase
   def test_deserialize
     @state.setup
     assert_deserialize('e4', 4, 6, 4, 4)
+    
+    execute 4, 6, 4, 4
+    assert_deserialize('e5', 4, 1, 4, 3)
+  end
+  
+  def test_deserialize_promotion
+    @state.setup
+    @state.board[Point.new(6, 1)] = @game.piece.new(:white, :pawn)
+    
+    assert_deserialize('gxh8=B', 6, 1, 7, 0, :promotion => :bishop)
   end
   
   private
@@ -63,8 +79,9 @@ class TestChessSerializer < Test::Unit::TestCase
     serializer.serialize(move, @state)
   end
   
-  def assert_deserialize(san, *args)
-    move = unpack_move(*args)
+  def assert_deserialize(san, a, b, c, d, opts = {})
+    move = unpack_move(a, b, c, d)
+    move.promotion = opts[:promotion]
     @game.validator.new(@state)[move]
     move2 = @san.deserialize(san, @state)
     assert_equal move, move2

@@ -6,10 +6,17 @@ module Chess
       super
     end
   
-    def [](move, target = nil)
+    def [](move)
+      move.validate do |m|
+        validate(m)
+      end
+    end
+  
+    def validate(move, target = nil)
       return false unless proper?(move)
       piece = @state.board[move.src]
       return false unless check_pseudolegality(piece, target, move)
+      move.promotion = nil unless move.type == :promotion
       
       @state.try(move) do |tmp|
         validator = self.class.new(tmp)

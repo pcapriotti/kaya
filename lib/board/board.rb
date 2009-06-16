@@ -85,11 +85,11 @@ class Board < Qt::GraphicsItemGroup
       p = to_logical(e.pos)
       
       if selection
-        move = @game.move_factory.new(selection, p, :promotion => :queen)
+        move = @game.move.new(selection, p, :promotion => :queen)
         validate = @game.validator.new(@state)
         if validate[move]
           perform! move
-          notify_observers :new_move => { :move => move, :state => @state }
+          notify_observers :new_move => { :move => move, :state => @state.dup }
         end
         
         self.selection = nil
@@ -101,21 +101,26 @@ class Board < Qt::GraphicsItemGroup
   
   def perform!(move)
     @state.perform!(move)
-    animate 'forward', move
+    animate :forward, move
   end
   
   def back(state, move)
-    @state = state
-    animate 'back', move
+    @state = state.dup
+    animate :back, move
   end
   
   def forward(state, move)
-    @state = state
-    animate 'forward', move
+    @state = state.dup
+    animate :forward, move
   end
   
-  def animate(direction, move)
-    animation = @animator.send(direction, @state, move)
+  def warp(state)
+    @state = state.dup
+    animate :warp, :instant => true
+  end
+  
+  def animate(direction, *args)
+    animation = @animator.send(direction, @state, *args)
     @field.run animation
     changed
   end

@@ -8,6 +8,8 @@ require 'history'
 require 'ics/connection'
 require 'ics/protocol'
 require 'console'
+require 'board/user'
+require 'ics/match_handler'
 
 protocol = ICS::Protocol.new(:debug)
 c = ICS::Connection.new('freechess.org', 23)
@@ -65,16 +67,18 @@ console.observe :input do |text|
   c.send_text text
 end
 
-board.observe :new_move do |data|
-  move = data[:move]
-  m = ('a'[0] + move.src.x).chr +
-    (8 - move.src.y).to_s +
-    ('a'[0] + move.dst.x).chr +
-    (8 - move.dst.y).to_s
-  puts m
-  c.send_text m
-end
+# board.observe :new_move do |data|
+#   move = data[:move]
+#   m = ('a'[0] + move.src.x).chr +
+#     (8 - move.src.y).to_s +
+#     ('a'[0] + move.dst.x).chr +
+#     (8 - move.dst.y).to_s
+#   puts m
+#   c.send_text m
+# end
 
+user = User.new(:white, board)
+handler = ICS::MatchHandler.new(user, protocol)
 
 c.start
 

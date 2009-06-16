@@ -55,14 +55,14 @@ class Point
     if s =~ /^([a-zA-Z]?)(\d*)/
       letter = $1
       number = $2
-      y = unless letter.empty? 
+      x = unless letter.empty? 
         if letter =~ /[a-z]/
           letter[0] - ?a
         else 
           letter[0] - ?A
         end
       end
-      x = number.to_i unless number.empty?
+      y = ysize - number.to_i unless number.empty?
       new x, y
     end
   end

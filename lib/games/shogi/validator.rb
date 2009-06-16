@@ -6,7 +6,13 @@ module Shogi
       super
     end
     
-    def [](move, target = nil)
+    def [](move)
+      move.validate do |m|
+        validate(m)
+      end
+    end
+    
+    def validate(move, target = nil)
       return false unless move.dropped || @state.board.valid?(move.src)
       return false unless @state.board.valid? move.dst
       

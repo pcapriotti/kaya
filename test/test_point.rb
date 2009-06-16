@@ -39,4 +39,15 @@ class TestPoint < Test::Unit::TestCase
     assert_equal 1, 83.unit
     assert_equal -1, -0.34.unit
   end
+  
+  def test_to_coord
+    assert_equal 'e4', Point.new(4, 4).to_coord(8)
+    assert_equal 'b9', Point.new(1, 0).to_coord(9)
+  end
+  
+  def test_from_coord
+    assert_equal Point.new(4, 3), Point.from_coord('e5', 8)
+    assert_equal Point.new(0, 0), Point.from_coord('a8', 8)
+    assert_equal Point.new(6, 2), Point.from_coord('g6', 8)
+  end
 end

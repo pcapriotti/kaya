@@ -95,18 +95,22 @@ class Style12
                   :white_player => match[WHITE_PLAYER],
                   :black_player => match[BLACK_PLAYER],
                   :relation => match[RELATION].to_i,
-                  :last_move => match[LAST_MOVE_VERBOSE]
+                  :last_move => match[LAST_MOVE_VERBOSE],
+                  :last_move_san => match[LAST_MOVE]
                   )
   end
 
-  attr_reader :state
-
   def initialize(opts)
-    @state = opts[:state]
-    @game_number = opts[:game_number]
-    @move_index = opts[:move_index]
-    @white_player = opts[:white_player]
-    @black_player = opts[:black_player]
+    @opts = opts
+  end
+  
+  def method_missing(field)
+    @opts[field]
+  end
+  
+  def move_index
+    (@opts[:move_index] - 1) * 2 + 
+      (state.turn == :white ? 0 : 1)
   end
 end
 
