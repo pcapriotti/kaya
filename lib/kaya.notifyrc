@@ -1,0 +1,19 @@
+[Global]
+IconName=kaya
+Comment=Kaya
+
+[Context/game]
+Name=game
+Comment=A game played on a server
+
+[Event/newGame]
+Name=New Game
+Comment=A new game has started
+Contexts=game
+Action=Sound|Taskbar
+
+[Event/move]
+Name=New Move
+Comment=A new move has been played
+Contexts=game
+Action=Taskbar

@@ -9,6 +9,7 @@ require 'ics/connection'
 require 'ics/protocol'
 require 'console'
 require 'board/user'
+require 'board/notify'
 require 'ics/match_handler'
 
 protocol = ICS::Protocol.new(:debug)
@@ -20,8 +21,8 @@ protocol.link_to c
 
 description = "KDE Board Game Suite"
 version = "1.5"
-about = KDE::AboutData.new("tagua", "Tagua", KDE.ki18n("Tagua"),
-    version, KDE.ki18n(description),KDE::AboutData::License_GPL,KDE.ki18n("(C) 2003 whoever the author is"))
+about = KDE::AboutData.new("kaya", "Kaya", KDE.ki18n("Kaya"),
+    version, KDE.ki18n(description),KDE::AboutData::License_GPL,KDE.ki18n("(C) 2009 Paolo Capriotti"))
 
 KDE::CmdLineArgs.init(ARGV, about)
 
@@ -77,7 +78,8 @@ end
 #   c.send_text m
 # end
 
-user = User.new(:white, board)
+notify = Notify.new(table)
+user = User.new(:white, board, notify)
 handler = ICS::MatchHandler.new(user, protocol)
 
 protocol.observe :creating_game do |data|

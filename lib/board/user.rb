@@ -7,9 +7,10 @@ class User
   
   attr_accessor :color
   
-  def initialize(color, board)
+  def initialize(color, board, notify)
     @color = color
     @board = board
+    @notify = notify
   end
   
   def reset(match)
@@ -26,5 +27,6 @@ class User
   
   def on_move(data)
     @board.forward(data[:state], data[:move])
+    @notify[:move => "A new move has been played"]
   end
 end
