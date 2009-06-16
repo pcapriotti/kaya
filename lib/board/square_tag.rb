@@ -1,7 +1,9 @@
 module TaggableSquares
   TAGS_ZVALUE = -2
   
-  def square_tag(name)
+  def square_tag(name, element = nil)
+    element = name unless element
+    
     define_method(name) do
       instance_variable_get("@#{name}")
     end
@@ -9,7 +11,7 @@ module TaggableSquares
     define_method("#{name}=") do |val|
       instance_variable_set("@#{name}", val)
       if val
-        add_item name, theme.background.selection(unit),
+        add_item name, theme.background.send(element, unit),
                  :pos => to_real(val),
                  :z => TAGS_ZVALUE
       else

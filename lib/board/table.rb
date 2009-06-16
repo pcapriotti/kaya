@@ -2,7 +2,6 @@ require 'board/board'
 require 'games/chess/state'
 require 'games/chess/board'
 require 'point'
-require 'themes/fantasy/fantasy'
 
 class Table < Qt::GraphicsView
   def initialize(scene, *elements)

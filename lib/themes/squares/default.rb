@@ -48,4 +48,8 @@ class DefaultBackground
   def selection(size)
     halo(size, Qt::Color.new(0xff, 0x40, 0x40))
   end
+  
+  def highlight(size)
+    halo(size, Qt::Color.new(0x40, 0xff, 0x40))
+  end
 end

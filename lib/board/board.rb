@@ -15,6 +15,9 @@ class Board < Qt::GraphicsItemGroup
 
   attr_reader :scene, :items, :state, :unit, :theme
   square_tag :selection
+  square_tag :last_move_src, :highlight
+  square_tag :last_move_dst, :highlight
+#   square_tag :dst, :highlight
 
   def initialize(scene, theme, game, state = nil)
     super(nil, scene)
@@ -120,24 +123,40 @@ class Board < Qt::GraphicsItemGroup
     end
   end
   
+  def highlight(move)
+    if move
+      self.last_move_src = move.src
+      self.last_move_dst = move.dst
+    else
+      self.last_move_src = nil
+      self.last_move_dst = nil
+    end
+  end
+  
   def perform!(move)
     @state.perform!(move)
     animate :forward, move
+    highlight(move)
+    puts "src = #{last_move_src}"
+#     puts "move = #{move}"
   end
   
   def back(state, move)
     @state = state.dup
     animate :back, move
+    highlight(move)
   end
   
   def forward(state, move)
     @state = state.dup
     animate :forward, move
+    highlight(move)
   end
   
   def warp(state)
     @state = state.dup
     animate :warp, :instant => true
+    highlight(nil)
   end
   
   def animate(direction, *args)

@@ -26,7 +26,7 @@ end
 
 theme_loader = ThemeLoader.new
 theme = Struct.new(:pieces, :background).new
-theme.pieces = theme_loader.get('Celtic')
+theme.pieces = theme_loader.get('Fantasy')
 theme.background = theme_loader.get('Default', Point.new(8, 8))
 
 chess = Game.get(:chess)
