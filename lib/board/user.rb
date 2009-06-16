@@ -16,6 +16,9 @@ class User
   def reset(match)
     @board.flip!(color != :white)
     @board.warp(match.state)
+    @board.movable = lambda do |state, p|
+      state.board[p].color == color
+    end
     
     user = self
     @board.observe :new_move do |data|

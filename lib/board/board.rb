@@ -14,6 +14,7 @@ class Board < Qt::GraphicsItemGroup
   include ItemBag
 
   attr_reader :scene, :items, :state, :unit, :theme
+  attr_accessor :movable
   square_tag :selection
   square_tag :last_move_src, :highlight
   square_tag :last_move_dst, :highlight
@@ -37,6 +38,7 @@ class Board < Qt::GraphicsItemGroup
     
     @field = AnimationField.new(20)
     @flipped = false
+    @movable = lambda { true }
   end
   
   def flipped?
@@ -115,7 +117,8 @@ class Board < Qt::GraphicsItemGroup
         end
         
         self.selection = nil
-      elsif @game.policy.movable?(@state, p)
+      elsif @game.policy.movable?(@state, p) and
+            @movable[@state, p]
         self.selection = p
       end
     end
