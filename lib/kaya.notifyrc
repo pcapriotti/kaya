@@ -16,4 +16,4 @@ Action=Sound|Taskbar
 Name=New Move
 Comment=A new move has been played
 Contexts=game
-Action=Taskbar
+Action=Sound|Popup

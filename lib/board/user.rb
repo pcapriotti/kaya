@@ -21,6 +21,8 @@ class User
     @board.observe :new_move do |data|
       match.move(user, data[:move], data[:state])
     end
+    
+    @notify[:newGame => 'Starting new game']
   end
   
   def on_move(data)
