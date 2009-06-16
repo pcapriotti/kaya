@@ -30,16 +30,17 @@ class Protocol
   def initialize(debug)
     @debug = debug
     @games = {}
+    @last_partial_offset = 0
   end
 
   def link_to(connection)
     raise "protocol already linked" if @connection
     @connection = connection
     connection.on(:received_line) do |line, offset|
-      process line
+      process line[@last_partial_offset..-1]
     end
     connection.on(:received_text) do |text, offset|
-      process_partial text[offset..-1]
+      process_partial text[@last_partial_offset..-1]
     end
   end
 
@@ -49,10 +50,16 @@ class Protocol
     if not processed
       fire :text => line
     end
+    
+    @last_partial_offset = 0
   end
 
   def process_partial(line)
-    execute_action @@partial_actions, line
+    if execute_action @@partial_actions, line
+      @last_partial_offset += line.size
+    else
+      @last_partial_offset = 0
+    end
   end
 
   # This is the first of two messages issued by the server when a new game
@@ -115,6 +122,10 @@ class Protocol
           :result => match[5].strip }
       end
     end
+  end
+
+  on /^\a$/ do
+    fire :beep
   end
 
   on /^login:/, :partial do

@@ -43,4 +43,13 @@ class TestProtocol < Test::Unit::TestCase
     @protocol.process("login: ")
     assert !fired
   end
+  
+  def test_beep
+    fired = false
+    @protocol.observe :beep do
+      fired = true
+    end
+    @protocol.process("\a")
+    assert fired
+  end
 end

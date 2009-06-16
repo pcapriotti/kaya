@@ -61,6 +61,7 @@ console = Console.new(nil)
 console.show
 
 protocol.observe :text do |text|
+  puts "text = #{text.inspect}"
   console.append(text)
 end
 

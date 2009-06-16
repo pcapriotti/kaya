@@ -44,14 +44,12 @@ class Board < Qt::GraphicsItemGroup
   end
   
   def flip!(value = nil)
-    puts "flip value = #{value}"
     old = @flipped
     if value.nil?
       @flipped = !@flipped
     else
       @flipped = value
     end
-    puts "flipped = #{@flipped}"
     redraw if old != @flipped
   end
   

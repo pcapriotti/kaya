@@ -10,8 +10,8 @@ class Connection < Qt::Object
 
   signal_map(:hostFound => nil,
              :established => nil,
-             :received_line => 'receivedLine(QString, int)',
-             :received_text => 'receivedText(QString, int)')
+             :received_line => 'receivedLine(QString)',
+             :received_text => 'receivedText(QString)')
 
   def initialize(host, port)
     super nil
@@ -37,15 +37,14 @@ class Connection < Qt::Object
       line = @socket.read_line.to_s
       line = @buffer + line.gsub("\r", '')
       line.chomp!
-      emit receivedLine(line, @buffer.size)
+      emit receivedLine(line)
       @buffer = ''
     end
 
     if (size = @socket.bytes_available) > 0
       data = @socket.read_all
-      offset = @buffer.size
       @buffer += data.to_s.gsub("\r", '')
-      emit receivedText(@buffer, offset)
+      emit receivedText(@buffer)
     end
     
   end
