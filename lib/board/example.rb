@@ -3,7 +3,7 @@ require 'korundum4'
 require 'board/table'
 require 'themes/loader'
 require 'controller'
-require 'games/games'
+require 'games/chess/chess'
 require 'history'
 
 description = "KDE Board Game Suite"

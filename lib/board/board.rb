@@ -33,19 +33,21 @@ class Board < Qt::GraphicsItemGroup
     @animator = @game.animator.new(self)
     
     @field = AnimationField.new(20)
+    @flipped = false
   end
   
-  def on_resize(rect)
-    @items.keys.each {|key| remove_item(key) }
-    
+  def flipped?
+    @flipped
+  end
+  
+  def flip!
+    @flipped = !@flipped
+    redraw
+  end
+  
+  def redraw
     board = @state.board
-    side = [rect.width / board.size.x, rect.height / board.size.y].min.to_i
-    @unit = Qt::PointF.new(side, side)
-    base = Qt::PointF.new((rect.width - side * board.size.x) / 2.0,
-                          (rect.height - side * board.size.y) / 2.0)
-
-    self.pos = base
-    
+    @items.keys.each {|key| remove_item(key) }
     board.each_square do |p|
       piece = board[p]
       add_piece(p, piece) if piece
@@ -56,8 +58,20 @@ class Board < Qt::GraphicsItemGroup
              :z => BACKGROUND_ZVALUE
   end
   
+  def on_resize(rect)
+    board = @state.board
+    side = [rect.width / board.size.x, rect.height / board.size.y].min.to_i
+    @unit = Qt::PointF.new(side, side)
+    base = Qt::PointF.new((rect.width - side * board.size.x) / 2.0,
+                          (rect.height - side * board.size.y) / 2.0)
+
+    self.pos = base
+
+    redraw
+  end
+  
   def add_piece(p, piece, opts = {})
-    opts = opts.merge :pos => Qt::PointF.new(@unit.x * p.x, @unit.y * p.y),
+    opts = opts.merge :pos => to_real(p),
                       :name => piece.name
     add_item p, @theme.pieces.pixmap(piece, @unit), opts
   end
