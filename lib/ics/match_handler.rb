@@ -1,4 +1,5 @@
 require 'interaction/match'
+require 'ics/icsplayer'
 
 module ICS
 
@@ -6,6 +7,8 @@ module ICS
 # 
 class MatchHandler
   include Observer
+  
+  attr_reader :matches
   
   def initialize(user, protocol)
     @protocol = protocol
@@ -24,7 +27,16 @@ class MatchHandler
     match, icsapi = @matches[style12[:game_number]]
     return if match == nil
     
-    unless match.started?
+    if match.started?
+      last_move = icsapi.parse_verbose(style12[:last_move], style12[:state])
+      move = match.game.read_move(style12[:last_move_san], style12[:state])
+      if last_move != move
+        warn "[server inconsistency] " +
+             "SAN for last move is different from verbose notation"
+      end
+      
+      match.move(nil, move)
+    else
       rel = style12[:relation]
       state = style12[:state]
       turns = [state.turn, state.opposite_turn(state.turn)]
@@ -34,27 +46,16 @@ class MatchHandler
         else
           turns.reverse
         end
-      user.reset(user_color, match)
-      opponent = ICSPlayer.new
-        lambda {|msg| @protocol.connection.send_text(msg),
-        opponent_color
+      @user.reset(user_color, match)
+      opponent = ICSPlayer.new(
+        lambda {|msg| @protocol.connection.send_text(msg) },
+        opponent_color)
       
-      match.register(user)
+      match.register(@user)
       match.register(opponent)
       
-      match.start(user)
+      match.start(@user)
       match.start(opponent)
-    end
-    
-    if style12[:move_index] > 0
-      last_move = icsapi.parse_verbose(style12[:last_move], style12[:state])
-      move = match.game.read_move(style12[:last_move_san], style12[:state])
-      if last_move != move
-        warn "[server inconsistency] " +
-             "SAN for last move is different from verbose notation"
-      end
-      
-      match.move(nil, move)
     end
     
     

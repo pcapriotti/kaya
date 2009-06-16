@@ -20,3 +20,5 @@ class ICSPlayer
     out[move.to_san]    
   end
 end
+
+end

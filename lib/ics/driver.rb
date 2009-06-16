@@ -9,7 +9,7 @@ require 'ics/connection'
 require 'ics/protocol'
 require 'console'
 
-protocol = ICS::Protocol.new
+protocol = ICS::Protocol.new(:debug)
 c = ICS::Connection.new('freechess.org', 23)
 c.debug = true
 protocol.add_observer ICS::AuthModule.new(c, 'capriotti', 'hzelei')
@@ -74,6 +74,7 @@ board.observe :new_move do |data|
   puts m
   c.send_text m
 end
+
 
 c.start
 

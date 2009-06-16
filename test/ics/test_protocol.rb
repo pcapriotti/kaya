@@ -3,7 +3,7 @@ require 'ics/protocol'
 
 class TestProtocol < Test::Unit::TestCase
   def setup
-    @protocol = ICS::Protocol.new
+    @protocol = ICS::Protocol.new(false)
   end
 
   def test_create_game

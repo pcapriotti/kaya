@@ -27,7 +27,8 @@ class Protocol
     define_method mname, &blk
   end
 
-  def initialize
+  def initialize(debug)
+    @debug = debug
     @games = {}
   end
 
@@ -43,6 +44,7 @@ class Protocol
   end
 
   def process(line)
+    puts "> #{line}" if @debug
     processed = execute_action @@actions, line
     if not processed
       fire :text => line
