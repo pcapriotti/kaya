@@ -48,8 +48,8 @@ class Serializer
     if san[:castling]
       # find king starting position
       src = Point.new(ref.board.size.x / 2, ref.row(0, ref.turn))
-      dst = from + (san[:castling] == :king ? Point(2, 0) : Point(-2, 0))
-      king = ref.board.get(src)
+      dst = src + (san[:castling] == :king ? Point.new(2, 0) : Point.new(-2, 0))
+      king = ref.board[src]
       return candidate unless king.type == :king
       candidate = @move.new(src, dst)
       candidate if validate[candidate]

@@ -13,6 +13,10 @@ class FakeAnimator
     def unit
       Qt::Point.new(50, 50)
     end
+    
+    def flipped?
+      false
+    end
   end
   
   attr_reader :board

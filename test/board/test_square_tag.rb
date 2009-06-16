@@ -23,6 +23,10 @@ class FakeTaggableBoard
   def unit
     Point.new(10, 10)
   end
+  
+  def flipped?
+    false
+  end
 end
 
 class TestSquareTag < Test::Unit::TestCase

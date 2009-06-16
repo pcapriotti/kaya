@@ -72,6 +72,14 @@ class TestChessSerializer < Test::Unit::TestCase
     assert_deserialize('gxh8=B', 6, 1, 7, 0, :promotion => :bishop)
   end
   
+  def test_deserialize_castling
+    @state.setup
+    @state.board[Point.new(5, 7)] = nil
+    @state.board[Point.new(6, 7)] = nil
+    
+    assert_deserialize('0-0', 4, 7, 6, 7)
+  end
+  
   private
   
   def serialize(serializer, *args)

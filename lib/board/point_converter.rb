@@ -16,6 +16,6 @@ module PointConverter
   
   def flip_point(p)
     Point.new(p.x,
-              @state.board.size.y - p.y - 1)
+              state.board.size.y - p.y - 1)
   end
 end

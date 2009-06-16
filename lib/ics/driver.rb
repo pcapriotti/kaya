@@ -14,7 +14,7 @@ require 'ics/match_handler'
 protocol = ICS::Protocol.new(:debug)
 c = ICS::Connection.new('freechess.org', 23)
 c.debug = true
-protocol.add_observer ICS::AuthModule.new(c, 'capriotti', 'hzelei')
+protocol.add_observer ICS::AuthModule.new(c, 'ujjajja', '')
 protocol.add_observer ICS::StartupModule.new(c)
 protocol.link_to c
 
@@ -79,6 +79,10 @@ end
 
 user = User.new(:white, board)
 handler = ICS::MatchHandler.new(user, protocol)
+
+protocol.observe :creating_game do |data|
+  puts "CREATING GAME: #{data.inspect}"
+end
 
 c.start
 

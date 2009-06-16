@@ -14,6 +14,8 @@ class User
   
   def reset(match)
     puts "resetting to #{match.state.inspect}"
+    puts "color = #{color}"
+    @board.flip!(color != :white)
     @board.warp(match.state)
     
     user = self
