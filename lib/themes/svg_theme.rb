@@ -3,7 +3,10 @@ require 'themes/theme'
 
 module SvgTheme
   include Theme
-  
+
+  def initialize(opts)
+  end
+
   def pixmap(piece, size)
     Qt::Pixmap.from_renderer(size, renderer, piece_id(piece))
   end

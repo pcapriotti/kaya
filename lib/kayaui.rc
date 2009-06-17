@@ -1,0 +1,55 @@
+<!DOCTYPE kpartgui SYSTEM "kpartgui.dtd">
+<kpartgui version="2" name="kaya" >
+ <MenuBar>
+  <Menu name="file">
+   <Action name="new" />
+   <Action name="load" />
+   <Action name="save" />
+<!--   <Separator/>
+   <Action name="connect" />
+   <Action name="disconnect" />-->
+   <Separator/>
+   <Action name="quit" />
+  </Menu>
+  <Menu name="edit">
+      <Text>&amp;Edit</Text>
+      <Action name="copyPosition" />
+      <Action name="pastePosition" />
+<!--      <Separator />
+      <Action name="editPosition" />
+      <Action name="clearBoard" />
+      <Action name="setStartingPosition" />-->
+  </Menu>
+  <Menu name="gameMenu">
+   <text>&amp;Game</text>
+   <Action name="begin" />
+   <Action name="back" />
+   <Action name="pause" />
+   <Action name="forward" />
+   <Action name="end" />
+   <ActionList name="variantActions" />
+  </Menu>
+  <Menu name="viewMenu" >
+   <text>&amp;View</text>
+   <Action name="flip" />
+   <Action name="toggleConsole" />
+   <Action name="toggleMoveList" />
+  </Menu>
+  <Menu name="settings">
+    <Action name="configure" />
+  </Menu>
+ </MenuBar>
+ <ToolBar name="mainToolBar" >
+  <Action name="connect" />
+  <Action name="disconnect" />
+ </ToolBar>
+ <ToolBar name="gameToolbar" >
+  <text>Game Toolbar</text>
+  <Action name="begin" />
+  <Action name="back" />
+  <Action name="pause" />
+  <Action name="forward" />
+  <Action name="end" />
+  <ActionList name="variantActions" />
+ </ToolBar>
+</kpartgui>

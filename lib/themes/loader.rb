@@ -17,13 +17,14 @@ class ThemeLoader
         @themes[k.theme_name] = k
       end
     end
+    
   end
   
   def each(&blk)
     @themes.each_value(&blk)
   end
   
-  def get(name, *args)
-    @themes[name].new(*args)
+  def get(name, game, opts = { })
+    @themes[name].new(opts.merge(:game => game))
   end
 end

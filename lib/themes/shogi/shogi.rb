@@ -9,6 +9,9 @@ class ShogiTheme
 
   theme :name => 'Shogi'
 
+  def initialize(opts)
+  end
+
   def pixmap(piece, size)
     tile = Qt::SvgRenderer.new(NUDE_TILE)
     kanji = Qt::SvgRenderer.new(filename(piece))

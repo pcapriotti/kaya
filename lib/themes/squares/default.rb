@@ -8,8 +8,8 @@ class DefaultBackground
   
   theme :name => 'Default'
   
-  def initialize(options)
-    @squares = squares
+  def initialize(opts)
+    @squares = opts[:board_size] || opts[:game].size
   end
 
   def pixmap(size)

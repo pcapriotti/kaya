@@ -64,7 +64,7 @@ class Board < Qt::GraphicsItemGroup
     end
     
     add_item :background, 
-             @theme.background.pixmap(@unit), 
+             @theme.board.pixmap(@unit), 
              :z => BACKGROUND_ZVALUE
   end
   
@@ -138,8 +138,6 @@ class Board < Qt::GraphicsItemGroup
     @state.perform!(move)
     animate :forward, move
     highlight(move)
-    puts "src = #{last_move_src}"
-#     puts "move = #{move}"
   end
   
   def back(state, move)

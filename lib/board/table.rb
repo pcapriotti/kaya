@@ -4,8 +4,8 @@ require 'games/chess/board'
 require 'point'
 
 class Table < Qt::GraphicsView
-  def initialize(scene, *elements)
-    super(@scene = scene)
+  def initialize(scene, parent, *elements)
+    super(@scene = scene, parent)
     @elements = elements
   end
   

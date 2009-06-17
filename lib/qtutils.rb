@@ -166,8 +166,21 @@ class KDE::Application
     data[:contributors].each do |name, contribution|
       about.addCredit(name, contribution)
     end
+    about.bug_address = Qt::ByteArray.new(data[:bug_tracker])
     
     KDE::CmdLineArgs.init(ARGV, about)
     KDE::Application.new
+  end
+end
+
+module ActionHandler
+  def std_action(action, s = nil, &blk)
+    target, slot = if block_given?
+      [Qt::BlockInvocation.new(self, blk, 'invoke()'), SLOT(:invoke)]
+    else
+      [self, SLOT(s)]
+    end
+    
+    KDE::StandardAction.send(action, target, slot, action_collection)
   end
 end
