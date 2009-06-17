@@ -8,7 +8,7 @@ class DefaultBackground
   
   theme :name => 'Default'
   
-  def initialize(squares)
+  def initialize(options)
     @squares = squares
   end
 

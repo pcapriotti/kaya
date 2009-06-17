@@ -149,3 +149,25 @@ class Qt::Timer
                 SLOT('invoke()'))
   end
 end
+
+class KDE::Application
+  def self.init(data)
+    about = KDE::AboutData.new(
+      data[:id],
+      data[:id],
+      data[:name],
+      data[:version],
+      data[:description],
+      KDE::AboutData::License_GPL,
+      data[:copyright])
+    data[:authors].each do |name, email|
+      about.addAuthor(name, KDE::LocalizedString.new, email)
+    end
+    data[:contributors].each do |name, contribution|
+      about.addCredit(name, contribution)
+    end
+    
+    KDE::CmdLineArgs.init(ARGV, about)
+    KDE::Application.new
+  end
+end
