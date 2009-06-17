@@ -72,8 +72,8 @@ class Board < Qt::GraphicsItemGroup
     board = @state.board
     side = [rect.width / board.size.x, rect.height / board.size.y].min.to_i
     @unit = Qt::PointF.new(side, side)
-    base = Qt::PointF.new((rect.width - side * board.size.x) / 2.0,
-                          (rect.height - side * board.size.y) / 2.0)
+    base = Qt::PointF.new(((rect.width - side * board.size.x) / 2.0).to_i,
+                          ((rect.height - side * board.size.y) / 2.0).to_i)
 
     self.pos = base
 
