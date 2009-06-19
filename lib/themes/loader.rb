@@ -13,7 +13,7 @@ class ThemeLoader
     
     @themes = {}
     ObjectSpace::each_object(Class) do |k|
-      if k.include? Theme
+      if k.include?(Theme) and k.theme_name
         @themes[k.theme_name] = k
       end
     end

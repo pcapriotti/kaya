@@ -33,8 +33,8 @@ private
     config = KDE::Global.config.group('themes')
     
     theme = Theme.new
-    theme.pieces = @loader.get_matching(nil, game,
-      (game.keywords || []) + ['pieces'], [])
+    theme.pieces = @loader.get_matching('Celtic', game,
+      (game.keywords || []) + ['pieces'], [], :shadow => true)
     theme.board = @loader.get_matching(nil, game,
       ['board'], game.keywords || [])
     

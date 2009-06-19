@@ -1,14 +1,20 @@
 require 'qtutils'
 require 'themes/theme'
 
-module SvgTheme
-  include Theme
+class SvgTheme
+  include Shadower
 
-  def initialize(opts)
+  def initialize(opts = {})
+    @loader = lambda do |piece, size|
+      Qt::Image.from_renderer(size, renderer, piece_id(piece))
+    end
+    if opts.has_key?(:shadow)
+      @loader = with_shadow(@loader)
+    end
   end
 
   def pixmap(piece, size)
-    Qt::Pixmap.from_renderer(size, renderer, piece_id(piece))
+    @loader[piece, size].to_pix
   end
   
   def renderer

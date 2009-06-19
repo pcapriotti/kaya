@@ -15,7 +15,7 @@ module Theme
     end
     
     def theme_name
-      (@theme_data || {})[:name] || name
+      @theme_data[:name] if @theme_data
     end
     
     def matches?(keywords)

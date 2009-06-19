@@ -6,13 +6,17 @@ rescue LoadError => e
 end
 
 $ext = $qApp.findChild(Qt::Object, "kaya extensions") if $qApp
-unless $ext
+fake = unless $ext
   # install fake implementations of the extension functions
   $ext = Qt::Object.new
   class << $ext
     def exp_blur(img, radius)
     end
   end
+  true
+end
+$ext.metaclass_eval do
+  define_method(:fake) { fake }
 end
 
 # conveniently install extension functions in the appropriate places

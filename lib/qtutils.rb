@@ -43,6 +43,17 @@ class Qt::Image
       Qt::Painter.new(img).paint(&blk)
     end
   end
+
+  def self.from_renderer(size, renderer, id = nil)
+    img = Qt::Image.painted(size) do |p| 
+      if id
+        renderer.render(p, id)
+      else
+        renderer.render(p)
+      end
+    end
+    img
+  end
 end
 
 module PrintablePoint
@@ -95,14 +106,7 @@ class Qt::Pixmap
   end
   
   def self.from_renderer(size, renderer, id = nil)
-    img = Qt::Image.painted(size) do |p| 
-      if id
-        renderer.render(p, id)
-      else
-        renderer.render(p)
-      end
-    end
-    img.to_pix
+    Qt::Image.from_renderer(size, renderer, id).to_pix
   end
 end
 
