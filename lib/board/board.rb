@@ -103,8 +103,7 @@ class Board < Qt::GraphicsItemGroup
     if e.button == Qt::RightButton
       # go back using the right button
       self.selection = nil
-      changed
-      notify_observers :back => nil
+      fire :back
     else
       p = to_logical(e.pos)
       
@@ -113,7 +112,7 @@ class Board < Qt::GraphicsItemGroup
         validate = @game.validator.new(@state)
         if validate[move]
           perform! move
-          notify_observers :new_move => { :move => move, :state => @state.dup }
+          fire :new_move => { :move => move, :state => @state.dup }
         end
         
         self.selection = nil
@@ -137,25 +136,21 @@ class Board < Qt::GraphicsItemGroup
   def perform!(move)
     @state.perform!(move)
     animate :forward, move
-    highlight(move)
   end
   
   def back(state, move)
     @state = state.dup
     animate :back, move
-    highlight(move)
   end
   
   def forward(state, move)
     @state = state.dup
     animate :forward, move
-    highlight(move)
   end
   
   def warp(state)
     @state = state.dup
     animate :warp, :instant => true
-    highlight(nil)
   end
   
   def animate(direction, *args)

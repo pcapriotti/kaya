@@ -15,11 +15,13 @@ class Controller
   
   def on_new_move(data)
     @history.add_move(data[:state], data[:move])
+    @board.highlight(data[:move])
   end
   
   def on_back
     state, move = @history.back
     @board.back(state.dup, move)
+    @board.highlight(@history.move)
   rescue History::OutOfBound
     puts "error: first move"
   end
@@ -27,6 +29,7 @@ class Controller
   def on_forward
     state, move = @history.forward
     @board.forward(state.dup, move)
+    @board.highlight(@history.move)
   rescue History::OutOfBound
     puts "error: last move"
   end
