@@ -1,8 +1,8 @@
 require 'test/unit'
+require 'rubygems'
 require 'mocha'
 require 'ics/match_handler'
 require 'games/games'
-require 'games/chess/chess'
 require 'ostruct'
 
 class TestMatchHandler < Test::Unit::TestCase

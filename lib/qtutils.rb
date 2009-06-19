@@ -169,6 +169,13 @@ class KDE::Application
     about.bug_address = Qt::ByteArray.new(data[:bug_tracker])
     
     KDE::CmdLineArgs.init(ARGV, about)
+    KDE::CmdLineOptions.new.tap do |opts|
+      data[:options].each do |opt, desc|
+        opts.add(opt, desc)
+      end
+      KDE::CmdLineArgs.add_cmd_line_options opts
+    end
+
     KDE::Application.new
   end
 end

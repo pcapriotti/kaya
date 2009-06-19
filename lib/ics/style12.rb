@@ -1,4 +1,3 @@
-require 'games/games'
 require 'ics/icsapi'
 
 module ICS

@@ -1,8 +1,3 @@
-require 'board/board'
-require 'games/chess/state'
-require 'games/chess/board'
-require 'point'
-
 class Table < Qt::GraphicsView
   def initialize(scene, parent, *elements)
     super(@scene = scene, parent)

@@ -1,6 +1,6 @@
 require 'test/unit'
 require 'board/point_converter'
-require 'games/chess/chess'
+require 'games/all'
 
 class TestPointConverter < Test::Unit::TestCase
   class FakeBoard

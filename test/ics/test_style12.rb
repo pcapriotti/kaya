@@ -1,7 +1,7 @@
 require 'test/unit'
 require 'ics/style12'
 require 'ics/icsapi'
-require 'games/games'
+require 'games/all'
 
 class TestStyle12 < Test::Unit::TestCase
   def setup

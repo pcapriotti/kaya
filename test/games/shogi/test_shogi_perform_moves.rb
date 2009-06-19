@@ -1,6 +1,6 @@
 require 'test/unit'
 require 'games/games'
-require 'games/shogi/shogi'
+require 'games/all'
 require 'helpers/validation_helper'
 
 class TestShogiPerformMoves < Test::Unit::TestCase

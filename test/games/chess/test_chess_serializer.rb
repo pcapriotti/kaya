@@ -1,6 +1,5 @@
 require 'test/unit'
-require 'games/games'
-require 'games/chess/chess'
+require 'games/all'
 require 'helpers/validation_helper'
 
 class TestChessSerializer < Test::Unit::TestCase

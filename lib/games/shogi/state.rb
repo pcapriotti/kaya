@@ -14,7 +14,10 @@ module Shogi
     
     def initialize_copy(other)
       super
-      @pools = to_enum(:each_color).map{|c| other.pool(c).dup }
+      @pools = to_enum(:each_color).inject({}) do |res, c|
+        res[c] = other.pool(c).dup
+        res
+      end
     end
     
     def pool(color)

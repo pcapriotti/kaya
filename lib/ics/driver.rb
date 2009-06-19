@@ -2,7 +2,7 @@ $:.unshift(File.join(File.dirname(__FILE__), '..'))
 require 'qtutils'
 require 'board/table'
 require 'themes/loader'
-require 'games/chess/chess'
+require 'games/chess/main'
 require 'controller'
 require 'history'
 require 'ics/connection'

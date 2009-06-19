@@ -1,5 +1,4 @@
 require 'qtutils'
-require 'games/chess/chess'
 require 'board/board'
 require 'board/table'
 require 'history'
@@ -10,12 +9,12 @@ class MainWindow < KDE::XmlGuiWindow
   
   Theme = Struct.new(:pieces, :board)
   
-  def initialize(loader)
+  def initialize(loader, game)
     super nil
     
     @loader = loader
     
-    load_board
+    load_board(game)
     
     setup_actions
     setupGUI
@@ -30,8 +29,7 @@ private
     std_action :quit, :close
   end
   
-  def load_board
-    game = Game.get(:chess)
+  def load_board(game)
     config = KDE::Global.config.group('themes')
     
     theme = Theme.new

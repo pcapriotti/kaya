@@ -1,7 +1,6 @@
 require 'test/unit'
 require 'interaction/match'
-require 'games/chess/chess'
-require 'games/games'
+require 'games/all'
 
 class TestMatch < Test::Unit::TestCase
   def setup

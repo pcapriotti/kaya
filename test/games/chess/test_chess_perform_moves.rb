@@ -1,5 +1,5 @@
 require 'test/unit'
-require 'games/chess/chess'
+require 'games/all'
 require 'helpers/validation_helper'
 
 class TestChessPerformMoves < Test::Unit::TestCase

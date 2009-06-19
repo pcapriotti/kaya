@@ -2,6 +2,23 @@ require 'factory'
 
 class Game
   GAMES = { }
+  LOADING = { }
+  LoadableGame = Struct.new(:deps, :defn)
+
+  def self.load_all(directory = nil)
+    directory ||= File.dirname(__FILE__)
+    Dir[File.join(directory, '*')].each do |f|
+      if File.directory?(f)
+        main = File.join(f, 'main.rb')
+        load main if File.exist?(main)
+      end
+    end
+    
+    # register games
+    LOADING.each do |name, game|
+      register_game(name, game)
+    end
+  end
 
   def self.dummy
     # dummy is chess for the moment
@@ -12,27 +29,21 @@ class Game
     GAMES[name]
   end
 
-  def self.add(name, game)
-    GAMES[name] = game
-  end
-  
-  def initialize(fields)
-    # @fields = fields
-    add_fields(fields)
+  def self.add(name, deps = [], &defn)
+    if Game.get(name) or LOADING[name]
+      raise "The game #{name} is already defined"
+    end
+    LOADING[name] = LoadableGame.new(deps, defn)
   end
   
   def extend(fields)
-    dup.tap do |game|
-      game.add_fields(fields)
+    clone.tap do |x|
+      x.add_fields(fields)
     end
   end
-  
-  class Component
-    attr_reader :klass, :blk
-    def initialize(klass, blk)
-      @klass = klass
-      @blk = blk
-    end
+
+  def initialize(fields)
+    add_fields(fields)
   end
   
   protected
@@ -42,16 +53,30 @@ class Game
       case value
       when Proc
         f_method = "__#{field}"
-        f = Factory.new {|*args| send(f_method, *args) }
         metaclass_eval do
-          define_method(field) { f }
+          define_method(field) { Factory.new {|*args| send(f_method, *args) } }
           define_method(f_method, value)
         end
       else
-        metaclass_eval do
+        metaclass_eval do 
           define_method(field) { value }
         end
       end
+    end
+  end
+  
+  private
+  
+  def self.register_game(name, game)
+    unless Game.get(name)
+      deps = game.deps.map do |dep|
+        Game.get(dep) || begin
+          lgame = LOADING[dep] or 
+            raise "Invalid dependency #{dep} for game #{name}"
+          register_game(dep, lgame)
+        end
+      end
+      GAMES[name] = game.defn[*deps]
     end
   end
 end
