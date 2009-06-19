@@ -3,9 +3,9 @@ require 'animations'
 module AnimatorHelper
   include Animations
   
-  def move!(src, dst)
+  def move!(src, dst, path)
     piece = board.move_item(src, dst)
-    movement(piece, src, dst)
+    movement(piece, src, dst, path)
   end
   
   def disappear_on!(p, opts = {})

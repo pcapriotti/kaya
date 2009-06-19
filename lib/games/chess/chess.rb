@@ -6,7 +6,6 @@ require 'games/chess/policy'
 require 'games/chess/animator'
 require 'games/chess/validator'
 require 'games/chess/serializer'
-require 'games/factory'
 
 module Chess
 

@@ -72,7 +72,7 @@ class TestAnimations < Test::Unit::TestCase
   
   def test_movement
     item = GeneralMock.new
-    @field.run @c.movement(item, Point.new(3, 4), Point.new(5, 6))
+    @field.run @c.movement(item, Point.new(3, 4), Point.new(5, 6), Path::Linear)
     @field.run_test
     
     old_p = nil

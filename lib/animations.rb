@@ -1,4 +1,5 @@
 require 'animation_field'
+require 'factory'
 
 module Animations
   LENGTH = 100
@@ -24,18 +25,18 @@ module Animations
     end
   end
   
-  def movement(item, src, dst)
+  def movement(item, src, dst, path_factory)
     if item
       src = board.to_real(src)
       dst = board.to_real(dst)
-      delta = dst - src
+      path = path_factory.new(src, dst)
       
       SimpleAnimation.new "move to #{dst}", LENGTH, nil,
-        lambda {|i| item.pos = src + delta * i },
+        lambda {|i| item.pos = src + path[i] },
         lambda { item.pos = dst }
     end
   end
-  
+
   def disappear(item, name = "disappear")
     if item
       SimpleAnimation.new name, LENGTH,
@@ -58,5 +59,32 @@ module Animations
   
   def instant_disappear(p, name = "disappear")
     Animation.new(name) { board.remove_item p }
+  end
+end
+
+module Path
+  Linear = Factory.new do |src, dst|
+    delta = dst - src
+    lambda {|i| delta * i }
+  end
+
+  class LShape
+    FACTOR = Math.exp(3.0) - 1
+    def initialize(src, dst)
+      @delta = dst - src
+      nonlin = lambda{|i| (Math.exp(3.0 * i) - 1) / FACTOR }
+      lin = lambda {|i| i }
+      if @delta.x.abs < @delta.y.abs
+        @x = lin
+        @y = nonlin
+      else
+        @y = lin
+        @x = nonlin
+      end
+    end
+    
+    def [](i)
+      Qt::PointF.new(@delta.x * @x[i], @delta.y * @y[i])
+    end
   end
 end

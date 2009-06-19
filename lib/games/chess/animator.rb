@@ -8,7 +8,16 @@ module Chess
     def initialize(board)
       @board = board
     end
-  
+
+    def specific_move!(piece, src, dst)
+      path = if piece.type == :knight
+        Path::LShape
+      else
+        Path::Linear
+      end
+      move!(src, dst, path)
+    end
+
     def warp(state, opts = { :instant => true })
       res = []
       
@@ -32,7 +41,7 @@ module Chess
     
     def forward(state, move)
       capture = disappear_on! move.dst
-      actual_move = move! move.src, move.dst
+      actual_move = specific_move! state.board[move.dst], move.src, move.dst
       extra = if move.type == :king_side_castling
         move! move.dst + Point.new(1, 0), move.dst - Point.new(1, 0)
       elsif move.type == :queen_side_castling

@@ -44,7 +44,7 @@ class TestAnimatorHelper < Test::Unit::TestCase
   
   def test_move
     @items[Point.new(3, 3)] = "white knight"
-    anim = @animator.move!(Point.new(3, 3), Point.new(5, 4))
+    anim = @animator.move!(Point.new(3, 3), Point.new(5, 4), Path::Linear)
     assert_animation(:movement, anim) do |args|
       piece, src, dst = args
       assert_equal "white knight", piece

@@ -1,3 +1,5 @@
+require 'factory'
+
 class Game
   GAMES = { }
 
