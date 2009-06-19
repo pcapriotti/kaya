@@ -185,13 +185,33 @@ class KDE::Application
 end
 
 module ActionHandler
-  def std_action(action, s = nil, &blk)
+  def std_action(action, opts = {}, &blk)
+    target, slot = get_slot(opts[:slot], &blk)
+    KDE::StandardAction.send(action, target, slot, action_collection)
+  end
+  
+  def get_slot(s = nil, &blk)
     target, slot = if block_given?
       [Qt::BlockInvocation.new(self, blk, 'invoke()'), SLOT(:invoke)]
     else
       [self, SLOT(s)]
     end
+  end
+  
+  def regular_action(name, opts, &blk)
+    icon = if opts[:icon]
+      case opts[:icon]
+      when Qt::Icon
+        opts[:icon]
+      else
+        KDE::Icon.new(opts[:icon].to_s)
+      end
+    end
     
-    KDE::StandardAction.send(action, target, slot, action_collection)
+    KDE::Action.new(icon, opts[:text], self).tap do |a|
+      action_collection.add_action(name.to_s, a)
+      target, slot = get_slot(opts[:slot], &blk)
+      connect(a, SIGNAL('triggered(bool)'), target, slot)
+    end
   end
 end

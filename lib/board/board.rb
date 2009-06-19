@@ -18,7 +18,6 @@ class Board < Qt::GraphicsItemGroup
   square_tag :selection
   square_tag :last_move_src, :highlight
   square_tag :last_move_dst, :highlight
-#   square_tag :dst, :highlight
 
   def initialize(scene, theme, game, state = nil)
     super(nil, scene)
@@ -100,11 +99,7 @@ class Board < Qt::GraphicsItemGroup
   end
   
   def mousePressEvent(e)
-    if e.button == Qt::RightButton
-      # go back using the right button
-      self.selection = nil
-      fire :back
-    else
+    if e.button == Qt::LeftButton
       p = to_logical(e.pos)
       
       if selection

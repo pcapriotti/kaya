@@ -26,7 +26,16 @@ private
     std_action :open_new do
       puts "new game"
     end
-    std_action :quit, :close
+    std_action :quit, :slot => :close
+    regular_action :back, :icon => 'go-previous', 
+                          :text => KDE.i18n("&Back") do
+      @board.fire :back
+    end
+    regular_action :forward, :icon => 'go-next', 
+                             :text => KDE.i18n("&Forward") do
+      @board.fire :forward
+    end
+                  
   end
   
   def load_board(game)
@@ -42,12 +51,12 @@ private
     
     state = game.state.new.tap {|s| s.setup }
     
-    board = Board.new(scene, theme, game, state)
+    @board = Board.new(scene, theme, game, state)
     
-    table = Table.new(scene, self, board)
+    table = Table.new(scene, self, @board)
     self.central_widget = table
 
     history = History.new(state)
-    controller = Controller.new(board, history)
+    controller = Controller.new(@board, history)
   end
 end

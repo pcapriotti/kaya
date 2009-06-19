@@ -29,7 +29,7 @@ class Controller
   def on_forward
     state, move = @history.forward
     @board.forward(state.dup, move)
-    @board.highlight(@history.move)
+    @board.highlight(move)
   rescue History::OutOfBound
     puts "error: last move"
   end
