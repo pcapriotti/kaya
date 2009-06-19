@@ -1,0 +1,4 @@
+#!/bin/bash
+RUBY=/usr/bin/ruby
+
+$RUBY lib/kaya.rb $@
