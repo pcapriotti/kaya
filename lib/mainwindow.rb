@@ -33,8 +33,10 @@ private
     config = KDE::Global.config.group('themes')
     
     theme = Theme.new
-    theme.pieces = @loader.get(config.read_entry('piece', 'Celtic'), game)
-    theme.board = @loader.get(config.read_entry('board', 'Default'), game)
+    theme.pieces = @loader.get_matching(nil, game,
+      (game.keywords || []) + ['pieces'], [])
+    theme.board = @loader.get_matching(nil, game,
+      ['board'], game.keywords || [])
     
     scene = Qt::GraphicsScene.new
     

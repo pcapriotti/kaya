@@ -7,7 +7,8 @@ class ShogiTheme
   TYPES = { :knight => 'n' }
   NUDE_TILE = File.join(BASE_DIR, 'nude_tile.svg')
 
-  theme :name => 'Shogi'
+  theme :name => 'Shogi',
+        :keywords => %w(shogi pieces)
 
   def initialize(opts)
   end

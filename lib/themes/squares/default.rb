@@ -6,7 +6,8 @@ class DefaultBackground
   include Theme
   HALO_DELTA = 0.1
   
-  theme :name => 'Default'
+  theme :name => 'Default',
+        :keywords => %w(chess board)
   
   def initialize(opts)
     @squares = opts[:board_size] || opts[:game].size

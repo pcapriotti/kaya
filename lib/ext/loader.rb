@@ -5,7 +5,7 @@ rescue LoadError => e
   warn e.message
 end
 
-$ext = $qApp.findChild(Qt::Object, "kaya extensions")
+$ext = $qApp.findChild(Qt::Object, "kaya extensions") if $qApp
 unless $ext
   # install fake implementations of the extension functions
   $ext = Qt::Object.new

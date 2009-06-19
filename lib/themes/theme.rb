@@ -17,6 +17,16 @@ module Theme
     def theme_name
       (@theme_data || {})[:name] || name
     end
+    
+    def matches?(keywords)
+      keywords.all? do |k|
+        @theme_data[:keywords].include? k
+      end
+    end
+    
+    def score(keywords)
+      (@theme_data[:keywords] & keywords).size
+    end
   end
   
   extend ModuleMethods
