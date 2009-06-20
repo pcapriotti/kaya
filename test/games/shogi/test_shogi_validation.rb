@@ -100,6 +100,7 @@ class TestShogiValidation < Test::Unit::TestCase
     assert_not_valid 4, 4, 4, 5
     assert_not_valid 4, 4, 3, 4
     assert_not_valid 4, 4, 5, 4
+    assert_not_valid 4, 4, 2, 3
     
     @board[Point.new(3, 5)] = Chess::Piece.new(:white, :rook)
     assert_valid 4, 4, 3, 5
@@ -117,6 +118,7 @@ class TestShogiValidation < Test::Unit::TestCase
     
     assert_not_valid 4, 4, 5, 5
     assert_not_valid 4, 4, 3, 5
+    assert_not_valid 4, 4, 2, 3
     
     @board[Point.new(4, 5)] = Chess::Piece.new(:white, :rook)
     assert_valid 4, 4, 4, 5
