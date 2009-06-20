@@ -78,7 +78,7 @@ module Shogi
         end
         if captured
           piece = piece_factory.new(turn, captured.type)
-          pool(turn).add(piece)
+          pool(turn).add(demoted(piece))
         end
         switch_turn!
       end
@@ -96,6 +96,12 @@ module Shogi
       piece_factory.new(
         piece.color, 
         ('promoted_' + piece.type.to_s).to_sym)
+    end
+    
+    def demoted(piece)
+      piece_factory.new(
+        piece.color,
+        piece.type.to_s.gsub(/^promoted_/, '').to_sym)
     end
     
     def promoted_type?(type)

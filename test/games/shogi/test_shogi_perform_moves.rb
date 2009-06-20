@@ -39,4 +39,12 @@ class TestShogiPerformMoves < Test::Unit::TestCase
     assert_equal 1, @state.pool(:white).size
     assert @state.pool(:black).empty?
   end
+  
+  def test_promoted_capture
+    @board[Point.new(2, 5)] = @state.promoted(@game.piece.new(:white, :rook))
+    
+    execute 2, 6, 2, 5
+    
+    assert_pool :black, :rook, 1
+  end
 end
