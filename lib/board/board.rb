@@ -103,7 +103,7 @@ class Board < Qt::GraphicsItemGroup
       p = to_logical(e.pos)
       
       if selection
-        move = @game.move.new(selection, p, :promotion => :queen)
+        move = @game.policy.new_move(@state, selection, p)
         validate = @game.validator.new(@state)
         if validate[move]
           perform! move

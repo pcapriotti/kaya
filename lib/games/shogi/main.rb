@@ -2,6 +2,7 @@ require 'games/shogi/state'
 require 'games/shogi/pool'
 require 'games/shogi/move'
 require 'games/shogi/validator'
+require 'games/shogi/policy'
 
 module Shogi
 
@@ -10,7 +11,7 @@ Game.add :shogi, [:chess] do |chess|
            :state => lambda { State.new(board.new, pool, move, piece) },
            :board => lambda { chess.board_component.new size },
            :pool => Pool,
-           :policy => chess.policy,
+           :policy => Policy.new(Move, Validator),
            :move => Move,
            :animator => chess.animator,
            :validator => Validator,

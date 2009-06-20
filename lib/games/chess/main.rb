@@ -11,7 +11,7 @@ module Chess
 
 Game.add :chess do
   Game.new :size => Point.new(8, 8),
-           :policy => Policy.new,
+           :policy => Policy.new(Move),
            :state_component => State,
            :state => lambda { state_component.new(board.new, move, piece) },
            :board_component => Board,
