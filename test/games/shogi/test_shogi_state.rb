@@ -14,6 +14,8 @@ class TestShogiState < Test::Unit::TestCase
   def test_initialize
     assert_equal @board, @state.board
     assert_equal :black, @state.turn
+    assert @state.pool(:white).empty?
+    assert @state.pool(:black).empty?
   end
   
   def test_setup

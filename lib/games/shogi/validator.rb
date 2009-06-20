@@ -20,11 +20,27 @@ module Shogi
       if piece
         return false unless piece.color == @state.turn
         return false unless @state.pool(piece.color).has_piece?(piece)
+        return false if @state.board[move.dst]
+        if piece.type == :pawn
+          # pawns cannot be dropped on the last rank
+          return false if 
+            move.dst.y == @state.row(@state.board.size.y - 1, piece.color)
+          # do not allow two pawns on the same column
+          return false if (0..@state.board.size.y).
+                          map{|y| Point.new(move.dst.x, y) }.
+                          any?{|p| @state.board[p]. == piece }
+        elsif piece.type == :horse
+          # horses cannot be dropped on the last or last-but-one rank
+          return false if 
+            move.dst.y == @state.row(@state.board.size.y - 1, piece.color) ||
+            move.dst.y == @state.row(@state.board.size.y - 2, piece.color)
+        end
       else
         piece = @state.board[move.src]
         return false unless piece and piece.color == @state.turn
         return false unless check_pseudolegality(piece, target, move)
       end
+      
       
       @state.try(move) do |tmp|
         validator = self.class.new(tmp)
@@ -33,6 +49,38 @@ module Shogi
       end
       
       true
+    end
+    
+    def validator_method(type)
+      m = super(type)
+      if @state.promoted_type?(type)
+        m = super(:gold) unless respond_to?(m)
+        m
+      else
+        m
+      end
+    end
+    
+    def check_pseudolegality(piece, target, move)
+      if move.promote?
+        return false if piece.type == :king or piece.type == :gold
+        return false unless 
+          @state.in_promotion_zone?(move.src, piece.color) ||
+          @state.in_promotion_zone?(move.dst, piece.color)
+          
+        return false if @state.promoted?(piece)
+      else
+        # check for cases when it is mandatory to promote
+        case piece.type
+        when :pawn
+          return false if move.dst.y == @state.row(@state.board.size.y - 1, piece.color)
+        when :horse
+          return false if 
+            move.dst.y == @state.row(@state.board.size.y - 1, piece.color) ||
+            move.dst.y == @state.row(@state.board.size.y - 2, piece.color)
+        end
+      end
+      super(piece, target, move)
     end
     
     def validate_pawn(piece, target, move)
@@ -65,6 +113,28 @@ module Shogi
     def validate_king(piece, target, move)
       move.delta.x.abs <= 1 and
       move.delta.y.abs <= 1
+    end
+    
+    def validate_bishop(piece, target, move)
+      range = move.range
+      range.diagonal? and
+      @state.board.clear_path? range
+    end
+    
+    def validate_rook(piece, target, move)
+      range = move.range
+      range.parallel? and
+      @state.board.clear_path? range
+    end
+    
+    def validate_promoted_rook(piece, target, move)
+      validate_king(piece, target, move) ||
+      validate_rook(piece, target, move)
+    end
+    
+    def validate_promoted_bishop(piece, target, move)
+      validate_king(piece, target, move) ||
+      validate_bishop(piece, target, move)
     end
     
     def each_move(src, dst, target)

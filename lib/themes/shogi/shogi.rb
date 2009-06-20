@@ -50,7 +50,7 @@ class ShogiTheme
   def filename(piece)
     color = piece.color.to_s[0, 1]
 #     type = TYPES[piece.type] || piece.type.to_s[0, 1]
-    name = piece.type.to_s + ".svg"
+    name = piece.type.to_s.gsub(/^promoted_/, 'p') + ".svg"
     File.join(BASE_DIR, name)
   end
 end

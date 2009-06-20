@@ -34,5 +34,9 @@ class TestShogiPerformMoves < Test::Unit::TestCase
     assert_no_piece 2, 2
     assert_no_piece 2, 5
     assert_no_piece 2, 6
+    
+    assert_pool :white, :pawn, 1
+    assert_equal 1, @state.pool(:white).size
+    assert @state.pool(:black).empty?
   end
 end

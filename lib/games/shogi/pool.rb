@@ -22,5 +22,13 @@ module Shogi
       @pieces[piece] -= 1
       @pieces.delete(piece) if @pieces[piece] <= 0
     end
+    
+    def empty?
+      @pieces.empty?
+    end
+    
+    def size
+      @pieces.values.inject(0, &:+)
+    end
   end
 end

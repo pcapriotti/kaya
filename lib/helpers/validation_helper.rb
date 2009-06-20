@@ -55,4 +55,9 @@ module ValidationHelper
     assert @validate[move]
     @state.perform! move
   end
+  
+  def assert_pool(color, type, number)
+    piece = @state.piece_factory.new(color, type)
+    assert_equal number, @state.pool(color).pieces[piece]
+  end
 end

@@ -20,8 +20,10 @@ class StateBase
   end
   
   def basic_move(move)
+    captured = @board[move.dst]
     @board[move.dst] = @board[move.src]
     @board[move.src] = nil
+    captured
   end
   
   def promote_on!(p, type)

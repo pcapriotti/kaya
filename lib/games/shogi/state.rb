@@ -68,8 +68,20 @@ module Shogi
     end
     
     def perform!(move)
-      basic_move(move)
-      switch_turn!
+      if move.dropped
+        pool(turn).remove(move.dropped)
+        board[move.dst] = move.dropped
+      else
+        captured = basic_move(move)
+        if move.promote?
+          board[move.dst] = promoted(board[move.dst])
+        end
+        if captured
+          piece = piece_factory.new(turn, captured.type)
+          pool(turn).add(piece)
+        end
+        switch_turn!
+      end
     end
     
     def switch_turn!
@@ -78,6 +90,20 @@ module Shogi
     
     def in_promotion_zone?(p, color)
       (row(6, color) <=> p.y) != (color == :black ? -1 : 1)
+    end
+    
+    def promoted(piece)
+      piece_factory.new(
+        piece.color, 
+        ('promoted_' + piece.type.to_s).to_sym)
+    end
+    
+    def promoted_type?(type)
+      type.to_s =~ /^promoted_/
+    end
+    
+    def promoted?(piece)
+      promoted_type? piece.type
     end
   end
 end

@@ -1,5 +1,7 @@
 require 'test/unit'
 require 'controller'
+require 'rubygems'
+require 'mocha'
 
 class TestController < Test::Unit::TestCase
   def setup

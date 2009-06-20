@@ -28,10 +28,14 @@ class ValidatorBase
     target ||= @state.board[move.dst]
     return false if piece.same_color_of?(target)
   
-    m = "validate_#{piece.type}"
+    m = validator_method(piece.type)
     valid = if respond_to? m
       send(m, piece, target, move)
     end
+  end
+
+  def validator_method(type)
+    "validate_#{type.to_s}"
   end
 
   def attacked?(dst, target = nil)
