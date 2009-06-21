@@ -1,6 +1,43 @@
 require 'qtutils'
 require 'themes/theme'
 require 'themes/shadow'
+require 'themes/background'
+
+class ShogibanBackground
+  include Theme
+  include Background
+  
+  BACKGROUND_COLOR = Qt::Color.new(0xeb, 0xd6, 0xa0)
+  LINE_COLOR = Qt::Color.new(0x9c, 0x87, 0x55)
+  
+  theme :name => 'Shogiban',
+        :keywords => %w(shogi board)
+        
+  def initialize(opts = {})
+    @squares = opts[:board_size] || opts[:game].size
+  end
+  
+  def pixmap(size)
+    Qt::Image.painted(Qt::Point.new(size.x * @squares.x, size.y * @squares.y)) do |p|
+      (0...@squares.x).each do |x|
+        (0...@squares.y).each do |y|
+          rect = Qt::RectF.new(size.x * x, size.y * y, size.x, size.y)
+          p.fill_rect(rect, Qt::Brush.new(BACKGROUND_COLOR))
+        end
+      end
+      pen = p.pen
+      pen.width = 2
+      pen.color = LINE_COLOR
+      p.pen = pen
+      (0..@squares.x).each do |x|
+        p.draw_line(x * size.x, 0, x * size.x, @squares.y * size.y)
+      end
+      (0..@squares.y).each do |y|
+        p.draw_line(0, y * size.y, size.x * @squares.x, y * size.y)
+      end
+    end.to_pix
+  end
+end
 
 class ShogiTheme
   include Theme
