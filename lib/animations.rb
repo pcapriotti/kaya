@@ -5,12 +5,14 @@ module Animations
   LENGTH = 100
   
   def group(*animations)
-    anim = animations.dup.compact
-    Animation.new("group (#{anim.size})") do |i|
-      anim.reject! do |a| 
-        a[i]
+    unless animations.empty?
+      anim = animations.dup.compact
+      Animation.new("group (#{anim.map{|a| a.to_s}.join(',')})") do |i|
+        anim.reject! do |a| 
+          a[i]
+        end
+        anim.empty?
       end
-      anim.empty?
     end
   end
   

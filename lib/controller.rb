@@ -1,5 +1,6 @@
 require 'observer_utils'
 require 'history'
+require 'board/pool_animator'
 
 class Controller
   include Observer
@@ -39,15 +40,12 @@ class Controller
     state = @history.state.dup
     state.perform! move
     @history.add_move(state, move)
-    
-    @pools.each {|color, pool| pool.warp(state.pool(color)) }
     animate(:forward, state, move)
     @board.highlight(move)
   end
   
   def back
     state, move = @history.back
-    @pools.each {|color, pool| pool.warp(state.pool(color)) }
     animate(:back, state, move)
     @board.highlight(@history.move)
   rescue History::OutOfBound
@@ -56,7 +54,6 @@ class Controller
   
   def forward
     state, move = @history.forward
-    @pools.each {|color, pool| pool.warp(state.pool(color)) }
     animate(:forward, state, move)
     @board.highlight(move)
   rescue History::OutOfBound
@@ -66,6 +63,15 @@ class Controller
   def animate(direction, state, move)
     anim = @animator.send(direction, state, move)
     @field.run anim
+    
+    update_pools
+  end
+  
+  def update_pools
+    @pools.each do |color, pool|
+      anim = pool.animator.warp(@history.state.pool(color))
+      @field.run anim
+    end
   end
   
   def movable?(p)

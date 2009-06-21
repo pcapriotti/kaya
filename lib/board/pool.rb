@@ -5,9 +5,9 @@ class Pool < Qt::GraphicsItemGroup
   
   include Observable
   include ItemUtils
-  include ItemBag
   
   attr_reader :rect, :scene, :items
+  attr_reader :animator
   
   def initialize(scene, theme, game)
     super(nil, scene)
@@ -26,6 +26,8 @@ class Pool < Qt::GraphicsItemGroup
         @type_values[type] = index
       end
     end
+    
+    @animator = PoolAnimator.new(self)
   end
   
   def redraw
@@ -33,12 +35,13 @@ class Pool < Qt::GraphicsItemGroup
       destroy_item(item)
       item.name
     end
+    @items = []
     
     pieces.each_with_index do |piece, index|
       add_piece(index, piece)
     end
   end
-  
+
   def set_geometry(rect)
     @rect = rect
     
@@ -54,35 +57,15 @@ class Pool < Qt::GraphicsItemGroup
                       :name => piece
     item = create_item index, @theme.pieces.pixmap(piece, @unit), opts
     items.insert(index, item)
-    
-    # TODO shift the other items
-    
     item
   end
   
-  def warp(pool)
-    pieces = pool.pieces.
-      map{|piece, count| [piece] * count}.
-      inject([]){|a, b| a.concat(b)}.
-      sort {|p1, p2| compare(p1, p2) }
-    (0...[pieces.size, @items.size].min).each do |i|
-      if pieces[i] != @items[i].name
-        destroy_item @items[i]
-        @items[i] = create_item i, @theme.pieces.pixmap(pieces[i], @unit),
-            :pos => to_real(i), :name => pieces[i]
-      end
+  def remove_item(index, *args)
+    item = items.delete_at(index)
+    unless item.nil? or args.include?(:keep)
+      destroy_item item
     end
-    
-    if pieces.size > @items.size
-      (@items.size...pieces.size).each do |i|
-        add_piece(i, pieces[i])
-      end
-    elsif pieces.size < @items.size
-      @items[pieces.size..-1].each {|item| destroy_item(item) }
-      puts "items = #{@items.inspect}"
-      puts "items2 = #{@items[0...pieces.size].inspect}"
-      @items = @items[0...pieces.size]
-    end
+    item
   end
   
   def on_click(pos)

@@ -17,6 +17,18 @@ class Object
   end
 end
 
+module Enumerable
+  def detect_index
+    i = 0
+    each do |item|
+      return i if yield item
+      i += 1
+    end
+    
+    nil
+  end
+end
+
 class Qt::Painter
   def paint
     yield self
