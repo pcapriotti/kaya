@@ -19,7 +19,7 @@ class Board < Qt::GraphicsItemGroup
   square_tag :last_move_src, :highlight
   square_tag :last_move_dst, :highlight
 
-  def initialize(scene, theme, game, state = nil)
+  def initialize(scene, theme, game, state, field)
     super(nil, scene)
     @scene = scene
     @theme = theme
@@ -35,7 +35,7 @@ class Board < Qt::GraphicsItemGroup
     
     @animator = @game.animator.new(self)
     
-    @field = AnimationField.new(20)
+    @field = field
     @flipped = false
     @movable = lambda { true }
   end
@@ -67,14 +67,14 @@ class Board < Qt::GraphicsItemGroup
              :z => BACKGROUND_ZVALUE
   end
   
-  def on_resize(rect)
+  def set_geometry(rect)
     board = @state.board
-    side = [rect.width / board.size.x, rect.height / board.size.y].min.to_i
+    side = [rect.width / board.size.x, rect.height / board.size.y].min.floor
     @unit = Qt::PointF.new(side, side)
     base = Qt::PointF.new(((rect.width - side * board.size.x) / 2.0).to_i,
                           ((rect.height - side * board.size.y) / 2.0).to_i)
 
-    self.pos = base
+    self.pos = base + rect.top_left
 
     redraw
   end

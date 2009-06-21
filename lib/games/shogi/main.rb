@@ -16,7 +16,8 @@ Game.add :shogi, [:chess] do |chess|
            :animator => chess.animator,
            :validator => Validator,
            :piece => chess.piece,
-           :keywords => %w(shogi)
+           :keywords => %w(shogi),
+           :players => [:black, :white]
 end
 
 end

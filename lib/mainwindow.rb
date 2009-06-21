@@ -1,5 +1,6 @@
 require 'qtutils'
 require 'board/board'
+require 'board/pool'
 require 'board/table'
 require 'history'
 require 'controller'
@@ -7,7 +8,7 @@ require 'controller'
 class MainWindow < KDE::XmlGuiWindow
   include ActionHandler
   
-  Theme = Struct.new(:pieces, :board)
+  Theme = Struct.new(:pieces, :board, :layout)
   
   def initialize(loader, game)
     super nil
@@ -46,14 +47,26 @@ private
       (game.keywords || []) + ['pieces'], [], :shadow => true)
     theme.board = @loader.get_matching(nil, game,
       ['board'], game.keywords || [])
+    theme.layout = @loader.get_matching(nil, game,
+      ['layout'], game.keywords || [])
     
     scene = Qt::GraphicsScene.new
     
     state = game.state.new.tap {|s| s.setup }
     
-    @board = Board.new(scene, theme, game, state)
+    field = AnimationField.new(20)
+    @board = Board.new(scene, theme, game, state, field)
+    if game.respond_to? :pool
+      @pools = game.players.inject({}) do |res, player|
+        res[player] = Pool.new(scene, theme, game, state.pool(player), field)
+        res
+      end
+    end
     
-    table = Table.new(scene, self, @board)
+    table = Table.new scene, theme, self,
+      :board => @board,
+      :pools => @pools
+      
     self.central_widget = table
 
     history = History.new(state)
