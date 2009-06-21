@@ -9,14 +9,13 @@ class Pool < Qt::GraphicsItemGroup
   attr_reader :rect
   attr_reader :scene
   
-  def initialize(scene, theme, game, field)
+  def initialize(scene, theme, game)
     super(nil, scene)
     @scene = scene
     @scene.add_element(self)
     
     @theme = theme
     @game = game
-    @field = field
     
     @items = []
     @size = Point.new(3, 5)

@@ -1,4 +1,3 @@
-require 'animation_field'
 require 'board/square_tag.rb'
 require 'observer'
 require 'board/point_converter.rb'
@@ -14,13 +13,13 @@ class Board < Qt::GraphicsItemGroup
   include ItemBag
   include ItemUtils
 
-  attr_reader :scene, :items, :state, :unit, :rect, :theme
+  attr_reader :scene, :items, :unit, :rect, :theme
   attr_accessor :movable
   square_tag :selection
   square_tag :last_move_src, :highlight
   square_tag :last_move_dst, :highlight
 
-  def initialize(scene, theme, game, state, field)
+  def initialize(scene, theme, game)
     super(nil, scene)
     @scene = scene
     @scene.add_element(self)
@@ -28,12 +27,7 @@ class Board < Qt::GraphicsItemGroup
     @items = {}
     
     @game = game
-    @state = state
     
-    
-    @animator = @game.animator.new(self)
-    
-    @field = field
     @flipped = false
     @movable = lambda { true }
   end
@@ -60,8 +54,6 @@ class Board < Qt::GraphicsItemGroup
         res
       end
     end
-    
-    puts "redrawing #{names.size} items"
     
     @items.each {|item| remove_item(item) }
 
@@ -122,20 +114,7 @@ class Board < Qt::GraphicsItemGroup
   
   def on_click(pos)
     p = to_logical(pos)
-    
-    if selection
-      move = @game.policy.new_move(@state, selection, p)
-      validate = @game.validator.new(@state)
-      if validate[move]
-        perform! move
-        fire :new_move => { :move => move, :state => @state.dup }
-      end
-      
-      self.selection = nil
-    elsif @game.policy.movable?(@state, p) and
-          @movable[@state, p]
-      self.selection = p
-    end
+    fire :click => p
   end
   
   def highlight(move)
@@ -146,31 +125,5 @@ class Board < Qt::GraphicsItemGroup
       self.last_move_src = nil
       self.last_move_dst = nil
     end
-  end
-  
-  def perform!(move)
-    @state.perform!(move)
-    animate :forward, move
-  end
-  
-  def back(state, move)
-    @state = state.dup
-    animate :back, move
-  end
-  
-  def forward(state, move)
-    @state = state.dup
-    animate :forward, move
-  end
-  
-  def warp(state)
-    @state = state.dup
-    animate :warp, :instant => true
-  end
-  
-  def animate(direction, *args)
-    animation = @animator.send(direction, @state, *args)
-    @field.run animation
-    changed
   end
 end

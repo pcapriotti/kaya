@@ -6,31 +6,64 @@ class Controller
   
   attr_reader :history
   
-  def initialize(board, history)
+  def initialize(board, game, history)
     @board = board
+    @game = game
     @history = history
+    @animator = @game.animator.new(board)
+    @field = AnimationField.new(20)
+    @board.reset(history.state.board)
     
-    board.add_observer self
+    c = self
+    board.observe(:click) {|p| c.on_board_click(p) }
   end
   
-  def on_new_move(data)
-    @history.add_move(data[:state], data[:move])
-    @board.highlight(data[:move])
+  def on_board_click(p)
+    state = @history.state
+    if @board.selection
+      move = @game.policy.new_move(state, @board.selection, p)
+      validate = @game.validator.new(state)
+      if validate[move]
+        perform! move
+      end
+      
+      @board.selection = nil
+    elsif @game.policy.movable?(state, p) and movable?(p)
+      @board.selection = p
+    end
   end
   
-  def on_back
+  def perform!(move)
+    state = @history.state.dup
+    state.perform! move
+    @history.add_move(state, move)
+    
+    animate(:forward, state, move)
+    @board.highlight(move)
+  end
+  
+  def back
     state, move = @history.back
-    @board.back(state.dup, move)
+    animate(:back, state, move)
     @board.highlight(@history.move)
   rescue History::OutOfBound
     puts "error: first move"
   end
   
-  def on_forward
+  def forward
     state, move = @history.forward
-    @board.forward(state.dup, move)
+    animate(:forward, state, move)
     @board.highlight(move)
   rescue History::OutOfBound
     puts "error: last move"
+  end
+  
+  def animate(direction, state, move)
+    anim = @animator.send(direction, state, move)
+    @field.run anim
+  end
+  
+  def movable?(p)
+    true
   end
 end

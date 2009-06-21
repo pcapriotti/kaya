@@ -31,11 +31,11 @@ private
     std_action :quit, :slot => :close
     regular_action :back, :icon => 'go-previous', 
                           :text => KDE.i18n("&Back") do
-      @board.fire :back
+      @controller.back
     end
     regular_action :forward, :icon => 'go-next', 
                              :text => KDE.i18n("&Forward") do
-      @board.fire :forward
+      @controller.forward
     end
                   
   end
@@ -56,16 +56,16 @@ private
     state = game.state.new.tap {|s| s.setup }
     
     field = AnimationField.new(20)
-    @board = Board.new(scene, theme, game, state, field)
-    if game.respond_to? :pool
-      @pools = game.players.inject({}) do |res, player|
-        res[player] = Pool.new(scene, theme, game, field)
+    @board = Board.new(scene, theme, game)
+    @pools = if game.respond_to? :pool
+      game.players.inject({}) do |res, player|
+        res[player] = Pool.new(scene, theme, game)
         res
       end
+    else
+      {}
     end
-    
-    @board.reset(state.board)
-    
+
     table = Table.new scene, theme, self,
       :board => @board,
       :pools => @pools
@@ -73,6 +73,6 @@ private
     self.central_widget = table
 
     history = History.new(state)
-    controller = Controller.new(@board, history)
+    @controller = Controller.new(@board, game, history)
   end
 end
