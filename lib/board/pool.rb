@@ -4,40 +4,48 @@ class Pool < Qt::GraphicsItemGroup
   BACKGROUND_ZVALUE = -10
   
   include Observable
-  include ItemBag
+  include ItemUtils
   
-  attr_reader :layout_item
-  attr_reader :items
+  attr_reader :rect
+  attr_reader :scene
   
-  def initialize(scene, theme, game, pool, field)
+  def initialize(scene, theme, game, field)
     super(nil, scene)
     @scene = scene
+    @scene.add_element(self)
+    
     @theme = theme
     @game = game
-    @pool = pool
     @field = field
     
-    @items = {}
+    @items = []
+    @size = Point.new(3, 5)
+  end
+  
+  def redraw
   end
   
   def set_geometry(rect)
-    self.pos = rect.top_left
-#     unit = Qt::PointF.new(rect.width, rect.height)
-#     add_item :background,
-#              @theme.pieces.pixmap(@game.piece.new(:black, :promoted_rook), unit), 
-#              :z => BACKGROUND_ZVALUE
+    @rect = rect
+    
+    self.pos = @rect.top_left
+    
+    @unit = (@rect.width / @size.x).floor
+    redraw
   end
   
-  def create_item(key, pix, opts = {})
-    name = opts[:name] || key.to_s
-    item = Item.new(name, pix, self, scene)
-    item.pos = opts[:pos] || Qt::PointF.new(0, 0)
-    item.z_value = opts[:z] || 0
-    item.visible = false if opts[:hidden]
-    item
+  def add_piece(piece)
+    
   end
   
-  def destroy_item(item)
-    scene.remove_item item
+  def to_logical(p)
+  end
+  
+  def to_real(index)
+    x = index % @size.x
+    y = index / @size.x
+    x = @size.x - x - 1 if y % 2 == 1
+    
+    Qt::PointF.new(x * @unit, y * @unit)
   end
 end

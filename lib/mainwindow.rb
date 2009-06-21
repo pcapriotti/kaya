@@ -2,6 +2,7 @@ require 'qtutils'
 require 'board/board'
 require 'board/pool'
 require 'board/table'
+require 'board/scene'
 require 'history'
 require 'controller'
 
@@ -50,7 +51,7 @@ private
     theme.layout = @loader.get_matching(nil, game,
       ['layout'], game.keywords || [])
     
-    scene = Qt::GraphicsScene.new
+    scene = Scene.new
     
     state = game.state.new.tap {|s| s.setup }
     
@@ -58,7 +59,7 @@ private
     @board = Board.new(scene, theme, game, state, field)
     if game.respond_to? :pool
       @pools = game.players.inject({}) do |res, player|
-        res[player] = Pool.new(scene, theme, game, state.pool(player), field)
+        res[player] = Pool.new(scene, theme, game, field)
         res
       end
     end

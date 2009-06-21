@@ -21,8 +21,19 @@ class Item < Qt::GraphicsPixmapItem
     @opacity = value
     update
   end
+end
+
+module ItemUtils
+  def create_item(key, pix, opts = {})
+    name = opts[:name] || key.to_s
+    item = Item.new(name, pix, self, scene)
+    item.pos = opts[:pos] || Qt::PointF.new(0, 0)
+    item.z_value = opts[:z] || 0
+    item.visible = false if opts[:hidden]
+    item
+  end
   
-  def remove
-    scene.remove_item self
+  def destroy_item(item)
+    scene.remove_item item
   end
 end

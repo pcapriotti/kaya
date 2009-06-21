@@ -12,8 +12,9 @@ class Board < Qt::GraphicsItemGroup
   include Observable
   include PointConverter
   include ItemBag
+  include ItemUtils
 
-  attr_reader :scene, :items, :state, :unit, :theme
+  attr_reader :scene, :items, :state, :unit, :rect, :theme
   attr_accessor :movable
   square_tag :selection
   square_tag :last_move_src, :highlight
@@ -22,6 +23,7 @@ class Board < Qt::GraphicsItemGroup
   def initialize(scene, theme, game, state, field)
     super(nil, scene)
     @scene = scene
+    @scene.add_element(self)
     @theme = theme
     @items = {}
     
@@ -68,13 +70,14 @@ class Board < Qt::GraphicsItemGroup
   end
   
   def set_geometry(rect)
+    @rect = rect
     board = @state.board
-    side = [rect.width / board.size.x, rect.height / board.size.y].min.floor
+    side = [@rect.width / board.size.x, @rect.height / board.size.y].min.floor
     @unit = Qt::PointF.new(side, side)
-    base = Qt::PointF.new(((rect.width - side * board.size.x) / 2.0).to_i,
-                          ((rect.height - side * board.size.y) / 2.0).to_i)
+    base = Qt::PointF.new(((@rect.width - side * board.size.x) / 2.0).to_i,
+                          ((@rect.height - side * board.size.y) / 2.0).to_i)
 
-    self.pos = base + rect.top_left
+    self.pos = base + @rect.top_left
 
     redraw
   end
@@ -85,36 +88,21 @@ class Board < Qt::GraphicsItemGroup
     add_item p, @theme.pieces.pixmap(piece, @unit), opts
   end
   
-  def create_item(key, pix, opts = {})
-    name = opts[:name] || key.to_s
-    item = Item.new(name, pix, self, scene)
-    item.pos = opts[:pos] || Qt::PointF.new(0, 0)
-    item.z_value = opts[:z] || 0
-    item.visible = false if opts[:hidden]
-    item
-  end
-  
-  def destroy_item(item)
-    scene.remove_item item
-  end
-  
-  def mousePressEvent(e)
-    if e.button == Qt::LeftButton
-      p = to_logical(e.pos)
-      
-      if selection
-        move = @game.policy.new_move(@state, selection, p)
-        validate = @game.validator.new(@state)
-        if validate[move]
-          perform! move
-          fire :new_move => { :move => move, :state => @state.dup }
-        end
-        
-        self.selection = nil
-      elsif @game.policy.movable?(@state, p) and
-            @movable[@state, p]
-        self.selection = p
+  def on_click(pos)
+    p = to_logical(pos)
+    
+    if selection
+      move = @game.policy.new_move(@state, selection, p)
+      validate = @game.validator.new(@state)
+      if validate[move]
+        perform! move
+        fire :new_move => { :move => move, :state => @state.dup }
       end
+      
+      self.selection = nil
+    elsif @game.policy.movable?(@state, p) and
+          @movable[@state, p]
+      self.selection = p
     end
   end
   
