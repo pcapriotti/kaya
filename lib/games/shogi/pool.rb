@@ -29,6 +29,6 @@ module Shogi
     
     def size
       @pieces.values.inject(0, &:+)
-    end
+    end    
   end
 end

@@ -17,7 +17,8 @@ Game.add :shogi, [:chess] do |chess|
            :validator => Validator,
            :piece => chess.piece,
            :keywords => %w(shogi),
-           :players => [:black, :white]
+           :players => [:black, :white],
+           :types => [:pawn, :lance, :horse, :silver, :gold, :bishop, :rook, :king]
 end
 
 end

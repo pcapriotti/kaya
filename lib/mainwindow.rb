@@ -56,8 +56,8 @@ private
     state = game.state.new.tap {|s| s.setup }
     
     field = AnimationField.new(20)
-    @board = Board.new(scene, theme, game)
-    @pools = if game.respond_to? :pool
+    board = Board.new(scene, theme, game)
+    pools = if game.respond_to? :pool
       game.players.inject({}) do |res, player|
         res[player] = Pool.new(scene, theme, game)
         res
@@ -65,14 +65,14 @@ private
     else
       {}
     end
-
-    table = Table.new scene, theme, self,
-      :board => @board,
-      :pools => @pools
-      
-    self.central_widget = table
+    
+    elements = { :board => board,
+                 :pools => pools }
+    table = Table.new scene, theme, self, elements
 
     history = History.new(state)
-    @controller = Controller.new(@board, game, history)
+    @controller = Controller.new(elements, game, history)
+    
+    self.central_widget = table
   end
 end

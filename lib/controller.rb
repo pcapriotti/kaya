@@ -6,16 +6,18 @@ class Controller
   
   attr_reader :history
   
-  def initialize(board, game, history)
-    @board = board
+  def initialize(elements, game, history)
+    @board = elements[:board]
+    @pools = elements[:pools]
+
     @game = game
     @history = history
-    @animator = @game.animator.new(board)
+    @animator = @game.animator.new(@board)
     @field = AnimationField.new(20)
     @board.reset(history.state.board)
     
     c = self
-    board.observe(:click) {|p| c.on_board_click(p) }
+    @board.observe(:click) {|p| c.on_board_click(p) }
   end
   
   def on_board_click(p)
@@ -38,12 +40,14 @@ class Controller
     state.perform! move
     @history.add_move(state, move)
     
+    @pools.each {|color, pool| pool.warp(state.pool(color)) }
     animate(:forward, state, move)
     @board.highlight(move)
   end
   
   def back
     state, move = @history.back
+    @pools.each {|color, pool| pool.warp(state.pool(color)) }
     animate(:back, state, move)
     @board.highlight(@history.move)
   rescue History::OutOfBound
@@ -52,6 +56,7 @@ class Controller
   
   def forward
     state, move = @history.forward
+    @pools.each {|color, pool| pool.warp(state.pool(color)) }
     animate(:forward, state, move)
     @board.highlight(move)
   rescue History::OutOfBound

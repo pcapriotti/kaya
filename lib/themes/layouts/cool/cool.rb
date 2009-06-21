@@ -34,7 +34,7 @@ class CoolLayout
     if @game.respond_to? :pool
       pool_height = (board_rect.height - margin) / @game.players.size
       offy = base.y
-      pools_rect = @game.players.map do |player|
+      pools_rect = @game.players.reverse.map do |player|
         r = Qt::Rect.new(
           board_rect.right + margin,
           offy + margin,
