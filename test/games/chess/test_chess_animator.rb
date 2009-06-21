@@ -5,12 +5,14 @@ require 'helpers/animation_test_helper'
 class TestChessAnimator < Test::Unit::TestCase
   include AnimationAssertions
   
+  FakeItem = Struct.new(:name)
+  
   def setup
     @chess = Game.get(:chess)
     @items = {
-      Point.new(3, 4) => @chess.piece.new(:white, :king),
-      Point.new(3, 1) => @chess.piece.new(:black, :king),
-      Point.new(7, 7) => @chess.piece.new(:black, :queen)
+      Point.new(3, 4) => FakeItem.new(@chess.piece.new(:white, :king)),
+      Point.new(3, 1) => FakeItem.new(@chess.piece.new(:black, :king)),
+      Point.new(7, 7) => FakeItem.new(@chess.piece.new(:black, :queen))
     }
     @board = FakeBoard.new(@items)
     
@@ -80,7 +82,7 @@ class TestChessAnimator < Test::Unit::TestCase
         mov = args.find {|a| a.animation == :movement }
         assert_animation(:movement, mov) do |args|
           piece, src, dst = args
-          assert_equal @chess.piece.new(:black, :queen), piece
+          assert_equal FakeItem.new(@chess.piece.new(:black, :queen)), piece
           assert_equal Point.new(7, 7), src
           assert_equal Point.new(5, 5), dst
         end

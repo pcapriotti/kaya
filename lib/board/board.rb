@@ -8,7 +8,7 @@ require 'board/item_bag'
 class Board < Qt::GraphicsItemGroup
   BACKGROUND_ZVALUE = -10
   
-  extend TaggableSquares
+  include TaggableSquares
   include Observable
   include PointConverter
   include ItemBag
@@ -28,12 +28,8 @@ class Board < Qt::GraphicsItemGroup
     @items = {}
     
     @game = game
-    
     @state = state
-    unless @state
-      @state = @game.state.new
-      @state.setup
-    end
+    
     
     @animator = @game.animator.new(self)
     
@@ -56,35 +52,71 @@ class Board < Qt::GraphicsItemGroup
     redraw if old != @flipped
   end
   
-  def redraw
-    board = @state.board
-    @items.keys.each {|key| remove_item(key) }
-    board.each_square do |p|
-      piece = board[p]
-      add_piece(p, piece) if piece
+  def redraw(names = nil)
+    unless names
+      names = @items.inject({}) do |res, data|
+        p, item = data
+        res[p] = item.name if item
+        res
+      end
     end
     
-    add_item :background, 
-             @theme.board.pixmap(@unit), 
-             :z => BACKGROUND_ZVALUE
+    puts "redrawing #{names.size} items"
+    
+    @items.each {|item| remove_item(item) }
+
+    names.each do |key, name|
+      reload_item(key, name)
+    end
+  end
+  
+  def reset(board)
+    pieces = board.to_enum(:each_square).inject({}) do |res, p|
+      res[p] = board[p] if board[p]
+      res
+    end
+    pieces[:background] = nil
+    
+    if @unit
+      redraw pieces
+    else
+      @pieces_to_draw = pieces
+    end
+  end
+  
+  def reload_item(key, name)
+    case key
+    when Point # piece
+      add_item key,
+               @theme.pieces.pixmap(name, @unit),
+               :pos => to_real(key),
+               :name => name
+    when :background # background
+      add_item key,
+               @theme.board.pixmap(@unit),
+               :z => BACKGROUND_ZVALUE
+    when Symbol # tag
+      # force redraw by setting tag again
+      set_tag(key, tag(key))
+    end
   end
   
   def set_geometry(rect)
     @rect = rect
-    board = @state.board
-    side = [@rect.width / board.size.x, @rect.height / board.size.y].min.floor
+    side = [@rect.width / @game.size.x, @rect.height / @game.size.y].min.floor
     @unit = Qt::Point.new(side, side)
-    base = Qt::Point.new(((@rect.width - side * board.size.x) / 2.0).to_i,
-                        ((@rect.height - side * board.size.y) / 2.0).to_i)
+    base = Qt::Point.new(((@rect.width - side * @game.size.x) / 2.0).to_i,
+                        ((@rect.height - side * @game.size.y) / 2.0).to_i)
 
     self.pos = (base + @rect.top_left).to_f
 
-    redraw
+    redraw @pieces_to_draw
+    @pieces_to_draw = nil
   end
   
   def add_piece(p, piece, opts = {})
     opts = opts.merge :pos => to_real(p),
-                      :name => piece.name
+                      :name => piece
     add_item p, @theme.pieces.pixmap(piece, @unit), opts
   end
   

@@ -6,7 +6,7 @@ require 'mocha'
 
 class FakeTaggableBoard
   include PointConverter
-  extend TaggableSquares
+  include TaggableSquares
   
   square_tag :selection
   

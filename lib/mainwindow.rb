@@ -64,6 +64,8 @@ private
       end
     end
     
+    @board.reset(state.board)
+    
     table = Table.new scene, theme, self,
       :board => @board,
       :pools => @pools

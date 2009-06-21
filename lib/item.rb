@@ -4,6 +4,9 @@ class Item < Qt::GraphicsPixmapItem
   attr_reader :name, :item
   attr_reader :opacity
   
+  # name is whatever information the caller needs
+  # to recreate this piece with a different size
+  # 
   def initialize(name, pixmap, parent, scene)
     super pixmap, parent, scene
     @name = name

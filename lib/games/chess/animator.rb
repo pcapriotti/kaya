@@ -28,7 +28,7 @@ module Chess
         if new_piece
           if not old_item
             res << appear_on!(p, new_piece, opts)
-          elsif new_piece.name != old_item.name
+          elsif new_piece != old_item.name
             res << morph_on!(p, new_piece, opts)
           end
         else
