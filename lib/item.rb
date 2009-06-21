@@ -21,6 +21,10 @@ class Item < Qt::GraphicsPixmapItem
     @opacity = value
     update
   end
+  
+  def remove
+    scene.remove_item self
+  end
 end
 
 module ItemUtils

@@ -74,10 +74,18 @@ end
 
 class Qt::Point
   include PrintablePoint
+  
+  def to_f
+    Qt::PointF.new(x, y)
+  end
 end
 
 class Qt::PointF
   include PrintablePoint
+  
+  def to_i
+    Qt::Point.new(x.to_i, y.to_i)
+  end
 end
 
 class Qt::Size

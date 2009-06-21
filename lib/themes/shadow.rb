@@ -7,8 +7,8 @@ module Shadower
   
   def with_shadow(loader, data = DEFAULT_SHADOW_DATA)
     lambda do |piece, size|
-      isz = size * 100 / (100 + data.grow) + Qt::PointF.new(0.5, 0.5)
-      off = Qt::PointF.new(
+      isz = size * 100 / (100 + data.grow) + Qt::Point.new(0.5, 0.5)
+      off = Qt::Point.new(
         data.offset.x * isz.x / 200.0,
         data.offset.y * isz.x / 200.0)
       img = loader[piece, isz]
@@ -18,10 +18,10 @@ module Shadower
                                    off)
       s = shadow(img, scaled_data)
       Qt::Painter.new(s).paint do |p|
-        dst = Qt::RectF.new((size.x - isz.x) / 2 - off.x,
+        dst = Qt::Rect.new((size.x - isz.x) / 2 - off.x,
                             (size.y - isz.y) / 2 - off.y,
                             isz.x, isz.y)
-        p.draw_image(dst, img, Qt::RectF.new(Qt::PointF.new(0, 0), isz))
+        p.draw_image(dst, img, Qt::Rect.new(Qt::Point.new(0, 0), isz))
       end
       s
     end

@@ -11,9 +11,10 @@ class Scene < Qt::GraphicsScene
   
   def mousePressEvent(e)
     if e.button == Qt::LeftButton
+      pos = e.scene_pos.to_i
       @elements.each do |element|
-        if element.rect.contains(e.scene_pos)
-          element.on_click(e.scene_pos - element.rect.top_left)
+        if element.rect.contains(pos)
+          element.on_click(pos - element.rect.top_left)
         end
       end
     end

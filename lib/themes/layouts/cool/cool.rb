@@ -23,10 +23,10 @@ class CoolLayout
     margin = MARGIN * unit
     clock_width = CLOCK_WIDTH * unit
 
-    base = Qt::PointF.new((rect.width - xrel * unit) / 2,
+    base = Qt::Point.new((rect.width - xrel * unit) / 2,
                           (rect.height - yrel * unit) / 2)
     
-    board_rect = Qt::RectF.new(
+    board_rect = Qt::Rect.new(
       base.x + margin, base.y + margin,
       @size.x * unit, @size.y * unit)
     elements[:board].set_geometry(board_rect)
@@ -35,7 +35,7 @@ class CoolLayout
       pool_height = (board_rect.height - margin) / @game.players.size
       offy = base.y
       pools_rect = @game.players.map do |player|
-        r = Qt::RectF.new(
+        r = Qt::Rect.new(
           board_rect.right + margin,
           offy + margin,
           clock_width,
