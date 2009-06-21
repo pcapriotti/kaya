@@ -71,7 +71,7 @@ private
     table = Table.new scene, theme, self, elements
 
     history = History.new(state)
-    @controller = Controller.new(elements, game, history)
+    @controller = Controller.new(scene, elements, game, history)
     
     self.central_widget = table
   end

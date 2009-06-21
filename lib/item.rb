@@ -31,6 +31,9 @@ class Item < Qt::GraphicsPixmapItem
 end
 
 module ItemUtils
+  BACKGROUND_ZVALUE = -10
+  TEMP_ZVALUE = 10
+  
   def create_item(key, pix, opts = {})
     name = opts[:name] || key.to_s
     item = Item.new(name, pix, self, scene)
@@ -42,5 +45,13 @@ module ItemUtils
   
   def destroy_item(item)
     scene.remove_item item
+  end
+  
+  def raise(item)
+    item.z_value = TEMP_ZVALUE
+  end
+  
+  def lower(item)
+    item.z_value = 0
   end
 end

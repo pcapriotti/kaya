@@ -80,8 +80,8 @@ module Shogi
           piece = piece_factory.new(turn, captured.type)
           pool(turn).add(demoted(piece))
         end
-        switch_turn!
       end
+      switch_turn!
     end
     
     def switch_turn!

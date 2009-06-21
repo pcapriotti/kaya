@@ -3,8 +3,9 @@ require 'animations'
 module AnimatorHelper
   include Animations
   
-  def move!(src, dst, path)
+  def move!(src, dst, path, opts = {})
     piece = board.move_item(src, dst)
+    src = nil if opts[:adjust]
     movement(piece, src, dst, path)
   end
   

@@ -5,8 +5,6 @@ require 'item'
 require 'board/item_bag'
 
 class Board < Qt::GraphicsItemGroup
-  BACKGROUND_ZVALUE = -10
-  
   include TaggableSquares
   include Observable
   include PointConverter
@@ -112,9 +110,40 @@ class Board < Qt::GraphicsItemGroup
     add_item p, @theme.pieces.pixmap(piece, @unit), opts
   end
   
-  def on_click(pos)
+  def create_piece(piece, opts = {})
+    opts = opts.merge :name => piece
+    create_item p, @theme.pieces.pixmap(piece, @unit), opts
+  end
+  
+  def on_click(pos, press_pos)
     p = to_logical(pos)
-    fire :click => p
+    p2 = to_logical(press_pos)
+    
+    if p == p2
+      fire :click => p
+    end
+  end
+  
+  def on_drag(pos)
+    p = to_logical(pos)
+    item = items[p]
+    if item
+      fire :drag => { :src => p, 
+                      :item => item,
+                      :size => @unit }
+    end
+  end
+  
+  def on_drop(old_pos, pos, data)
+    if data[:item]
+      src = if old_pos
+        to_logical(old_pos)
+      end
+      dst = if pos
+        to_logical(pos)
+      end
+      fire :drop => data.merge(:src => src, :dst => dst)
+    end
   end
   
   def highlight(move)

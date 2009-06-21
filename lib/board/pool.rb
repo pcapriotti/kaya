@@ -68,8 +68,23 @@ class Pool < Qt::GraphicsItemGroup
     item
   end
   
-  def on_click(pos)
+  def on_click(pos, press_pos)
+    
+  end
+  
+  def on_drag(pos)
     index = to_logical(pos)
+    item = items[index]
+    if item
+      fire :drag => { :index => index,
+                      :item => item }
+    end
+  end
+  
+  def on_drop(old_pos, pos, data)
+    if data[:item]
+      fire :drop => data
+    end
   end
   
   def to_logical(p)

@@ -29,13 +29,19 @@ module Animations
   
   def movement(item, src, dst, path_factory)
     if item
-      src = board.to_real(src)
+      src = if src
+        board.to_real(src)
+      else
+        item.pos
+      end
+        
       dst = board.to_real(dst)
       path = path_factory.new(src, dst)
       
-      SimpleAnimation.new "move to #{dst}", LENGTH, nil,
+      SimpleAnimation.new "move to #{dst}", LENGTH,
+        lambda { board.raise(item) },
         lambda {|i| item.pos = src + path[i] },
-        lambda { item.pos = dst }
+        lambda { item.pos = dst; board.lower(item) }
     end
   end
 

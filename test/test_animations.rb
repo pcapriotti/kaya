@@ -17,6 +17,12 @@ class FakeAnimator
     def flipped?
       false
     end
+    
+    def raise(item)
+    end
+    
+    def lower(item)
+    end
   end
   
   attr_reader :board
