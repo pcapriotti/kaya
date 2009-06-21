@@ -28,6 +28,15 @@ class Pool < Qt::GraphicsItemGroup
     end
     
     @animator = PoolAnimator.new(self)
+    @flipped = false
+  end
+  
+  def flip(value)
+    @flipped = value
+  end
+  
+  def flipped?
+    @flipped
   end
   
   def redraw
@@ -88,8 +97,12 @@ class Pool < Qt::GraphicsItemGroup
   end
   
   def to_logical(p)
+    y = p.y.to_f
+    if @flipped
+      y = rect.height - y
+    end
     result = Point.new((p.x.to_f / @unit.x).floor,
-                       (p.y.to_f / @unit.y).floor)
+                       (y / @unit.y).floor)
     y = result.y
     x = y % 2 == 0 ? result.x : @size.x - result.x - 1
     x + y * @size.x
@@ -100,7 +113,14 @@ class Pool < Qt::GraphicsItemGroup
     y = index / @size.x
     x = @size.x - x - 1 if y % 2 == 1
     
-    Qt::PointF.new(x * @unit.x, y * @unit.y)
+    rx = x * @unit.x
+    ry = if @flipped
+      rect.height - (y + 1) * @unit.y
+    else
+      y * @unit.y
+    end
+    
+    Qt::PointF.new(rx, ry)
   end
   
   def compare(piece1, piece2)
