@@ -1,23 +1,21 @@
 class ConstrainedTextItem < Qt::GraphicsItem
-  def initialize(text, parent, constraint, opts = {})
+  attr_reader :text
+
+  def initialize(text, parent, constraint = Qt::RectF.new, opts = {})
     super(parent)
-    @text = text
+    @text = text.to_s
     @parent = parent
     @constraint = constraint
     
     @font = opts[:font] || Qt::Font.new
     @color = opts[:color] || Qt::Color.new(Qt::black)
     
-    @brect = Qt::FontMetrics.new(@font).bounding_rect(@text)
-    @factor = [
-      0.9 * @constraint.width / @brect.width,
-      @constraint.height / @brect.height].min
+    update_metrics
   end
   
   def paint(p, opts, widget)
     p.pen = @color
     p.font = @font
-    p.draw_rect @constraint
     p.saving do
       p.translate(@constraint.center)
       p.scale(@factor, @factor)
@@ -29,8 +27,25 @@ class ConstrainedTextItem < Qt::GraphicsItem
   def boundingRect
     @constraint
   end
-  
-  def name
-    @text
+
+  def text=(value)
+    @text = value.to_s
+    update_metrics
+    update @constraint
   end
+  
+  def constraint=(value)
+    @constraint = Qt::RectF.new(value)
+    update_metrics
+    update @constraint
+  end
+  
+  def update_metrics
+    @brect = Qt::FontMetrics.new(@font).bounding_rect(@text)
+    @factor = [
+      0.9 * @constraint.width / @brect.width,
+      @constraint.height / @brect.height].min
+  end
+  
+  alias :name :text  
 end

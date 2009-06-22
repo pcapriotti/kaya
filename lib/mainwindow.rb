@@ -44,12 +44,15 @@ private
     config = KDE::Global.config.group('themes')
     
     theme = Theme.new
-    theme.pieces = @loader.get_matching('Celtic', game,
-      (game.keywords || []) + ['pieces'], [], :shadow => true)
-    theme.board = @loader.get_matching(nil, game,
-      ['board'], game.keywords || [])
-    theme.layout = @loader.get_matching(nil, game,
-      ['layout'], game.keywords || [])
+    theme.pieces = @loader.
+      get_matching((game.keywords || []) + %w(pieces)).
+      new(:game => game, :shadow => true)
+    theme.board = @loader.
+      get_matching(%w(board), game.keywords || []).
+      new(:game => game)
+    theme.layout = @loader.
+      get_matching(%w(layout), game.keywords || []).
+      new(game)
     
     scene = Scene.new
     
@@ -65,9 +68,15 @@ private
     else
       {}
     end
+    clock_class = @loader.get_matching(%w(clock))
+    clocks = game.players.inject({}) do |res, player|
+      res[player] = clock_class.new(scene)
+      res
+    end
     
     elements = { :board => board,
-                 :pools => pools }
+                 :pools => pools,
+                 :clocks => clocks }
     table = Table.new scene, theme, self, elements
 
     history = History.new(state)

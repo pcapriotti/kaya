@@ -1,6 +1,7 @@
 require 'observer_utils'
 require 'history'
 require 'board/pool_animator'
+require 'clock'
 
 class Controller
   include Observer
@@ -11,6 +12,7 @@ class Controller
     @scene = scene
     @board = elements[:board]
     @pools = elements[:pools]
+    @clocks = elements[:clocks]
 
     @game = game
     @history = history
@@ -25,6 +27,10 @@ class Controller
     @pools.each do |color, pool|
       pool.observe(:drag) {|data| c.on_pool_drag(color, data) }
       pool.observe(:drop) {|data| c.on_pool_drop(color, data) }
+    end
+    
+    @clocks.each do |color, clock|
+      clock.clock = Clock.new(300, 0, nil)
     end
   end
   
@@ -44,11 +50,14 @@ class Controller
   end
   
   def perform!(move, opts = {})
+    @clocks[@history.state.turn].clock.stop
     state = @history.state.dup
     state.perform! move
     @history.add_move(state, move)
     animate(:forward, state, move, opts)
     @board.highlight(move)
+    
+    @clocks[@history.state.turn].clock.start
   end
   
   def back

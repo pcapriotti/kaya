@@ -23,31 +23,33 @@ class Clock
     @timer = timer_class.new
     @timer.single_shot = true
     @timer.on(:timeout) { tick }
-  end
-  
-  def start
+    @running = false
     @count = 0
     @elapsed = 0
     @time = Qt::Time.new
-    
-    @time.start
-    @timer.start(100)
   end
   
   def stop
-    @elapsed += @time.elapsed
-    @timer.stop
-    
-    @main += @increment
-    
-    fire :timer => { :main => @main }
+    if @running
+      @elapsed += @time.elapsed
+      puts "elapsed = #{@elapsed}, count = #{@count}"
+      @timer.stop
+      
+      @main += @increment
+      
+      @running = false
+      fire :timer => { :main => @main }
+    end
   end
   
-  def resume
-    # milliseconds for the next tick
-    delta = (@count + 1) * 100 - @elapsed
-    @time.start
-    @timer.start(delta)
+  def start
+    if not @running
+      # milliseconds for the next tick
+      delta = [0, (@count + 1) * 100 - @elapsed].max
+      @time.start
+      @timer.start(delta)
+      @running = true
+    end
   end
   
   def tick
@@ -78,17 +80,24 @@ class Clock
       
       if elapsed
         fire :elapsed
-      elsif @main > 0
-        fire :timer => { :main => @main }
       else
-        fire :timer => { :byoyomi => @byoyomi.dup }
+        fire :timer => timer
       end
     end
     
     if not elapsed
       # schedule next tick
-      delta = (@count + 1) * 100 - @elapsed - @time.elapsed
+      delta = [0, (@count + 1) * 100 - @elapsed - @time.elapsed].max
+      puts "count = #{@count}, delta = #{delta}"
       @timer.start(delta)
+    end
+  end
+  
+  def timer
+    if @main > 0
+      { :main => @main }
+    else
+      { :byoyomi => @byoyomi.dup }
     end
   end
 end

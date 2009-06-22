@@ -11,8 +11,8 @@ class CoolLayout
   CLOCK_WIDTH = 2.6
   CLOCK_HEIGHT_RATIO = 0.4
         
-  def initialize(opts)
-    @game = opts[:game]
+  def initialize(game)
+    @game = game
     @size = @game.size
     @flipped = false
   end
@@ -23,6 +23,7 @@ class CoolLayout
     unit = [rect.width / xrel, rect.height / yrel].min.floor
     margin = MARGIN * unit
     clock_width = CLOCK_WIDTH * unit
+    clock_height = clock_width * CLOCK_HEIGHT_RATIO
 
     base = Qt::Point.new((rect.width - xrel * unit) / 2,
                           (rect.height - yrel * unit) / 2)
@@ -33,21 +34,41 @@ class CoolLayout
     elements[:board].flip(@flipped)
     elements[:board].set_geometry(board_rect)
 
-    if @game.respond_to? :pool
-      pool_height = (board_rect.height - margin) / @game.players.size
-      offy = base.y
-      flip = !@flipped
-      pools_rect = @game.players.reverse.map do |player|
-        r = Qt::Rect.new(
-          board_rect.right + margin,
-          offy + margin,
-          clock_width,
-          pool_height)
-        elements[:pools][player].flip(flip = !flip)
-        elements[:pools][player].set_geometry(r)
-        offy = r.bottom
-        r
+    pool_height = (board_rect.height - margin * (@game.players.size - 1)) / 
+                  @game.players.size
+    offy = base.y
+    flip = @flipped
+    @game.players.reverse.each do |player|
+      r_pool, r_clock = if flip
+        [Qt::Rect.new(
+            board_rect.right + margin,
+            offy + margin,
+            clock_width,
+            pool_height - clock_height - margin),
+          Qt::Rect.new(
+            board_rect.right + margin,
+            offy + margin + pool_height - clock_height,
+            clock_width,
+            clock_height)]
+      else
+        [Qt::Rect.new(
+            board_rect.right + margin,
+            offy + margin * 2 + clock_height,
+            clock_width,
+            pool_height - clock_height - margin),
+          Qt::Rect.new(
+            board_rect.right + margin,
+            offy + margin,
+            clock_width,
+            clock_height)]
       end
+      unless elements[:pools].empty?
+        elements[:pools][player].flip(flip)
+        elements[:pools][player].set_geometry(r_pool)
+      end
+      elements[:clocks][player].set_geometry(r_clock)
+      offy = offy + margin + pool_height
+      flip = !flip
     end
   end
   

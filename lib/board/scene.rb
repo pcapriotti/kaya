@@ -59,7 +59,7 @@ class Scene < Qt::GraphicsScene
         elsif element_src == element_dst
           # close drag and drop == click, unless
           # old_pos and pos fall on different squares
-          if same_square(element, old_pos, pos)
+          if same_square(element_src, old_pos, pos)
             notify(element_dst, :click, [pos])
           end
         else

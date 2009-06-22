@@ -55,16 +55,16 @@ class Board < Qt::GraphicsItemGroup
   end
   
   def reset(board)
-    pieces = board.to_enum(:each_square).inject({}) do |res, p|
+    names = board.to_enum(:each_square).inject({}) do |res, p|
       res[p] = board[p] if board[p]
       res
     end
-    pieces[:background] = nil
+    names[:background] = nil
     
     if @unit
-      redraw pieces
+      redraw names
     else
-      @pieces_to_draw = pieces
+      @names = names
     end
   end
   
@@ -94,8 +94,8 @@ class Board < Qt::GraphicsItemGroup
 
     self.pos = (base + @rect.top_left).to_f
 
-    redraw @pieces_to_draw
-    @pieces_to_draw = nil
+    redraw @names
+    @names = nil
   end
   
   def add_piece(p, piece, opts = {})
