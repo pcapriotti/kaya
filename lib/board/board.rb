@@ -109,13 +109,9 @@ class Board < Qt::GraphicsItemGroup
     create_item p, @theme.pieces.pixmap(piece, @unit), opts
   end
   
-  def on_click(pos, press_pos)
+  def on_click(pos)
     p = to_logical(pos)
-    p2 = to_logical(press_pos)
-    
-    if p == p2
-      fire :click => p
-    end
+    fire :click => p
   end
   
   def on_drag(pos)

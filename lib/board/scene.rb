@@ -46,13 +46,22 @@ class Scene < Qt::GraphicsScene
             src = if element_src == element_dst
               old_pos
             end
-            notify(element_dst, :drop, [src, pos], data)
+            # if the drag and drop is close and there's no
+            # dragged item,  notify a click instead
+            if src and
+               same_square(element_dst, src, pos) and
+               (not data[:item])
+              notify(element_dst, :click, [pos])
+            else
+              notify(element_dst, :drop, [src, pos], data)
+            end
           end
         elsif element_src == element_dst
-          # close drag and drop == click
-          # the element will decide how to handle it based on the distance
-          # between the coordinates
-          notify(element_dst, :click, [old_pos, pos])
+          # close drag and drop == click, unless
+          # old_pos and pos fall on different squares
+          if same_square(element, old_pos, pos)
+            notify(element_dst, :click, [pos])
+          end
         else
           # a rapid drag and drop between different elements
           # is never considered a click
@@ -101,6 +110,11 @@ class Scene < Qt::GraphicsScene
     if pos
       pos - element.rect.top_left
     end
+  end
+  
+  def same_square(element, pos1, pos2)
+    element.to_logical(rel(element, pos1)) == 
+    element.to_logical(rel(element, pos2))
   end
   
   # invoked by the controller when one of the elements 
