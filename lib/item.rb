@@ -7,8 +7,8 @@ class Item < Qt::GraphicsPixmapItem
   # name is whatever information the caller needs
   # to recreate this piece with a different size
   # 
-  def initialize(name, pixmap, parent, scene)
-    super pixmap, parent, scene
+  def initialize(name, pixmap, parent)
+    super pixmap, parent
     @name = name
     @opacity = 1.0
   end
@@ -36,7 +36,7 @@ module ItemUtils
   
   def create_item(key, pix, opts = {})
     name = opts[:name] || key.to_s
-    item = Item.new(name, pix, self, scene)
+    item = Item.new(name, pix, self)
     item.pos = opts[:pos] || Qt::PointF.new(0, 0)
     item.z_value = opts[:z] || 0
     item.visible = false if opts[:hidden]

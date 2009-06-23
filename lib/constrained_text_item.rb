@@ -36,17 +36,23 @@ class ConstrainedTextItem < Qt::GraphicsItem
   end
   
   def constraint=(value)
-    @constraint = Qt::RectF.new(value)
+    @constraint = value
     update_metrics
     update @constraint
   end
   
   def update_metrics
-    @brect = @fm.bounding_rect(@text)
-    @brect_max = @fm.bounding_rect('H' * @text.size)
-    @factor = [
-      @constraint.width / @brect_max.width,
-      @constraint.height / @brect_max.height].min
+    if @text.empty?
+      @brect = @constraint
+      @brect_max = @constraint
+      @factor = 1.0
+    else
+      @brect = @fm.bounding_rect(@text)
+      @brect_max = @fm.bounding_rect('H' * @text.size)
+      @factor = [
+        @constraint.width / @brect_max.width,
+        @constraint.height / @brect_max.height].min
+    end
   end
   
   alias :name :text  

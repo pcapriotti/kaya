@@ -98,4 +98,8 @@ class Clock
       { :byoyomi => @byoyomi.dup }
     end
   end
+  
+  def running?
+    @running
+  end
 end

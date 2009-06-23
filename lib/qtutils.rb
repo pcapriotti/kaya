@@ -112,6 +112,18 @@ class Qt::Size
   end
 end
 
+class Qt::SizeF
+  include PrintablePoint
+  
+  def x
+    width
+  end
+  
+  def y
+    height
+  end
+end
+
 class Qt::Rect
   include PrintableRect
 end

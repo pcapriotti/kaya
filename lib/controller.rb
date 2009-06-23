@@ -31,7 +31,10 @@ class Controller
     
     @clocks.each do |color, clock|
       clock.clock = Clock.new(300, 0, nil)
+      clock.data = { :color => color }
     end
+    
+    @clocks[@game.players.first].active = true
   end
   
   def on_board_click(p)
@@ -50,14 +53,14 @@ class Controller
   end
   
   def perform!(move, opts = {})
-    @clocks[@history.state.turn].clock.stop
+    @clocks[@history.state.turn].stop
     state = @history.state.dup
     state.perform! move
     @history.add_move(state, move)
     animate(:forward, state, move, opts)
     @board.highlight(move)
     
-    @clocks[@history.state.turn].clock.start
+    @clocks[@history.state.turn].start
   end
   
   def back
