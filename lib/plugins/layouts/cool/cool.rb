@@ -1,10 +1,10 @@
-require 'themes/theme'
+require 'plugins/plugin'
 
 class CoolLayout
-  include Theme
+  include Plugin
   
-  theme :name => 'Layouts/Cool',
-        :keywords => %w(layout)
+  plugin :name => 'Layouts/Cool',
+         :keywords => %w(layout)
         
   # values relative to unit = 1
   MARGIN = 0.2

@@ -1,4 +1,4 @@
-module Theme
+module Plugin
   module ModuleMethods
     def included(base)
       if base.class == Module
@@ -10,22 +10,22 @@ module Theme
   end
   
   module ClassMethods
-    def theme(args)
-      @theme_data = args
+    def plugin(args)
+      @plugin_data = args
     end
     
-    def theme_name
-      @theme_data[:name] if @theme_data
+    def plugin_name
+      @plugin_data[:name] if @plugin_data
     end
     
     def matches?(keywords)
       keywords.all? do |k|
-        @theme_data[:keywords].include? k
+        @plugin_data[:keywords].include? k
       end
     end
     
     def score(keywords)
-      (@theme_data[:keywords] & keywords).size
+      (@plugin_data[:keywords] & keywords).size
     end
   end
   

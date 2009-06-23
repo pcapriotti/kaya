@@ -1,7 +1,7 @@
 $:.unshift(File.dirname(__FILE__))
 require 'qtutils'
 require 'mainwindow'
-require 'themes/loader'
+require 'plugins/loader'
 require 'games/all'
 
 if $0 == __FILE__
@@ -31,8 +31,8 @@ if $0 == __FILE__
   end
   game ||= Game.get(DEFAULT_GAME)
 
-  theme_loader = ThemeLoader.new
-  main = MainWindow.new(theme_loader, game)
+  plugin_loader = PluginLoader.new
+  main = MainWindow.new(plugin_loader, game)
   
   main.show
   app.exec

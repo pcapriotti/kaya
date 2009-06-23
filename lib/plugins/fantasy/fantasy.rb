@@ -1,10 +1,10 @@
 require 'qtutils'
-require 'themes/svg_theme'
+require 'plugins/svg_theme'
 
 class FantasyTheme < SvgTheme
-  include Theme
-  theme :name => 'Fantasy',
-        :keywords => %w(chess pieces)
+  include Plugin
+  plugin :name => 'Fantasy',
+         :keywords => %w(chess pieces)
 
   def initialize(opts = {})
     super(opts)

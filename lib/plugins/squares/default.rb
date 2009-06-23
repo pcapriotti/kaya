@@ -1,12 +1,12 @@
-require 'themes/theme'
-require 'themes/background'
+require 'plugins/plugin'
+require 'plugins/background'
 
 class DefaultBackground
-  include Theme
+  include Plugin
   include Background
   
-  theme :name => 'Default',
-        :keywords => %w(chess board)
+  plugin :name => 'Default',
+         :keywords => %w(chess board)
   
   def initialize(opts)
     @squares = opts[:board_size] || opts[:game].size

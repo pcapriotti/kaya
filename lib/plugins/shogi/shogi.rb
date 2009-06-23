@@ -1,18 +1,18 @@
 require 'qtutils'
-require 'themes/theme'
-require 'themes/shadow'
-require 'themes/background'
+require 'plugins/plugin'
+require 'plugins/shadow'
+require 'plugins/background'
 
 class ShogibanBackground
-  include Theme
+  include Plugin
   include Background
   
   BACKGROUND_COLOR = Qt::Color.new(0xeb, 0xd6, 0xa0)
   LINE_COLOR = Qt::Color.new(0x9c, 0x87, 0x55)
   BASE_DIR = File.dirname(__FILE__)
   
-  theme :name => 'Shogiban',
-        :keywords => %w(shogi board)
+  plugin :name => 'Shogiban',
+         :keywords => %w(shogi board)
         
   def initialize(opts = {})
     @squares = opts[:board_size] || opts[:game].size
@@ -47,7 +47,7 @@ class ShogibanBackground
 end
 
 class ShogiTheme
-  include Theme
+  include Plugin
   include Shadower
   
   BASE_DIR = File.dirname(__FILE__)
@@ -63,8 +63,8 @@ class ShogiTheme
     :lance => 0.83,
     :pawn => 0.8 }
 
-  theme :name => 'Shogi',
-        :keywords => %w(shogi pieces)
+  plugin :name => 'Shogi',
+         :keywords => %w(shogi pieces)
 
   def initialize(opts = {})
     @loader = lambda do |piece, size|

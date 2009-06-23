@@ -1,7 +1,7 @@
-class ThemeLoader
+class PluginLoader
   BASE_DIR = File.dirname(__FILE__)
   
-  class NoThemeFound < Exception
+  class NoPluginFound < Exception
   end
   
   def initialize
@@ -14,24 +14,24 @@ class ThemeLoader
       end
     end
     
-    @themes = {}
+    @plugins = {}
     ObjectSpace::each_object(Class) do |k|
-      if k.include?(Theme) and k.theme_name
-        @themes[k.theme_name] = k
+      if k.include?(Plugin) and k.plugin_name
+        @plugins[k.plugin_name] = k
       end
     end
     
   end
   
   def each(&blk)
-    @themes.each_value(&blk)
+    @plugins.each_value(&blk)
   end
   
   def get_matching(required, optional = [])
-    themes = @themes.values.
+    plugins = @plugins.values.
       reject {|x| not x.matches?(required) }.
       sort_by {|x| x.score(optional) }
-    raise NoThemeFound if themes.empty?
-    themes.last
+    raise NoPluginFound if plugins.empty?
+    plugins.last
   end
 end

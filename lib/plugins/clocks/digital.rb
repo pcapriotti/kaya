@@ -1,14 +1,14 @@
-require 'themes/theme'
+require 'plugins/plugin'
 require 'constrained_text_item'
 
 class DigitalClock < Qt::GraphicsItemGroup
-  include Theme
+  include Plugin
   include ItemBag
   include ItemUtils
   include Observer
   
-  theme :name => 'Digital Clock',
-        :keywords => %w(clock)
+  plugin :name => 'Digital Clock',
+         :keywords => %w(clock)
 
   attr_reader :items, :rect
   
