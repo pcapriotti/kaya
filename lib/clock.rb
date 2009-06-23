@@ -32,7 +32,6 @@ class Clock
   def stop
     if @running
       @elapsed += @time.elapsed
-      puts "elapsed = #{@elapsed}, count = #{@count}"
       @timer.stop
       
       @main += @increment
@@ -88,7 +87,6 @@ class Clock
     if not elapsed
       # schedule next tick
       delta = [0, (@count + 1) * 100 - @elapsed - @time.elapsed].max
-      puts "count = #{@count}, delta = #{delta}"
       @timer.start(delta)
     end
   end

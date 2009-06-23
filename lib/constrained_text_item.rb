@@ -8,6 +8,7 @@ class ConstrainedTextItem < Qt::GraphicsItem
     @constraint = constraint
     
     @font = opts[:font] || Qt::Font.new
+    @fm = Qt::FontMetrics.new(@font)
     @color = opts[:color] || Qt::Color.new(Qt::black)
     
     update_metrics
@@ -19,8 +20,8 @@ class ConstrainedTextItem < Qt::GraphicsItem
     p.saving do
       p.translate(@constraint.center)
       p.scale(@factor, @factor)
-      p.translate(-@brect.center)
-      p.draw_text(0, 0, @text)
+      p.translate(-@brect_max.center)
+      p.draw_text((@brect_max.width - @brect.width) / 2, 0, @text)
     end
   end
   
@@ -41,10 +42,11 @@ class ConstrainedTextItem < Qt::GraphicsItem
   end
   
   def update_metrics
-    @brect = Qt::FontMetrics.new(@font).bounding_rect(@text)
+    @brect = @fm.bounding_rect(@text)
+    @brect_max = @fm.bounding_rect('H' * @text.size)
     @factor = [
-      0.9 * @constraint.width / @brect.width,
-      @constraint.height / @brect.height].min
+      @constraint.width / @brect_max.width,
+      @constraint.height / @brect_max.height].min
   end
   
   alias :name :text  
