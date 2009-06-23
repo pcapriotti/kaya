@@ -6,7 +6,7 @@ class Scene < Qt::GraphicsScene
 
   def initialize
     super
-    
+    self.background_brush = $qApp.palette.brush(Qt::Palette::Window)
     @elements = []
   end
 

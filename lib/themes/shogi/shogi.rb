@@ -9,20 +9,27 @@ class ShogibanBackground
   
   BACKGROUND_COLOR = Qt::Color.new(0xeb, 0xd6, 0xa0)
   LINE_COLOR = Qt::Color.new(0x9c, 0x87, 0x55)
+  BASE_DIR = File.dirname(__FILE__)
   
   theme :name => 'Shogiban',
         :keywords => %w(shogi board)
         
   def initialize(opts = {})
     @squares = opts[:board_size] || opts[:game].size
+    @background = opts[:background] || 'kaya'
   end
   
   def pixmap(size)
     Qt::Image.painted(Qt::Point.new(size.x * @squares.x, size.y * @squares.y)) do |p|
-      (0...@squares.x).each do |x|
-        (0...@squares.y).each do |y|
-          rect = Qt::RectF.new(size.x * x, size.y * y, size.x, size.y)
-          p.fill_rect(rect, Qt::Brush.new(BACKGROUND_COLOR))
+      if @background
+        bg = Qt::Image.new(File.join(BASE_DIR, @background + '.png'))
+        p.draw_tiled_pixmap(Qt::Rect.new(0, 0, size.x * @squares.x, size.y * @squares.y), bg.to_pix)
+      else
+        (0...@squares.x).each do |x|
+          (0...@squares.y).each do |y|
+            rect = Qt::RectF.new(size.x * x, size.y * y, size.x, size.y)
+            p.fill_rect(rect, Qt::Brush.new(BACKGROUND_COLOR))
+          end
         end
       end
       pen = p.pen
