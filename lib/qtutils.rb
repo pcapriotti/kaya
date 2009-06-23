@@ -186,6 +186,34 @@ class Qt::Timer
   end
 end
 
+module ModelUtils
+  def removing_rows(parent, first, last)
+    if first > last
+      yield
+    else
+      begin
+        begin_remove_rows(parent || Qt::ModelIndex.new, first, last)
+        yield
+      ensure
+        end_remove_rows
+      end
+    end
+  end
+  
+  def inserting_rows(parent, first, last)
+    if first > last
+      yield
+    else
+      begin
+        begin_insert_rows(parent || Qt::ModelIndex.new, first, last)
+        yield
+      ensure
+        end_insert_rows
+      end
+    end
+  end
+end
+
 class KDE::Application
   def self.init(data)
     about = KDE::AboutData.new(

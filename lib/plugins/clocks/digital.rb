@@ -1,5 +1,6 @@
 require 'plugins/plugin'
 require 'constrained_text_item'
+require 'board/item_bag'
 
 class DigitalClock < Qt::GraphicsItemGroup
   include Plugin

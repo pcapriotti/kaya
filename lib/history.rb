@@ -1,16 +1,18 @@
 require 'observer_utils.rb'
 
-class History
+class History < Qt::AbstractListModel
   include Enumerable
   include Observer
+  include ModelUtils
   
   attr_reader :current
   
-  Item = Struct.new(:state, :move)
+  Item = Struct.new(:state, :move, :text)
   OutOfBound = Class.new(Exception)
 
   def initialize(state)
-    @history = [Item.new(state.dup, nil)]
+    super(nil)
+    @history = [Item.new(state.dup, nil, "Mainline")]
     @current = 0
   end
   
@@ -19,10 +21,16 @@ class History
   end
   
   def add_move(state, move)
-    item = Item.new(state.dup, move)
-    @history = @history[0..@current]
-    @history << item
-    @current = @history.size - 1
+    item = Item.new(state.dup, move, nil)
+    
+    removing_rows(nil, @current + 1, @history.size - 1) do
+      @history = @history[0..@current]
+    end
+
+    inserting_rows(nil, @current + 1, @current + 1) do
+      @history << item
+      @current = @history.size - 1
+    end
   end
   
   def forward
@@ -50,4 +58,42 @@ class History
   def size
     @history.size
   end
+  
+  def [](index)
+    @history[index]
+  end
+  
+  # model interface
+  
+  # set a serializer for this model
+  # if no serializer has been set, it will
+  # be impossible to use it with a view
+  def serializer=(ser)
+    @serializer = ser
+  end
+  
+  def data(index, role)
+    if @serializer and role == Qt::DisplayRole
+      unless @history[index.row].text
+        state = @history[index.row - 1].state
+        move = @history[index.row].move
+        san = @serializer.serialize(move, state)
+        
+        count = index.row / 2 + 1
+        dots = if index.row % 2 == 0
+          '.'
+        else
+          '...'
+        end
+        
+        @history[index.row].text = "#{count}#{dots} #{san}"
+      end
+      @history[index.row].text
+    end
+  end
+  
+  def rowCount(parent)
+    size
+  end
+  
 end
