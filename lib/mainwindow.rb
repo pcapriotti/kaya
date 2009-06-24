@@ -69,7 +69,17 @@ private
     movelist_dock.object_name = "movelist"
     add_dock_widget(Qt::LeftDockWidgetArea, movelist_dock, Qt::Vertical)
     movelist_dock.show
-    
+
+    @console = Console.new(nil)
+    console_dock = Qt::DockWidget.new(self)                                                      
+    console_dock.widget = @console                                                             
+    console_dock.focus_proxy = @console                                                        
+    console_dock.window_title = KDE.i18n("Console")                                              
+    console_dock.object_name = "console"                                                         
+    add_dock_widget(Qt::BottomDockWidgetArea, console_dock, Qt::Horizontal)                      
+    console_dock.window_flags = console_dock.window_flags & ~Qt::WindowStaysOnTopHint            
+    console_dock.show                                                                            
+
     new_game(game)
     
     self.central_widget = @table
@@ -81,15 +91,12 @@ private
     protocol.add_observer ICS::AuthModule.new(c, 'ujjajja', '')
     protocol.add_observer ICS::StartupModule.new(c)
     protocol.link_to c
-    
-    console = Console.new(nil)
-    console.show
 
     protocol.observe :text do |text|
-      console.append(text)
+      @console.append(text)
     end
 
-    console.observe :input do |text|
+    @console.observe :input do |text|
       c.send_text text
     end
 

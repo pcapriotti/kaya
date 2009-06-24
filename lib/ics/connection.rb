@@ -56,6 +56,7 @@ class Connection < Qt::Object
   end
 
   def stop
+    @socket.close
   end
 
   def send_text(text)

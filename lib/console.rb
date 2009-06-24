@@ -4,7 +4,7 @@ class Console < Qt::Widget
   include Observable
 
   def initialize(parent)
-    super
+    super(parent)
     
     layout = Qt::VBoxLayout.new
     @output = Qt::TextEdit.new(self)
@@ -17,6 +17,7 @@ class Console < Qt::Widget
     @output.read_only = true
     f = @output.font
     f.family = 'monospace'
+    f.point_size = 8
     @output.font = f
     @output.current_font = f
     @bold_font = f
