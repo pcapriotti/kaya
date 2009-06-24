@@ -49,16 +49,21 @@ private
                                 :text => KDE.i18n("&Disconnect from ICS") do
       puts "disconnect"
     end
+    
+    regular_action :flip, :icon => 'object-rotate-left',
+                          :text => KDE.i18n("F&lip") do
+      @table.flip(! @table.flipped?)
+    end
                   
   end
   
   def load_board(game)
     scene = Scene.new
-    table = Table.new scene, @loader, self
-    @controller = Controller.new(table)
+    @table = Table.new scene, @loader, self
+    @controller = Controller.new(@table)
     new_game(game)
     
-    self.central_widget = table
+    self.central_widget = @table
   end
   
   def connect_to_ics

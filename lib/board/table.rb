@@ -49,17 +49,30 @@ class Table < Qt::GraphicsView
       res
     end
     
-    # relayout elements
-    unless @scene.scene_rect.isNull
+    relayout
+  end
+
+  def flip(value)
+    @theme.layout.flip(value)
+    @theme.board.flip(value)
+    @theme.pieces.flip(value)
+    relayout
+  end
+
+  def resizeEvent(e)
+    @initialized = true
+    r = Qt::RectF.new(0, 0, e.size.width, e.size.height)
+    @scene.scene_rect = r
+    relayout if @elements
+  end
+  
+  def relayout
+    if @initialized
       @theme.layout.layout(@scene.scene_rect, @elements)
     end
   end
   
-  def resizeEvent(e)
-    r = Qt::RectF.new(0, 0, e.size.width, e.size.height)
-    @scene.scene_rect = r
-    if @elements
-      @theme.layout.layout(r, @elements)
-    end
+  def flipped?
+    @theme.layout.flipped?
   end
 end

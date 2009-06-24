@@ -74,7 +74,7 @@ class ShogiTheme
       img = Qt::Image.painted(size) do |p|
         p.scale(ratio, ratio)
         p.translate(size * (1 - ratio) / 2)
-        if piece.color == :white
+        if (piece.color == :white) ^ @flipped
           p.translate(size)
           p.rotate(180)
         end
@@ -85,6 +85,7 @@ class ShogiTheme
     if opts.has_key? :shadow
       @loader = with_shadow(@loader)
     end
+    @flipped = false
   end
 
   def pixmap(piece, size)
@@ -96,5 +97,9 @@ class ShogiTheme
 #     type = TYPES[piece.type] || piece.type.to_s[0, 1]
     name = piece.type.to_s.gsub(/^promoted_/, 'p') + ".svg"
     File.join(BASE_DIR, name)
+  end
+  
+  def flip(value)
+    @flipped = value
   end
 end

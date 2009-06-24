@@ -37,8 +37,10 @@ class CoolLayout
     pool_height = (board_rect.height - margin * (@game.players.size - 1)) / 
                   @game.players.size
     offy = base.y
-    flip = @flipped
-    @game.players.reverse.each do |player|
+    flip = false
+    players = @game.players
+    players = players.reverse unless @flipped
+    players.each do |player|
       r_pool, r_clock = if flip
         [Qt::Rect.new(
             board_rect.right + margin,

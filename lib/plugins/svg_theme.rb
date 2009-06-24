@@ -28,4 +28,7 @@ class SvgTheme
   def piece_id(piece)
     piece.color.to_s.capitalize + piece.type.to_s.capitalize
   end
+  
+  def flip(value)
+  end
 end

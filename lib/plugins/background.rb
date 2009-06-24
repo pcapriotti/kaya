@@ -26,4 +26,7 @@ module Background
   def highlight(size)
     halo(size, Qt::Color.new(0x40, 0xff, 0x40))
   end
+  
+  def flip(value)
+  end
 end
