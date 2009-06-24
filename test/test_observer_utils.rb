@@ -12,9 +12,8 @@ class TestObserverUtils < Test::Unit::TestCase
   
   def test_simple_observer
     ok = false
-    @object.observe('something') { ok = true }
-    @object.changed
-    @object.notify_observers :something => nil
+    @object.observe(:something) { ok = true }
+    @object.fire :something
     assert ok
   end
   

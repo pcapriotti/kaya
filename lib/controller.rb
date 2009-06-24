@@ -57,13 +57,12 @@ class Controller
       clock.stop
     end
     
-    c = self
-    @board.observe(:click) {|p| c.on_board_click(p) }
-    @board.observe(:drag) {|data| c.on_board_drag(data) }
-    @board.observe(:drop) {|data| c.on_board_drop(data) }
+    @board.observe(:click) {|p| on_board_click(p) }
+    @board.observe(:drag) {|data| on_board_drag(data) }
+    @board.observe(:drop) {|data| on_board_drop(data) }
     @pools.each do |col, pool|
-      pool.observe(:drag) {|data| c.on_pool_drag(col, data) }
-      pool.observe(:drop) {|data| c.on_pool_drop(col, data) }
+      pool.observe(:drag) {|data| on_pool_drag(col, data) }
+      pool.observe(:drop) {|data| on_pool_drop(col, data) }
     end
     @clocks.each do |col, clock|
       clock.clock = Clock.new(300, 0, nil)

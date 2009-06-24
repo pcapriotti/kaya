@@ -42,11 +42,21 @@ module Observable
 end
 
 class SimpleObserver
-  include Observer
-  
   def initialize(event, &blk)
-    metaclass_eval do
-      define_method "on_#{event}", &blk
+    @event = event
+    @blk = blk
+  end
+  
+  def update(data)
+    if data.has_key?(@event)
+      case @blk.arity
+      when 0
+        @blk[]
+      when 1
+        @blk[data[@event]]
+      else
+        @blk[*data[@event]]
+      end
     end
   end
 end

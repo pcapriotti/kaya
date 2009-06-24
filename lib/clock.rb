@@ -1,3 +1,6 @@
+require 'observer_utils'
+require 'qtutils'
+
 class Clock
   include Observable
   ByoYomi = Struct.new(:time, :periods)
