@@ -47,7 +47,10 @@ private
     end
     regular_action :disconnect, :icon => 'network-disconnect',
                                 :text => KDE.i18n("&Disconnect from ICS") do
-      puts "disconnect"
+      if @connection
+        @connection.close
+        @connection = nil
+      end
     end
     
     regular_action :flip, :icon => 'object-rotate-left',
@@ -87,17 +90,17 @@ private
   
   def connect_to_ics
     protocol = ICS::Protocol.new(:debug)
-    c = ICS::Connection.new('freechess.org', 23)
-    protocol.add_observer ICS::AuthModule.new(c, 'ujjajja', '')
-    protocol.add_observer ICS::StartupModule.new(c)
-    protocol.link_to c
+    @connection = ICS::Connection.new('freechess.org', 23)
+    protocol.add_observer ICS::AuthModule.new(@connection, 'ujjajja', '')
+    protocol.add_observer ICS::StartupModule.new(@connection)
+    protocol.link_to @connection
 
     protocol.observe :text do |text|
       @console.append(text)
     end
 
     @console.observe :input do |text|
-      c.send_text text
+      @connection.send_text text
     end
 
     handler = ICS::MatchHandler.new(@controller, protocol)
@@ -106,7 +109,7 @@ private
       puts "CREATING GAME: #{data.inspect}"
     end
 
-    c.start
+    @connection.start
   end
   
   def new_game(game)
@@ -132,6 +135,7 @@ end
 
 class DummyPlayer
   include Observer
+  include Player
   
   attr_reader :color
   

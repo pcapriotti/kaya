@@ -11,7 +11,7 @@ class DigitalClock < Qt::GraphicsItemGroup
   plugin :name => 'Digital Clock',
          :keywords => %w(clock)
 
-  attr_reader :items, :rect
+  attr_reader :items, :rect, :clock
   
   OFF_TEXT = '-'
   BASE_DIR = File.dirname(__FILE__)

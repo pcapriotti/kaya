@@ -22,11 +22,11 @@ class MatchHandler
     match = Match.new(data[:game], 
         :kind => :ics, 
         :editable => false)
-    @matches[data[:number]] = [match, data[:icsapi]]
+    @matches[data[:number]] = [match, data]
   end
   
   def on_style12(style12)
-    match, icsapi = @matches[style12.game_number]
+    match, match_info = @matches[style12.game_number]
     return if match == nil
     
     if match.started?
@@ -36,6 +36,7 @@ class MatchHandler
       if match.index < style12.move_index
         # last_move = icsapi.parse_verbose(style12.last_move, match.state)
         move = match.game.serializer.new(:compact).deserialize(style12.last_move_san, match.state)
+        match.update_time(style12.time)
 #         if last_move != move
 #           warn "[server inconsistency] " +
 #                 "SAN for last move is different from verbose notation"
@@ -59,7 +60,9 @@ class MatchHandler
       opponent = ICSPlayer.new(
         lambda {|msg| @protocol.connection.send_text(msg) },
         opponent_color,
-        match.game.serializer.new(:compact))
+        match.game.serializer.new(:compact),
+        match_info[opponent_color][:name])
+      @user.name = match_info[@user.color][:name]
       
       match.register(@user)
       match.register(opponent)
@@ -70,6 +73,8 @@ class MatchHandler
       raise "couldn't start match" unless match.started?
       
       @user.reset(match)
+      
+      match.update_time(style12.time)
     end
     
     

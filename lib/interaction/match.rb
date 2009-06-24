@@ -3,6 +3,9 @@ require 'history'
 
 module Player
   include Observer
+  
+  def name
+  end
 end
 
 class Match
@@ -77,6 +80,10 @@ class Match
     true
   end
   
+  def update_time(time)
+    broadcast nil, :time => time
+  end
+  
   def complete?
     @game.players.all? do |c| 
       @players.keys.find {|p| p.color == c }
@@ -93,6 +100,10 @@ class Match
   
   def editable?
     @editable
+  end
+    
+  def player(color)
+    @players.keys.find{|p| p.color == color }
   end
     
   private

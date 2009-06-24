@@ -6,11 +6,13 @@ require 'interaction/match'
 
 class Controller
   include Observer
+  include Player
   
   attr_reader :history
   attr_reader :color
   attr_reader :controlled
   attr_reader :table
+  attr_accessor :name
   
   def initialize(table)
     @table = table
@@ -66,15 +68,15 @@ class Controller
       pool.observe(:drop) {|data| on_pool_drop(col, data) }
     end
     @clocks.each do |col, clock|
-      clock.clock = Clock.new(300, 0, nil)
-      clock.data = { :color => col }
+      clock.data = { :color => col,
+                     :player => match.player(col).name }
     end
     @match.observe(:move) do |data|
       unless @controlled[data[:player].color] == data[:player]
         animate(:forward, data[:state], data[:move])
         @board.highlight(data[:move])
         @clocks[data[:old_state].turn].stop
-        @clocks[data[:state].turn].stop
+        @clocks[data[:state].turn].start
       end
     end
     
@@ -227,6 +229,13 @@ class Controller
     end
     
     @field.run(anim) if anim
+  end
+  
+  def on_time(time)
+    time.each do |pl, seconds|
+      @clocks[pl].clock ||= Clock.new(seconds, 0, nil)
+      @clocks[pl].clock.set_time(seconds, nil)
+    end
   end
   
   def add_controlled_player(player)

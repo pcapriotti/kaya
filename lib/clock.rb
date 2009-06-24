@@ -15,7 +15,7 @@ class Clock
   #                   
   # all times are in seconds
   # 
-  def initialize(main, increment, byoyomi, timer_class = Qt::Timer)
+  def initialize(main, increment, byoyomi = nil, timer_class = Qt::Timer)
     @main = main
     @increment = increment
     if byoyomi
@@ -100,6 +100,12 @@ class Clock
     else
       { :byoyomi => @byoyomi.dup }
     end
+  end
+  
+  def set_time(main, byoyomi)
+    @main = main
+    @byoyomi = byoyomi.dup if byoyomi
+    fire :timer => timer
   end
   
   def running?

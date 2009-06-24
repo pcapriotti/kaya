@@ -95,7 +95,10 @@ class Style12
                   :black_player => match[BLACK_PLAYER],
                   :relation => match[RELATION].to_i,
                   :last_move => match[LAST_MOVE_VERBOSE],
-                  :last_move_san => match[LAST_MOVE]
+                  :last_move_san => match[LAST_MOVE],
+                  :time => {
+                    :white => match[WHITE_TIME].to_i / 1000,
+                    :black => match[BLACK_TIME].to_i / 1000}
                   )
   end
 
