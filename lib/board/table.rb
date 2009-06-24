@@ -1,4 +1,6 @@
 class Table < Qt::GraphicsView
+  include Observable
+  
   attr_reader :elements
 
   Theme = Struct.new(:pieces, :board, :layout)
@@ -8,7 +10,8 @@ class Table < Qt::GraphicsView
     @loader = loader
   end
   
-  def reset(game)
+  def reset(match)
+    game = match.game
     # destroy old elements
     if @elements
       @scene.remove_element(@elements[:board])
@@ -50,6 +53,7 @@ class Table < Qt::GraphicsView
     end
     
     relayout
+    fire :reset => match
   end
 
   def flip(value)

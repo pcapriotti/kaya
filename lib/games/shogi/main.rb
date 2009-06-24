@@ -18,6 +18,7 @@ Game.add :shogi, [:chess] do |chess|
            :piece => chess.piece,
            :keywords => %w(shogi),
            :players => [:black, :white],
+           :serializer => chess.serializer,
            :types => [:pawn, :lance, :horse, :silver, :gold, :bishop, :rook, :king]
 end
 

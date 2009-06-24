@@ -10,6 +10,7 @@ class Controller
   attr_reader :history
   attr_reader :color
   attr_reader :controlled
+  attr_reader :table
   
   def initialize(table)
     @table = table
@@ -44,7 +45,7 @@ class Controller
   
   def reset(match)
     @match = match
-    @table.reset(match.game)
+    @table.reset(@match)
     @board = @table.elements[:board]
     @pools = @table.elements[:pools]
     @clocks = @table.elements[:clocks]
@@ -106,6 +107,24 @@ class Controller
     @board.highlight(move)
   rescue History::OutOfBound
     puts "error: last move"
+  end
+  
+  def go_to(index)
+    cur = @match.history.current
+    state, move = @match.history.go_to(index)
+    if index > cur
+      (cur + 1..index).each do |i|
+        animate(:forward, @match.history[i].state, @match.history[i].move)
+      end
+      @board.highlight(move)
+    elsif index < cur
+      (cur).downto(index + 1).each do |i|
+        animate(:back, @match.history[i - 1].state, @match.history[i].move)
+      end
+      @board.highlight(@match.history.move)
+    end
+  rescue History::OutOfBound
+    puts "error: no such index #{index}"
   end
   
   def animate(direction, state, move, opts = {})

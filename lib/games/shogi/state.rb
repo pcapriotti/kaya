@@ -92,6 +92,10 @@ module Shogi
       (row(6, color) <=> p.y) != (color == :black ? -1 : 1)
     end
     
+    def capture_square(move)
+      move.dst
+    end
+    
     def promoted(piece)
       piece_factory.new(
         piece.color, 
