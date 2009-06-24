@@ -10,7 +10,7 @@ class Scene < Qt::GraphicsScene
     @elements = []
   end
 
-  def add_element(element)
+  def add_clickable_element(element)
     @elements << element
   end
   
@@ -123,5 +123,10 @@ class Scene < Qt::GraphicsScene
     if @drag_data
       @drag_data = @drag_data.merge(data)
     end
+  end
+  
+  def remove_element(item)
+    @elements.delete(item)
+    remove_item(item)
   end
 end

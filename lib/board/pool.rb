@@ -12,7 +12,7 @@ class Pool < Qt::GraphicsItemGroup
   def initialize(scene, theme, game)
     super(nil, scene)
     @scene = scene
-    @scene.add_element(self)
+    @scene.add_clickable_element(self)
     
     @theme = theme
     @game = game
@@ -77,7 +77,7 @@ class Pool < Qt::GraphicsItemGroup
     item
   end
   
-  def on_click(pos, press_pos)
+  def on_click(pos)
     
   end
   

@@ -20,7 +20,7 @@ class Board < Qt::GraphicsItemGroup
   def initialize(scene, theme, game)
     super(nil, scene)
     @scene = scene
-    @scene.add_element(self)
+    @scene.add_clickable_element(self)
     @theme = theme
     @items = {}
     
@@ -54,10 +54,14 @@ class Board < Qt::GraphicsItemGroup
     end
   end
   
-  def reset(board)
-    names = board.to_enum(:each_square).inject({}) do |res, p|
-      res[p] = board[p] if board[p]
-      res
+  def reset(board = nil)
+    names = if board
+      board.to_enum(:each_square).inject({}) do |res, p|
+        res[p] = board[p] if board[p]
+        res
+      end
+    else
+      { }
     end
     names[:background] = nil
     

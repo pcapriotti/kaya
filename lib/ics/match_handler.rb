@@ -19,7 +19,7 @@ class MatchHandler
   end
   
   def on_creating_game(data)
-    match = Match.new(data[:game])
+    match = Match.new(data[:game], :ics)
     @matches[data[:number]] = [match, data[:icsapi]]
   end
   

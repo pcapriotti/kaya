@@ -1,4 +1,5 @@
 require 'observer_utils'
+require 'history'
 
 module Player
   include Observer
@@ -8,17 +9,19 @@ class Match
   include Observable
   
   attr_reader :game
-  attr_reader :state
+  attr_reader :history
   attr_reader :index
+  attr_reader :kind
   
-  def initialize(game)
+  def initialize(game, kind = :local)
     @game = game
     @players = { } # player => ready
-    @state = nil
+    @history = nil
+    @kind = kind
   end
   
   def register(player)
-    return false if @state
+    return false if @history
     return false if @players.has_key?(player)
     return false if complete?
     return false unless @game.players.include?(player.color)
@@ -29,49 +32,47 @@ class Match
   end
   
   def start(player)
-    return false if @state
+    return false if @history
     return false unless complete?
     return false unless @players[player] == false
     
     @players[player] = true
     if @players.values.all?
-      @state = @game.state.new
-      @state.setup
+      state = @game.state.new
+      state.setup
+      @history = History.new(state)
       @index = 0
       fire :started
     end
-    
+
     true
   end
   
-  def move(player, move, state)
-    return false unless @state
+  def move(player, move, state = nil)
+    return false unless @history
     # if player is nil, assume the current player is moving
     if player == nil
       player = current_player
     else
       return false unless @players.has_key?(player)
-      return false unless player.color == @state.turn
+      return false unless player.color == @history.state.turn
     end
 
-    validate = @game.validator.new(@state)
+    validate = @game.validator.new(@history.state)
     valid = validate[move]
     return false unless valid
-    
-    old_state = @state
-    if state
-      @state = state.dup
-    else
-      old_state = @state.dup
-      @state.perform!(move)
-    end
-    
+
+    old_state = @history.state
+    state = old_state.dup
+    state.perform! move
+    @history.add_move(state, move)
     @index += 1
+    
     broadcast player, :move => {
       :player => player,
       :move => move,
-      :state => @state,
-      :old_state => old_state}
+      :state => state,
+      :old_state => old_state }
     true
   end
   
@@ -82,7 +83,11 @@ class Match
   end
   
   def started?
-    ! ! @state
+    ! ! @history
+  end
+  
+  def state
+    @history.state
   end
   
   private
@@ -95,6 +100,6 @@ class Match
   end
   
   def current_player
-    @players.keys.find {|p| p.color == @state.turn }
+    @players.keys.find {|p| p.color == state.turn }
   end
 end

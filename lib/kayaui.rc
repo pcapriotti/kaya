@@ -5,9 +5,9 @@
    <Action name="new" />
    <Action name="load" />
    <Action name="save" />
-<!--   <Separator/>
+   <Separator/>
    <Action name="connect" />
-   <Action name="disconnect" />-->
+   <Action name="disconnect" />
    <Separator/>
    <Action name="quit" />
   </Menu>

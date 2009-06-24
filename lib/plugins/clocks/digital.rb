@@ -80,12 +80,12 @@ class DigitalClock < Qt::GraphicsItemGroup
   end
   
   def start
-    @clock.start
+    @clock.start if @clock
     self.active = true
   end
   
   def stop
-    @clock.stop
+    @clock.stop if @clock
     self.active = false
   end
   
