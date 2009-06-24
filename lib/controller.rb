@@ -91,21 +91,21 @@ class Controller
     end
   end
   
-#   def back
-#     state, move = @history.back
-#     animate(:back, state, move)
-#     @board.highlight(@history.move)
-#   rescue History::OutOfBound
-#     puts "error: first move"
-#   end
-#   
-#   def forward
-#     state, move = @history.forward
-#     animate(:forward, state, move)
-#     @board.highlight(move)
-#   rescue History::OutOfBound
-#     puts "error: last move"
-#   end
+  def back
+    state, move = @match.history.back
+    animate(:back, state, move)
+    @board.highlight(@match.history.move)
+  rescue History::OutOfBound
+    puts "error: first move"
+  end
+  
+  def forward
+    state, move = @match.history.forward
+    animate(:forward, state, move)
+    @board.highlight(move)
+  rescue History::OutOfBound
+    puts "error: last move"
+  end
   
   def animate(direction, state, move, opts = {})
     anim = @animator.send(direction, state, move, opts)
@@ -219,10 +219,21 @@ class Controller
   end
     
   def movable?(p)
-    ! ! @controlled[@match.state.turn]
+    can_play?
   end
   
   def droppable?(color, index)
-    ! ! @controlled[@match.state.turn]
+    can_play?
+  end
+  
+  private
+  
+  def can_play?
+    return false unless @controlled[@match.state.turn]
+    if @match.history.current < @match.index
+      @match.editable?
+    else
+      true
+    end
   end
 end

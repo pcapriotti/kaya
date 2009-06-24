@@ -11,12 +11,14 @@ class Match
   attr_reader :game
   attr_reader :history
   attr_reader :kind
+  attr_reader :index
   
-  def initialize(game, kind = :local)
+  def initialize(game, opts = {})
     @game = game
     @players = { } # player => ready
     @history = nil
-    @kind = kind
+    @kind = opts[:kind] || :local
+    @editable = opts.fetch(:editable, true)
   end
   
   def register(player)
@@ -40,6 +42,7 @@ class Match
       state = @game.state.new
       state.setup
       @history = History.new(state)
+      @index = 0
       fire :started
     end
 
@@ -64,6 +67,7 @@ class Match
     state = old_state.dup
     state.perform! move
     @history.add_move(state, move)
+    @index += 1
     
     broadcast player, :move => {
       :player => player,
@@ -87,10 +91,10 @@ class Match
     @history.state
   end
   
-  def index
-    @history.current
+  def editable?
+    @editable
   end
-  
+    
   private
   
   def broadcast(player, event)
