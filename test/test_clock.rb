@@ -66,7 +66,7 @@ class TestClock < Test::Unit::TestCase
     clock.stop
     assert ! elapsed
     assert_equal({:main => 3}, timer)
-    clock.resume
+    clock.start
     
     15.times { clock.tick }
     assert ! elapsed
