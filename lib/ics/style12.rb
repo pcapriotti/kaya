@@ -97,8 +97,8 @@ class Style12
                   :last_move => match[LAST_MOVE_VERBOSE],
                   :last_move_san => match[LAST_MOVE],
                   :time => {
-                    :white => match[WHITE_TIME].to_i / 1000,
-                    :black => match[BLACK_TIME].to_i / 1000}
+                    :white => match[WHITE_TIME].to_i,
+                    :black => match[BLACK_TIME].to_i }
                   )
   end
 

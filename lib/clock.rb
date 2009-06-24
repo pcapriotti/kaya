@@ -102,9 +102,15 @@ class Clock
     end
   end
   
-  def set_time(main, byoyomi)
-    @main = main
-    @byoyomi = byoyomi.dup if byoyomi
+  def set_time(milliseconds)
+    # update time
+    @main = milliseconds / 1000
+    
+    # reset counter
+    @count = 0
+    @elapsed = milliseconds % 1000
+    @time.restart
+    
     fire :timer => timer
   end
   

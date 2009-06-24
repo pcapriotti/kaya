@@ -234,7 +234,7 @@ class Controller
   def on_time(time)
     time.each do |pl, seconds|
       @clocks[pl].clock ||= Clock.new(seconds, 0, nil)
-      @clocks[pl].clock.set_time(seconds, nil)
+      @clocks[pl].clock.set_time(seconds)
     end
   end
   
