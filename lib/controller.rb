@@ -68,6 +68,14 @@ class Controller
       clock.clock = Clock.new(300, 0, nil)
       clock.data = { :color => col }
     end
+    @match.observe(:move) do |data|
+      unless @controlled[data[:player].color] == data[:player]
+        animate(:forward, data[:state], data[:move])
+        @board.highlight(data[:move])
+        @clocks[data[:old_state].turn].stop
+        @clocks[data[:state].turn].stop
+      end
+    end
     
     @clocks[@match.game.players.first].active = true
   end

@@ -10,7 +10,6 @@ class Match
   
   attr_reader :game
   attr_reader :history
-  attr_reader :index
   attr_reader :kind
   
   def initialize(game, kind = :local)
@@ -41,7 +40,6 @@ class Match
       state = @game.state.new
       state.setup
       @history = History.new(state)
-      @index = 0
       fire :started
     end
 
@@ -66,7 +64,6 @@ class Match
     state = old_state.dup
     state.perform! move
     @history.add_move(state, move)
-    @index += 1
     
     broadcast player, :move => {
       :player => player,
@@ -88,6 +85,10 @@ class Match
   
   def state
     @history.state
+  end
+  
+  def index
+    @history.current
   end
   
   private
