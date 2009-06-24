@@ -1,5 +1,6 @@
 require 'qtutils'
 require 'plugins/plugin'
+require 'plugins/shadow'
 
 class SvgTheme
   include Shadower
