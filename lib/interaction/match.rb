@@ -15,6 +15,7 @@ class Match
   attr_reader :history
   attr_reader :kind
   attr_reader :index
+  attr_accessor :url
   
   def initialize(game, opts = {})
     @game = game

@@ -13,8 +13,11 @@ require 'ics/match_handler'
 require 'ics/connection'
 require 'console'
 
+require 'filewriter'
+
 class MainWindow < KDE::XmlGuiWindow
   include ActionHandler
+  include FileWriter
 
   def initialize(loader, game)
     super nil
@@ -134,9 +137,30 @@ private
     @controller.reset(match)
   end
   
+  def save_game_as
+    match = @controller.match
+    if match
+      url = KDE::FileDialog.get_save_url(
+        KDE::Url.new, "*.pgn", self, KDE.i18n("Save game"))
+      match.url = write_game(url)
+    end
+  end
+  
   def save_game
     match = @controller.match
     if match
+      if match.url
+        write_game
+      else
+        save_game_as
+      end
+    end
+  end
+  
+  def write_game(url = nil)
+    match = @controller.match
+    if match
+      url ||= match.url
       writer = match.game.game_writer.new
       info = match.info
       info[:players] = info[:players].inject({}) do |res, pl|
@@ -144,7 +168,7 @@ private
         res
       end
       result = writer.write(info, match.history)
-      puts result
+      write_file(url, result)
     end
   end
 end
