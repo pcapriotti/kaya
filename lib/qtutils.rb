@@ -1,5 +1,7 @@
 require 'korundum4'
 
+ParseException = Class.new(Exception)
+
 class Object
   def tap
     yield self
@@ -247,7 +249,7 @@ end
 module ActionHandler
   def std_action(action, opts = {}, &blk)
     target, slot = get_slot(opts[:slot], &blk)
-    KDE::StandardAction.send(action, target, slot, action_collection)
+    KDE::StandardAction.method_missing(action, target, slot, action_collection)
   end
   
   def get_slot(s = nil, &blk)

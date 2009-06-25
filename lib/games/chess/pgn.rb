@@ -1,10 +1,11 @@
 require 'strscan'
 require 'history'
+require 'qtutils'
 
 module Chess
 
 class PGN
-  ParseError = Class.new(Exception)
+  ParseError = Class.new(ParseException)
   
   def initialize(serializer, state_factory)
     @serializer = serializer

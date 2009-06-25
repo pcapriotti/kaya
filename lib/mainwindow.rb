@@ -18,6 +18,8 @@ require 'filewriter'
 class MainWindow < KDE::XmlGuiWindow
   include ActionHandler
   include FileWriter
+  
+  slots :load_game
 
   def initialize(loader, game)
     super nil
@@ -34,7 +36,8 @@ class MainWindow < KDE::XmlGuiWindow
 private
 
   def setup_actions
-    std_action(:open_new) { new_game(@default_game) }
+    std_action(:open_new) { new_game(Match.new(@default_game)) }
+    std_action(:open) { load_game }
     std_action :quit, :slot => :close
     std_action(:save) { save_game }
     std_action(:saveAs) { save_game_as }
@@ -89,7 +92,7 @@ private
     console_dock.window_flags = console_dock.window_flags & ~Qt::WindowStaysOnTopHint            
     console_dock.show                                                                            
 
-    new_game(game)
+    new_game(Match.new(game))
     
     self.central_widget = @table
   end
@@ -118,31 +121,97 @@ private
     @connection.start
   end
   
-  def new_game(game)
-    @controller.color = game.players.first
-    opponents = game.players[1..-1].map do |color|
+  def new_game(match)
+    @controller.color = match.game.players.first
+    opponents = match.game.players[1..-1].map do |color|
       DummyPlayer.new(color)
     end
     opponents.each do |p| 
       @controller.add_controlled_player(p)
     end
 
-    match = Match.new(game)
     @controller.controlled.values.each do |p|
       match.register(p)
     end
     @controller.controlled.values.each do |p|
       match.start(p)
     end
-    
     @controller.reset(match)
+  end
+  
+  def load_game
+    url = KDE::FileDialog.get_open_url(KDE::Url.new, '*.*', self,
+      KDE.i18n("Open game"))
+    unless url.is_empty
+      # find readers
+      ext = File.extname(url.path)[1..-1]
+      return unless ext
+      readers = Game.to_enum.find_all do |_, game|
+        game.respond_to?(:game_extensions) and
+        game.game_extensions.include?(ext)
+      end.map do |_, game|
+        [game, game.game_reader.new]
+      end
+      
+      if readers.empty?
+        warn "Unknown file extension #{ext}"
+        return
+      end
+      
+      tmp_file = ""
+      return unless KIO::NetAccess.download(url, tmp_file, self)
+
+      history = nil
+      game = nil
+      info = nil
+      
+      readers.each do |g, reader|
+        begin
+          data = File.open(tmp_file) do |f|
+            f.read
+          end
+          i = {}
+          history = reader.read(data, i)
+          game = g
+          info = i
+          break
+        rescue ParseException
+        end
+      end
+      
+      unless history
+        warn "Could not load file #{url.path}"
+      end
+      
+      # create game
+      match = Match.new(game)
+      @controller.color = match.game.players.first
+      opponents = match.game.players[1..-1].map do |color|
+        DummyPlayer.new(color)
+      end
+      opponents.each do |p| 
+        @controller.add_controlled_player(p)
+      end
+
+      @controller.controlled.values.each do |p|
+        match.register(p)
+      end
+      @controller.controlled.values.each do |p|
+        match.start(p)
+      end
+      match.history = history
+      match.add_info(info)
+      match.url = url
+      @controller.reset(match)
+    end
   end
   
   def save_game_as
     match = @controller.match
     if match
+      pattern = match.game.game_extensions.map{|ext| "*.#{ext}"}.join(' ')
       url = KDE::FileDialog.get_save_url(
-        KDE::Url.new, "*.pgn", self, KDE.i18n("Save game"))
+        KDE::Url.new, pattern, self, KDE.i18n("Save game"))
       match.url = write_game(url)
     end
   end
@@ -179,6 +248,7 @@ class DummyPlayer
   include Player
   
   attr_reader :color
+  attr_accessor :name
   
   def initialize(color)
     @color = color

@@ -36,6 +36,10 @@ class Game
     LOADING[name] = LoadableGame.new(deps, defn)
   end
   
+  def self.each(&blk)
+    GAMES.each(&blk)
+  end
+  
   def extend(fields)
     clone.tap do |x|
       x.add_fields(fields)

@@ -82,6 +82,10 @@ class Controller
     
     @clocks[@match.game.players.first].active = true
     @table.flip(@color != @match.game.players.first)
+    
+    if @match.history.move
+      @board.highlight(@match.history.move)
+    end
   end
   
   def perform!(move, opts = {})

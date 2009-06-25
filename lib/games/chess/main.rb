@@ -25,11 +25,13 @@ Game.add :chess do
            :serializer => lambda {|rep| 
               Serializer.new(rep, validator, move, piece) },
            :keywords => %w(chess),
+           
            :game_writer_component => PGN,
            :game_writer => lambda { 
               game_writer_component.new(serializer.new(:compact),
                                         state) },
-           :game_reader => lambda { game_writer }
+           :game_reader => lambda { game_writer.new },
+           :game_extensions => %w(pgn)
 end
 
 Game.add :chess5x5, [:chess] do |chess|

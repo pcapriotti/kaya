@@ -118,6 +118,21 @@ class Match
   def info
     @info.merge(:players => @players.keys)
   end
+  
+  def add_info(infos)
+    @info = @info.merge(infos)
+    infos[:players].each do |col, name|
+      p = player(col)
+      if p
+        p.name = name
+      end
+    end
+  end
+  
+  def history=(history)
+    @history = history
+    @index = history.size - 1
+  end
     
   private
   
