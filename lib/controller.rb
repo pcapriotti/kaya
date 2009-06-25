@@ -238,6 +238,14 @@ class Controller
     end
   end
   
+  def on_close(data)
+    puts data[:message]
+    @clocks.each do |pl, clock|
+      clock.stop
+    end
+    @controlled = { }
+  end
+  
   def add_controlled_player(player)
     @controlled[player.color] = player
   end

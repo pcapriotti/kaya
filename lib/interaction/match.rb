@@ -105,6 +105,12 @@ class Match
   def player(color)
     @players.keys.find{|p| p.color == color }
   end
+  
+  def close(result, message)
+    broadcast nil, :close => { 
+      :result => result,
+      :message => message }
+  end
     
   private
   

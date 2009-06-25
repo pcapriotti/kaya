@@ -118,6 +118,7 @@ class Protocol
         num = match[1].to_i
         @games.delete(num)
         fire :end_game => {
+          :game_number => num,
           :message => match[4],
           :result => match[5].strip }
       end

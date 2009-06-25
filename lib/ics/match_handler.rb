@@ -25,22 +25,23 @@ class MatchHandler
     @matches[data[:number]] = [match, data]
   end
   
+  def on_end_game(data)
+    entry = @matches.delete(data[:game_number])
+    if entry
+      match, info = entry
+      match.close(data[:result], data[:message])
+    end
+  end
+  
   def on_style12(style12)
     match, match_info = @matches[style12.game_number]
     return if match == nil
     
     if match.started?
-      puts "match.index = #{match.index}"
-      puts "move index = #{style12.move_index}"
-      puts "current state = #{match.state}"
       if match.index < style12.move_index
         # last_move = icsapi.parse_verbose(style12.last_move, match.state)
         move = match.game.serializer.new(:compact).deserialize(style12.last_move_san, match.state)
         match.update_time(style12.time)
-#         if last_move != move
-#           warn "[server inconsistency] " +
-#                 "SAN for last move is different from verbose notation"
-#         end
         if move
           match.move(nil, move, style12.state)
         else
