@@ -108,6 +108,7 @@ class Match
   end
   
   def close(result, message)
+    @info[:result] = result
     broadcast nil, :close => { 
       :result => result,
       :message => message }

@@ -32,6 +32,8 @@ class PGN
   
   def result(value)
     case value
+    when String
+      value
     when :white
       "1-0"
     when :black
