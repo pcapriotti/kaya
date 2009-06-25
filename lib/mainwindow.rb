@@ -33,6 +33,8 @@ private
   def setup_actions
     std_action(:open_new) { new_game(@default_game) }
     std_action :quit, :slot => :close
+    std_action(:save) { save_game }
+    
     regular_action :back, :icon => 'go-previous', 
                           :text => KDE.i18n("&Back") do
       @controller.back
@@ -130,6 +132,20 @@ private
     end
     
     @controller.reset(match)
+  end
+  
+  def save_game
+    match = @controller.match
+    if match
+      writer = match.game.game_writer.new
+      info = match.info
+      info[:players] = info[:players].inject({}) do |res, pl|
+        res[pl.color] = pl.name
+        res
+      end
+      result = writer.write(info, match.history)
+      puts result
+    end
   end
 end
 

@@ -8,7 +8,7 @@ class Controller
   include Observer
   include Player
   
-  attr_reader :history
+  attr_reader :match
   attr_reader :color
   attr_reader :controlled
   attr_reader :table

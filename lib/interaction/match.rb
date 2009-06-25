@@ -22,6 +22,7 @@ class Match
     @history = nil
     @kind = opts[:kind] || :local
     @editable = opts.fetch(:editable, true)
+    @info = { }
   end
   
   def register(player)
@@ -110,6 +111,10 @@ class Match
     broadcast nil, :close => { 
       :result => result,
       :message => message }
+  end
+  
+  def info
+    @info.merge(:players => @players.keys)
   end
     
   private

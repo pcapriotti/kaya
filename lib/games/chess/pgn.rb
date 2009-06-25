@@ -15,8 +15,8 @@ class PGN
     tag(:site, info[:site]) +
     tag(:date, date) +
     tag(:round, info[:round]) +
-    tag(:white, info[:white]) +
-    tag(:black, info[:black]) +
+    tag(:white, info.fetch(:players, {})[:white]) +
+    tag(:black, info.fetch(:players, {})[:black]) +
     tag(:result, result(info[:result])) +
     game(history) + " " +
     result(info[:result]) + "\n"

@@ -95,7 +95,7 @@ class Clock
   end
   
   def timer
-    if @main > 0
+    if @main > 0 or (not @byoyomi)
       { :main => @main }
     else
       { :byoyomi => @byoyomi.dup }
