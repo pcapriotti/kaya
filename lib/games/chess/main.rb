@@ -6,6 +6,7 @@ require 'games/chess/policy'
 require 'games/chess/animator'
 require 'games/chess/validator'
 require 'games/chess/serializer'
+require 'games/chess/pgn'
 
 module Chess
 
@@ -21,8 +22,12 @@ Game.add :chess do
            :validator => Validator,
            :piece => Piece,
            :players => [:white, :black],
-           :serializer => lambda {|rep| Serializer.new(rep, validator, move, piece) },
-           :keywords => %w(chess)
+           :serializer => lambda {|rep| 
+              Serializer.new(rep, validator, move, piece) },
+           :keywords => %w(chess),
+           :game_writer_component => PGN,
+           :game_writer => lambda { 
+              game_writer_component.new(serializer.new(:compact)) }
 end
 
 Game.add :chess5x5, [:chess] do |chess|

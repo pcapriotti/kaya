@@ -1,5 +1,5 @@
 require 'test/unit'
-require 'games/games'
+require 'games/all'
 require 'helpers/animation_test_helper'
 
 class TestChessAnimator < Test::Unit::TestCase
