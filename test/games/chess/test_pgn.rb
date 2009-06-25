@@ -31,8 +31,8 @@ class TestPGN < Test::Unit::TestCase
     add_move 6, 7, 5, 5
     info = { :result => :white,
              :event => 'Oktoberfest',
-             :white => 'Doe, John',
-             :black => 'Smith, Bob' }
+             :players => { :white => 'Doe, John',
+                           :black => 'Smith, Bob' } }
     
     expected = <<-END_OF_PGN
 [Event "Oktoberfest"]

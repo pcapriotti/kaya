@@ -11,10 +11,10 @@ module SAN
         :src => (Point.from_coord(scanner[2], ysize) unless drop),
         :dst => Point.from_coord(scanner[4], ysize),
         :promotion => (piece_factory.type_from_symbol(scanner[6]) if scanner[6]) }
-    elsif scanner.scan(/[oO0]-?[oO0][+#]?/)
-      { :castling => :king }
     elsif scanner.scan(/^[oO0]-?[oO0]-?[oO0][+#]?/)
       { :castling => :queen }
+    elsif scanner.scan(/[oO0]-?[oO0][+#]?/)
+      { :castling => :king }
     else
       scanner.scan(/none/) # possibly consume 'none'
       { }
