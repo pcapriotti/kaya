@@ -37,6 +37,7 @@ private
     std_action(:open_new) { new_game(@default_game) }
     std_action :quit, :slot => :close
     std_action(:save) { save_game }
+    std_action(:saveAs) { save_game_as }
     
     regular_action :back, :icon => 'go-previous', 
                           :text => KDE.i18n("&Back") do
