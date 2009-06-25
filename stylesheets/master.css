@@ -310,3 +310,7 @@ div.related {
 .float-right { float: right; }
 
 a img { border: 0; }
+
+.screenshot {
+  text-align:center;
+}
