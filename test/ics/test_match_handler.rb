@@ -11,15 +11,15 @@ class TestMatchHandler < Test::Unit::TestCase
     protocol = mock("protocol") do |x|
       x.expects(:add_observer)
     end
-    icsapi = mock("icsapi")
     
     handler = ICS::MatchHandler.new(user, protocol)
     handler.on_creating_game :game => Game.get(:chess),
                              :number => 37,
-                             :icsapi => icsapi
+                             :white => { :name => 'hello' },
+                             :black => { :name => 'world' }
     assert_equal 1, handler.matches.size
-    match, m_icsapi = handler.matches[37]
-    assert_equal icsapi, m_icsapi
+    match, info = handler.matches[37]
+    assert_equal 37, info[:number]
   end
   
   def test_style12
@@ -27,16 +27,18 @@ class TestMatchHandler < Test::Unit::TestCase
       x.expects(:reset)
       x.expects(:color=).with(:white)
       x.expects(:color).at_least_once.returns(:white)
+      x.expects(:name=).with('hello')
+      x.expects(:update)
     end
     protocol = mock("protocol") do |x|
       x.expects(:add_observer)
     end
-    icsapi = mock("icsapi")
     
     handler = ICS::MatchHandler.new(user, protocol)
     handler.on_creating_game :game => Game.get(:chess),
                              :number => 37,
-                             :icsapi => icsapi
+                             :white => { :name => 'hello' },
+                             :black => { :name => 'world' }
     handler.on_style12 OpenStruct.new(
                          :game_number => 37,
                          :relation => ICS::Style12::Relation::MY_MOVE,
@@ -44,7 +46,7 @@ class TestMatchHandler < Test::Unit::TestCase
                          :move_index => 0)
                        
     assert_equal 1, handler.matches.size
-    match, m_icsapi = handler.matches[37]
+    match, info = handler.matches[37]
     assert match.started?    
   end
 end
