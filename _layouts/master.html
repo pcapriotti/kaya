@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>Kaya - {{ page.title }}</title>
+    <link rel="stylesheet" href="stylesheets/master.css" type="text/css" media="screen" charset="utf-8"/>
+  </head>
+  <body>
+    <div id='wrapper'>
+
+      <div id='header'>
+        <h1><a href="index.html">Kaya</a></h1>
+        <h2>KDE board game suite</h2>
+      </div>
+
+    <div id='content'>
+    
+    
+            
+<div class='home_box' id='home_left'>
+<!--   <h2>Latest Post <span class="more">(<a href='/archive.html'>Archive</a>)</span></h2> -->
+
+  <div class='post'>
+    <div class='body'>
+
+    {{ content }}
+  
+  </div>
+  </div>
+</div>
+<div class='home_box' id='home_right'>
+  <ul class='actions'>
+  <li><a href="index.html">Home</a></li>
+  <li><a href="download.html">Download</a></li>
+  <li><a href="screenshots.html">Screenshots</a></li>
+  <li><a href="http://github.com/pcapriotti/kaya/issues">Report bug</a></li>
+  <li><a href="http://github.com/pcapriotti/kaya/tree/master">Development</a></li>
+  </ul>
+  <h2>Latest news</h2>
+  {% for post in site.posts limit:5 %}
+    <div class='repo'>
+    <h3><a href='{{post.url}}'>{{post.title}}</a></h3>
+  <span class='desc'>{{post.content}}</a></span>
+</div>
+  {% endfor %}
+
+</div>
+    
+    
+    
+      <div class='clearfix'></div>
+    </div>
+    
+    
+    
+    </div>
+    <div id='footer'>
+      Licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/us/">Creative Commons</a>. Theme and code inspired by <a href="http://github.com/mbleigh">Michael Bleigh</a>.
+    </div>
+  </body>
+</html>
