@@ -27,7 +27,9 @@ Game.add :chess do
            :keywords => %w(chess),
            :game_writer_component => PGN,
            :game_writer => lambda { 
-              game_writer_component.new(serializer.new(:compact)) }
+              game_writer_component.new(serializer.new(:compact),
+                                        state) },
+           :game_reader => lambda { game_writer }
 end
 
 Game.add :chess5x5, [:chess] do |chess|
