@@ -87,14 +87,18 @@ class SimpleMoveList < Qt::ListView
   end
   
   def on_reset(match)
-    self.model = LinearHistoryModel.new(match)
-    model.observe(:change_current) do |current|
-      selection_model.select(current, 
-        Qt::ItemSelectionModel::ClearAndSelect)
-    end
-    sig = 'selectionChanged(QItemSelection, QItemSelection)'
-    selection_model.on(sig) do |selected, deselected|
-      @controller.go_to(selected.indexes.first.row)
+    if match.game.respond_to?(:serializer)
+      self.model = LinearHistoryModel.new(match)
+      model.observe(:change_current) do |current|
+        selection_model.select(current, 
+          Qt::ItemSelectionModel::ClearAndSelect)
+      end
+      sig = 'selectionChanged(QItemSelection, QItemSelection)'
+      selection_model.on(sig) do |selected, deselected|
+        @controller.go_to(selected.indexes.first.row)
+      end
+    else
+      self.model = nil
     end
   end
 end
