@@ -105,7 +105,10 @@ private
   def connect_to_ics
     protocol = ICS::Protocol.new(:debug)
     @connection = ICS::Connection.new('freechess.org', 23)
-    protocol.add_observer ICS::AuthModule.new(@connection, 'ujjajja', '')
+    config = KDE::Global.config.group("ICS")
+    protocol.add_observer ICS::AuthModule.new(@connection, 
+      config.read_entry('username', 'guest'), 
+      config.read_entry('password', ''))
     protocol.add_observer ICS::StartupModule.new(@connection)
     protocol.link_to @connection
 
