@@ -82,16 +82,23 @@ class SimpleMoveList < Qt::ListView
     if match.game.respond_to?(:serializer)
       self.model = LinearHistoryModel.new(match)
       model.observe(:change_current) do |current|
-        selection_model.select(current, 
-          Qt::ItemSelectionModel::ClearAndSelect)
+        select(current)
       end
       sig = 'selectionChanged(QItemSelection, QItemSelection)'
       selection_model.on(sig) do |selected, deselected|
         @controller.go_to(selected.indexes.first.row)
       end
+      # select last item
+      select(model.index(model.row_count - 1, 0))
     else
       self.model = nil
     end
+  end
+  
+  def select(index)
+    selection_model.select(index, 
+      Qt::ItemSelectionModel::ClearAndSelect)
+    scroll_to(index)    
   end
 end
 
