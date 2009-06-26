@@ -57,10 +57,12 @@ class Table < Qt::GraphicsView
   end
 
   def flip(value)
-    @theme.layout.flip(value)
-    @theme.board.flip(value)
-    @theme.pieces.flip(value)
-    relayout
+    if flipped? != value
+      @theme.layout.flip(value)
+      @theme.board.flip(value)
+      @theme.pieces.flip(value)
+      relayout
+    end
   end
 
   def resizeEvent(e)
