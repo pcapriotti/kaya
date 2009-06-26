@@ -1,7 +1,10 @@
 module Chess
   class Policy
+    attr_accessor :promotion
+    
     def initialize(move_factory)
       @move_factory = move_factory
+      @promotion = :queen
     end
     
     def movable?(state, p)
@@ -14,7 +17,7 @@ module Chess
     end
     
     def new_move(state, src, dst, opts = {})
-      @move_factory.new(src, dst, opts.merge(:promotion => :queen))
+      @move_factory.new(src, dst, opts.merge(:promotion => @promotion))
     end
   end
 end

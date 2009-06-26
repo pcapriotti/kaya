@@ -8,11 +8,13 @@ require 'games/chess/validator'
 require 'games/chess/serializer'
 require 'games/chess/pgn'
 require 'plugins/plugin'
+require 'games/game_actions'
 
 module Chess
 
 class Game
   include Plugin
+  include GameActions
   
   plugin :name => 'Chess',
          :id => :chess,
@@ -42,10 +44,39 @@ class Game
 
     @game_writer = PGN.new(serializer.new(:compact), state)
     @game_extensions = %w(pgn)
+    
+    action :promote_to_queen,
+           :text => 'Promote to Queen' do |policy| 
+      policy.promotion = :queen
+    end
+    action :promote_to_rook, 
+           :text => 'Promote to Rook' do |policy| 
+      policy.promotion = :rook
+    end
+    action :promote_to_bishop, 
+           :text => 'Promote to Bishop' do |policy| 
+      policy.promotion = :bishop
+    end
+    action :promote_to_knight, 
+           :text => 'Promote to Knight' do |policy| 
+      policy.promotion = :knight
+    end
   end
   
   def game_reader
     @game_writer
+  end
+  
+  def actions(parent, collection, policy)
+    acts = super
+    group = Qt::ActionGroup.new(parent)
+    group.exclusive = true
+    acts.each do |act| 
+      act.checkable = true
+      act.action_group = group
+    end
+    acts.first.checked = true
+    acts
   end
 end
 
