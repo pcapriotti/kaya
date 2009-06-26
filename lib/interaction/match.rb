@@ -106,8 +106,8 @@ class Match
     @players.keys.find{|p| p.color == color }
   end
   
-  def close(result, message)
-    @info[:result] = result
+  def close(result = nil, message = nil)
+    @info[:result] = result if result
     broadcast nil, :close => { 
       :result => result,
       :message => message }

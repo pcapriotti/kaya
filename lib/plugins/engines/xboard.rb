@@ -52,11 +52,6 @@ class XBoardEngine
   end
   
   def setup
-    begin
-      raise "ciao"
-    rescue Exception => e
-      puts e.backtrace
-    end
     @match.observe(:started) do
       send_command "new"
       send_command "force"
@@ -142,5 +137,9 @@ class XBoardEngine
   end
   
   def on_quit
+  end
+  
+  def on_close(data)
+    send_command "quit"
   end
 end

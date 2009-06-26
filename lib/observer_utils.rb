@@ -24,7 +24,10 @@ end
 
 module Observable
   def observe(event, &blk)
-    add_observer SimpleObserver.new(event, &blk)
+    obs = SimpleObserver.new(event, &blk)
+    add_observer obs
+    # return observer so that we can remove it later
+    obs
   end
 
   def fire(e)

@@ -74,7 +74,7 @@ class Controller
       clock.data = { :color => col,
                      :player => match.player(col).name }
     end
-    @match.observe(:move) do |data|
+    @noncontrolled = @match.observe(:move) do |data|
       unless @controlled[data[:player].color] == data[:player]
         animate(:forward, data[:state], data[:move])
         @board.highlight(data[:move])
@@ -246,7 +246,6 @@ class Controller
   end
   
   def on_close(data)
-    puts data[:message]
     @clocks.each do |pl, clock|
       clock.stop
     end
@@ -258,8 +257,15 @@ class Controller
   end
   
   def color=(value)
+    if @match
+      # ignore further moves from other players
+      @match.delete_observer(@noncontrolled)
+      @match.close 
+    end
     @color = value
-    @controlled = { @color => self }
+    if @color
+      @controlled = { @color => self }
+    end
   end
     
   def movable?(p)

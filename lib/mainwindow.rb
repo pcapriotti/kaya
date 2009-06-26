@@ -35,13 +35,7 @@ class MainWindow < KDE::XmlGuiWindow
 private
 
   def setup_actions
-    std_action(:open_new) do
-      action = lambda do |game|
-        new_game(Match.new(game))
-      end
-      diag = NewGame.new(self, action)
-      diag.show
-    end
+    std_action(:open_new) { create_game }
     std_action(:open) { load_game }
     std_action :quit, :slot => :close
     std_action(:save) { save_game }
@@ -80,6 +74,7 @@ private
     @table.observe(:reset) do |match|
       update_game_actions(match)
     end
+    @engine_loader = @loader.get_matching(:engine_loader).new(@loader)
 
     movelist = @loader.get_matching(:movelist).new(@controller)
     movelist_dock = Qt::DockWidget.new(self)
@@ -146,7 +141,40 @@ private
       match.start(p)
     end
   end
-  
+
+  def create_game
+    diag = NewGame.new(self, @engine_loader)
+    diag.observe(:ok) do |data|
+      game = data[:game]
+      match = Match.new(game)
+      
+      match.observe(:started) { @controller.reset(match) }
+      
+      # set up engine players
+      players = game.players
+      data[:engines].each do |player, engine|
+        e = engine.new(player, match)
+        e.start
+      end
+      
+      # set up human players
+      if data[:humans].empty?
+        @controller.color = nil
+      else
+        @controller.color = data[:humans].first
+        match.register(@controller)
+        
+        data[:humans][1..-1].each do |player|
+          p = DummyPlayer.new(player)
+          @controller.add_controlled_player(p)
+          match.register(p)
+        end
+      end
+      @controller.controlled.values.each {|p| match.start(p) }
+    end
+    diag.show
+  end
+
   def load_game
     url = KDE::FileDialog.get_open_url(KDE::Url.new, '*.*', self,
       KDE.i18n("Open game"))
