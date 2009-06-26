@@ -77,7 +77,7 @@ private
     movelist = @loader.get_matching(%w(movelist)).new(@controller)
     movelist_dock = Qt::DockWidget.new(self)
     movelist_dock.widget = movelist
-    movelist_dock.window_title = KDE.i18n("Move list")
+    movelist_dock.window_title = KDE.i18n("History")
     movelist_dock.object_name = "movelist"
     add_dock_widget(Qt::LeftDockWidgetArea, movelist_dock, Qt::Vertical)
     movelist_dock.show

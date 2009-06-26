@@ -31,18 +31,10 @@ class SimpleMoveList < Qt::ListView
         remove_rows(@history.size, rowCount - @history.size)
       end
       update_row(@history.current)
-      fire_changed
+      on_current_changed
     end
-    
-    def on_forward
-      fire_changed
-    end
-    
-    def on_back
-      fire_changed
-    end
-    
-    def fire_changed
+
+    def on_current_changed
       fire :change_current => index(@history.current, 0)
     end
     
