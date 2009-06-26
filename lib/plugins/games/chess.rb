@@ -26,7 +26,6 @@ class Game
               
   def initialize
     @size = Point.new(8, 8)
-    @policy = Policy.new(Move)
     @state_component = State
     @state = Factory.new(State) { State.new(board.new, move, piece) }
     @board = Factory.new(Board) { Board.new(size) }
@@ -34,6 +33,7 @@ class Game
     @animator = Animator
     @validator = Validator
     @piece = Piece
+    @policy = Factory.new { Policy.new(Move) }
     @players = [:white, :black]
     @types = [:pawn, :knight,:bishop, :rook, :queen, :king]
     @serializer = Factory.new(Serializer) {|rep| 

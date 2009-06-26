@@ -7,7 +7,7 @@ class TestChessPolicy < Test::Unit::TestCase
   
   def setup
     @chess = Game.get(:chess)
-    @policy = @chess.policy
+    @policy = @chess.policy.new
     @state = @chess.state.new
   end
   

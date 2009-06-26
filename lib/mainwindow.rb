@@ -18,8 +18,6 @@ require 'filewriter'
 class MainWindow < KDE::XmlGuiWindow
   include ActionHandler
   include FileWriter
-  
-  slots :load_game
 
   def initialize(loader, game)
     super nil
@@ -27,10 +25,10 @@ class MainWindow < KDE::XmlGuiWindow
     @loader = loader
     @default_game = game
     
-    load_board(game)
-    
+    startup
     setup_actions
     setupGUI
+    new_game(Match.new(game))
   end
 
 private
@@ -69,10 +67,13 @@ private
                   
   end
   
-  def load_board(game)
+  def startup
     scene = Scene.new
     @table = Table.new scene, @loader, self
     @controller = Controller.new(@table)
+    @table.observe(:reset) do |match|
+      update_game_actions(match)
+    end
 
     movelist = @loader.get_matching(:movelist).new(@controller)
     movelist_dock = Qt::DockWidget.new(self)
@@ -90,9 +91,7 @@ private
     console_dock.object_name = "console"                                                         
     add_dock_widget(Qt::BottomDockWidgetArea, console_dock, Qt::Horizontal)                      
     console_dock.window_flags = console_dock.window_flags & ~Qt::WindowStaysOnTopHint            
-    console_dock.show                                                                            
-
-    new_game(Match.new(game))
+    console_dock.show
     
     self.central_widget = @table
   end
@@ -114,14 +113,15 @@ private
 
     handler = ICS::MatchHandler.new(@controller, protocol)
 
-    protocol.observe :creating_game do |data|
-      puts "CREATING GAME: #{data.inspect}"
-    end
-
     @connection.start
   end
   
   def new_game(match)
+    setup_single_player(match)
+    @controller.reset(match)
+  end
+  
+  def setup_single_player(match)
     @controller.color = match.game.players.first
     opponents = match.game.players[1..-1].map do |color|
       DummyPlayer.new(color)
@@ -136,7 +136,6 @@ private
     @controller.controlled.values.each do |p|
       match.start(p)
     end
-    @controller.reset(match)
   end
   
   def load_game
@@ -186,20 +185,7 @@ private
       
       # create game
       match = Match.new(game)
-      @controller.color = match.game.players.first
-      opponents = match.game.players[1..-1].map do |color|
-        DummyPlayer.new(color)
-      end
-      opponents.each do |p| 
-        @controller.add_controlled_player(p)
-      end
-
-      @controller.controlled.values.each do |p|
-        match.register(p)
-      end
-      @controller.controlled.values.each do |p|
-        match.start(p)
-      end
+      setup_single_player(match)
       match.history = history
       match.add_info(info)
       match.url = url
@@ -245,6 +231,16 @@ private
       result = writer.write(info, match.history)
       write_file(url, result)
     end
+  end
+  
+  def update_game_actions(match)
+    unplug_action_list('game_actions')
+    actions = if match.game.respond_to?(:actions)
+      match.game.actions(self, action_collection, @controller.policy)
+    else
+      []
+    end
+    plug_action_list('game_actions', actions)
   end
 end
 

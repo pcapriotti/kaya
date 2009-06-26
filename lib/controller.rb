@@ -12,6 +12,7 @@ class Controller
   attr_reader :color
   attr_reader :controlled
   attr_reader :table
+  attr_reader :policy
   attr_accessor :name
   
   def initialize(table)
@@ -33,20 +34,22 @@ class Controller
   def on_board_click(p)
     state = @match.state
     if @board.selection
-      move = @match.game.policy.new_move(state, @board.selection, p)
+      move = @policy.new_move(state, @board.selection, p)
       validate = @match.game.validator.new(state)
       if validate[move]
         perform! move
       end
       
       @board.selection = nil
-    elsif @match.game.policy.movable?(state, p) and movable?(p)
+    elsif @policy.movable?(state, p) and movable?(p)
       @board.selection = p
     end
   end
   
   def reset(match)
     @match = match
+    @policy = match.game.policy.new
+    
     @table.reset(@match)
     @board = @table.elements[:board]
     @pools = @table.elements[:pools]
@@ -155,7 +158,7 @@ class Controller
         @board.selection = data[:src]
       elsif data[:dst]
         # normal move
-        move = @match.game.policy.new_move(
+        move = @policy.new_move(
           @match.state, data[:src], data[:dst])
         validate = @match.game.validator.new(@match.state)
         validate[move]
@@ -170,7 +173,7 @@ class Controller
       end
     elsif data[:index] and data[:dst]
       # actual drop
-      move = @match.game.policy.new_move(
+      move = @policy.new_move(
         @match.state, nil, data[:dst], 
         :dropped => data[:item].name)
       validate = @match.game.validator.new(@match.state)
@@ -185,7 +188,7 @@ class Controller
   end
   
   def on_board_drag(data)
-    if @match.game.policy.movable?(@match.state, data[:src]) and 
+    if @policy.movable?(@match.state, data[:src]) and 
        movable?(data[:src])
       @board.raise data[:item]
       @board.remove_from_group data[:item]
@@ -195,7 +198,7 @@ class Controller
   end
   
   def on_pool_drag(c, data)
-    if @match.game.policy.droppable?(@match.state, c, data[:index]) and 
+    if @policy.droppable?(@match.state, c, data[:index]) and 
        droppable?(c, data[:index])
        
        

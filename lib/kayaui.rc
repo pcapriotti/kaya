@@ -27,7 +27,8 @@
    <Action name="pause" />
    <Action name="forward" />
    <Action name="end" />
-   <ActionList name="variantActions" />
+   <Separator />
+   <ActionList name="game_actions" />
   </Menu>
   <Menu name="viewMenu" >
    <text>&amp;View</text>
