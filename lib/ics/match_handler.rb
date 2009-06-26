@@ -38,10 +38,10 @@ class MatchHandler
     return if match == nil
     
     if match.started?
+      match.update_time(style12.time)
       if match.index < style12.move_index
         # last_move = icsapi.parse_verbose(style12.last_move, match.state)
         move = match.game.serializer.new(:compact).deserialize(style12.last_move_san, match.state)
-        match.update_time(style12.time)
         if move
           match.move(nil, move, style12.state)
         else
