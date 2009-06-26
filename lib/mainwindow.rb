@@ -14,6 +14,7 @@ require 'ics/connection'
 require 'console'
 
 require 'filewriter'
+require 'newgame'
 
 class MainWindow < KDE::XmlGuiWindow
   include ActionHandler
@@ -34,7 +35,13 @@ class MainWindow < KDE::XmlGuiWindow
 private
 
   def setup_actions
-    std_action(:open_new) { new_game(Match.new(@default_game)) }
+    std_action(:open_new) do
+      action = lambda do |game|
+        new_game(Match.new(game))
+      end
+      diag = NewGame.new(self, action)
+      diag.show
+    end
     std_action(:open) { load_game }
     std_action :quit, :slot => :close
     std_action(:save) { save_game }
