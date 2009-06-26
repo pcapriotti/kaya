@@ -41,7 +41,7 @@ private
     std_action(:saveAs) { save_game_as }
     
     regular_action :back, :icon => 'go-previous', 
-                          :text => KDE.i18n("&Back") do
+                          :text => KDE.i18n("B&ack") do
       @controller.back
     end
     regular_action :forward, :icon => 'go-next', 

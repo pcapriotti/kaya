@@ -39,7 +39,7 @@ class Game
               
     action :autopromote, 
            :checked => true,
-           :text => 'Promote Automatically' do |value, policy|
+           :text => '&Promote Automatically' do |value, policy|
       policy.autopromote = value
     end
   end

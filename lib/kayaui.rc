@@ -11,15 +11,15 @@
    <Separator/>
    <Action name="quit" />
   </Menu>
-  <Menu name="edit">
+<!--  <Menu name="edit">
       <Text>&amp;Edit</Text>
       <Action name="copyPosition" />
-      <Action name="pastePosition" />
+      <Action name="pastePosition" />-->
 <!--      <Separator />
       <Action name="editPosition" />
       <Action name="clearBoard" />
       <Action name="setStartingPosition" />-->
-  </Menu>
+<!--   </Menu> -->
   <Menu name="gameMenu">
    <text>&amp;Game</text>
    <Action name="begin" />

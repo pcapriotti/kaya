@@ -46,19 +46,19 @@ class Game
     @game_extensions = %w(pgn)
     
     action :promote_to_queen,
-           :text => 'Promote to Queen' do |policy| 
+           :text => 'Promote to &Queen' do |policy| 
       policy.promotion = :queen
     end
     action :promote_to_rook, 
-           :text => 'Promote to Rook' do |policy| 
+           :text => 'Promote to &Rook' do |policy| 
       policy.promotion = :rook
     end
     action :promote_to_bishop, 
-           :text => 'Promote to Bishop' do |policy| 
+           :text => 'Promote to &Bishop' do |policy| 
       policy.promotion = :bishop
     end
     action :promote_to_knight, 
-           :text => 'Promote to Knight' do |policy| 
+           :text => 'Promote to &Knight' do |policy| 
       policy.promotion = :knight
     end
   end
