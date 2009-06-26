@@ -4,7 +4,8 @@ require 'plugins/svg_theme'
 class FantasyTheme < SvgTheme
   include Plugin
   plugin :name => 'Fantasy',
-         :keywords => %w(chess pieces)
+         :interface => :pieces,
+         :keywords => %w(chess)
 
   def initialize(opts = {})
     super(opts)

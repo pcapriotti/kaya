@@ -4,7 +4,8 @@ require 'plugins/svg_theme'
 class CelticTheme < SvgTheme
   include Plugin
   plugin :name => 'Celtic',
-         :keywords => %w(chess pieces)
+         :interface => :pieces,
+         :keywords => %w(chess)
 
   def initialize(opts = {})
     super(opts)

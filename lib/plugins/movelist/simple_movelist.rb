@@ -5,7 +5,7 @@ class SimpleMoveList < Qt::ListView
   include Observer
   
   plugin :name => 'Simple Move List',
-         :keywords => %w(movelist)
+         :interface => :movelist
          
   class LinearHistoryModel < Qt::StringListModel
     include Observer

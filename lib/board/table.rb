@@ -26,13 +26,13 @@ class Table < Qt::GraphicsView
     # load theme
     @theme = Theme.new
     @theme.pieces = @loader.
-      get_matching((game.keywords || []) + %w(pieces)).
+      get_matching(:pieces, game.keywords || []).
       new(:game => game, :shadow => true)
     @theme.board = @loader.
-      get_matching(%w(board), game.keywords || []).
+      get_matching(:board, game.keywords || []).
       new(:game => game)
     @theme.layout = @loader.
-      get_matching(%w(layout), game.keywords || []).
+      get_matching(:layout, game.keywords || []).
       new(game)
 
     # recreate elements
@@ -46,7 +46,7 @@ class Table < Qt::GraphicsView
     else
       {}
     end
-    clock_class = @loader.get_matching(%w(clock))
+    clock_class = @loader.get_matching(:clock)
     @elements[:clocks] = game.players.inject({}) do |res, player|
       res[player] = clock_class.new(scene)
       res

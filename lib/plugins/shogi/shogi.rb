@@ -12,7 +12,8 @@ class ShogibanBackground
   BASE_DIR = File.dirname(__FILE__)
   
   plugin :name => 'Shogiban',
-         :keywords => %w(shogi board)
+         :interface => :board,
+         :keywords => %w(shogi)
         
   def initialize(opts = {})
     @squares = opts[:board_size] || opts[:game].size
@@ -64,7 +65,8 @@ class ShogiTheme
     :pawn => 0.8 }
 
   plugin :name => 'Shogi',
-         :keywords => %w(shogi pieces)
+         :interface => :pieces,
+         :keywords => %w(shogi)
 
   def initialize(opts = {})
     @loader = lambda do |piece, size|

@@ -9,7 +9,7 @@ class DigitalClock < Qt::GraphicsItemGroup
   include Observer
   
   plugin :name => 'Digital Clock',
-         :keywords => %w(clock)
+         :interface => :clock
 
   attr_reader :items, :rect, :clock
   

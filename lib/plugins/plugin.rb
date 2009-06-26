@@ -18,14 +18,12 @@ module Plugin
       @plugin_data[:name] if @plugin_data
     end
     
-    def matches?(keywords)
-      keywords.all? do |k|
-        @plugin_data[:keywords].include? k
-      end
+    def score(keywords)
+      ((@plugin_data[:keywords] || []) & keywords).size
     end
     
-    def score(keywords)
-      (@plugin_data[:keywords] & keywords).size
+    def implements?(iface)
+      @plugin_data[:interface] == iface
     end
   end
   

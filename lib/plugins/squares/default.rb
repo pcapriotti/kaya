@@ -6,7 +6,8 @@ class DefaultBackground
   include Background
   
   plugin :name => 'Default',
-         :keywords => %w(chess board)
+         :interface => :board,
+         :keywords => %w(chess)
   
   def initialize(opts)
     @squares = opts[:board_size] || opts[:game].size

@@ -27,11 +27,15 @@ class PluginLoader
     @plugins.each_value(&blk)
   end
   
-  def get_matching(required, optional = [])
-    plugins = @plugins.values.
-      reject {|x| not x.matches?(required) }.
-      sort_by {|x| x.score(optional) }
+  def get_matching(interface, keywords = [])
+    plugins = get_all_matching(interface).
+      sort_by {|x| x.score(keywords) }
+      
     raise NoPluginFound if plugins.empty?
     plugins.last
+  end
+  
+  def get_all_matching(interface)
+    @plugins.values.reject {|x| not x.implements?(interface) }
   end
 end

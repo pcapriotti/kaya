@@ -74,7 +74,7 @@ private
     @table = Table.new scene, @loader, self
     @controller = Controller.new(@table)
 
-    movelist = @loader.get_matching(%w(movelist)).new(@controller)
+    movelist = @loader.get_matching(:movelist).new(@controller)
     movelist_dock = Qt::DockWidget.new(self)
     movelist_dock.widget = movelist
     movelist_dock.window_title = KDE.i18n("History")

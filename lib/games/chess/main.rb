@@ -22,6 +22,7 @@ Game.add :chess do
            :validator => Validator,
            :piece => Piece,
            :players => [:white, :black],
+           :types => [:pawn, :knight, :bishop, :rook, :queen, :king],
            :serializer => lambda {|rep| 
               Serializer.new(rep, validator, move, piece) },
            :keywords => %w(chess),

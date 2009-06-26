@@ -4,7 +4,7 @@ class CoolLayout
   include Plugin
   
   plugin :name => 'Layouts/Cool',
-         :keywords => %w(layout)
+         :interface => :layout
         
   # values relative to unit = 1
   MARGIN = 0.2
