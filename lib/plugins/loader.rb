@@ -1,8 +1,7 @@
 class PluginLoader
   BASE_DIR = File.dirname(__FILE__)
   
-  class NoPluginFound < Exception
-  end
+  NoPluginFound = Class.new(Exception)
   
   def initialize
     # load all ruby files in subdirectories
@@ -20,7 +19,6 @@ class PluginLoader
         @plugins[k.plugin_name] = k
       end
     end
-    
   end
   
   def each(&blk)
@@ -37,5 +35,14 @@ class PluginLoader
   
   def get_all_matching(interface)
     @plugins.values.reject {|x| not x.implements?(interface) }
+  end
+  
+   # singleton
+  class << self
+    alias :internal_new :new
+    
+    def new
+      @instance ||= PluginLoader.internal_new
+    end
   end
 end
