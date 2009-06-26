@@ -25,7 +25,15 @@ module Plugin
     def implements?(iface)
       @plugin_data[:interface] == iface
     end
+    
+    def data(key)
+      @plugin_data[key]
+    end
   end
   
   extend ModuleMethods
+  
+  def keywords
+    self.class.data(:keywords)
+  end
 end

@@ -9,7 +9,9 @@ require 'games/chess/serializer'
 require 'games/chess/pgn'
 require 'plugins/plugin'
 
-class ChessGame
+module Chess
+
+class Game
   include Plugin
   
   plugin :name => 'Chess',
@@ -34,7 +36,7 @@ class ChessGame
     @piece = Piece
     @players = [:white, :black]
     @types = [:pawn, :knight,:bishop, :rook, :queen, :king]
-    @serializer = lambda {|rep| 
+    @serializer = Factory.new(Serializer) {|rep| 
       Serializer.new(rep, validator, move, piece) }
     @keywords = %w(chess)
 
@@ -47,13 +49,22 @@ class ChessGame
   end
 end
 
-class Chess5x5Game < ChessGame
+end
+
+module Chess5x5
+
+class Game < Chess::Game
   plugin :name => 'Chess 5x5',
          :id => :chess5x5,
          :interface => :game,
          :keywords => %w(chess)
   
   def initialize
+    super
     @size = Point.new(5, 5)
+    @game_extensions = []
   end
+  
+end
+
 end

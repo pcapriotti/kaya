@@ -3,7 +3,7 @@ require 'plugins/svg_theme'
 
 class FantasyTheme < SvgTheme
   include Plugin
-  plugin :name => 'Fantasy',
+  plugin :name => 'Fantasy Pieces',
          :interface => :pieces,
          :keywords => %w(chess)
 

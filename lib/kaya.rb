@@ -17,7 +17,9 @@ if $0 == __FILE__
     :contributors => [[KDE.ki18n("Jani Huhtanen"), KDE.ki18n('Gaussian blur code')]],
     :bug_tracker => 'http://github.com/pcapriotti/kaya/issues',
     :options => [['+[game]', KDE.ki18n('Initial game')]])
-      
+    
+  require 'ext/loader'
+    
   args = KDE::CmdLineArgs.parsed_args
   game = if args.count > 0
     name = args.arg(0)

@@ -150,7 +150,7 @@ private
         game.respond_to?(:game_extensions) and
         game.game_extensions.include?(ext)
       end.map do |_, game|
-        [game, game.game_reader.new]
+        [game, game.game_reader]
       end
       
       if readers.empty?
@@ -181,6 +181,7 @@ private
       
       unless history
         warn "Could not load file #{url.path}"
+        return
       end
       
       # create game
@@ -209,7 +210,11 @@ private
   def save_game_as
     match = @controller.match
     if match
-      pattern = match.game.game_extensions.map{|ext| "*.#{ext}"}.join(' ')
+      pattern = if match.game.respond_to?(:game_extensions)
+        match.game.game_extensions.map{|ext| "*.#{ext}"}.join(' ')
+      else
+        '*.*'
+      end
       url = KDE::FileDialog.get_save_url(
         KDE::Url.new, pattern, self, KDE.i18n("Save game"))
       match.url = write_game(url)
@@ -231,7 +236,7 @@ private
     match = @controller.match
     if match
       url ||= match.url
-      writer = match.game.game_writer.new
+      writer = match.game.game_writer
       info = match.info
       info[:players] = info[:players].inject({}) do |res, pl|
         res[pl.color] = pl.name

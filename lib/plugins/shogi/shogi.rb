@@ -64,7 +64,7 @@ class ShogiTheme
     :lance => 0.83,
     :pawn => 0.8 }
 
-  plugin :name => 'Shogi',
+  plugin :name => 'Shogi Pieces',
          :interface => :pieces,
          :keywords => %w(shogi)
 

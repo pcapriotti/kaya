@@ -74,7 +74,7 @@ Kc7 42.Kxd5 Rd8+ 43.Rd6 Rf8 44.Ra6 Rf5+ 45.Kc4 Rxf4+
     @state = @game.state.new
     @state.setup
     @history = History.new(@state)
-    @pgn = @game.game_writer.new
+    @pgn = @game.game_writer
   end
   
   def test_pgn_black_wins

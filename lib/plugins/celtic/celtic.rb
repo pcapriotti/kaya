@@ -3,7 +3,7 @@ require 'plugins/svg_theme'
 
 class CelticTheme < SvgTheme
   include Plugin
-  plugin :name => 'Celtic',
+  plugin :name => 'Celtic Pieces',
          :interface => :pieces,
          :keywords => %w(chess)
 

@@ -5,7 +5,9 @@ require 'games/shogi/validator'
 require 'games/shogi/policy'
 require 'plugins/plugin'
 
-class ShogiGame
+module Shogi
+
+class Game
   include Plugin
   
   plugin :name => 'Shogi',
@@ -16,21 +18,23 @@ class ShogiGame
   
   attr_reader :size, :state, :board, :pool,
               :policy, :move, :animator, :validator,
-              :piece, :keywords, :players, :types, :actions
+              :piece, :players, :types, :actions
               
   def initialize
     @size = Point.new(9, 9)
     @state = Factory.new { State.new(board.new, pool, move, piece) }
-    @board = Factory.new { deps[:chess].board.component.new size }
+    @board = Factory.new { chess.board.component.new size }
     @pool = Pool
-    @piece = deps[:chess].piece
+    @piece = chess.piece
     @move = Move
     @validator = Validator
-    @animator = deps[:chess].animator
+    @animator = chess.animator
     @policy = Policy.new(move, validator)
     
     @players = [:white, :black]
     @types = [:pawn, :lance, :horse, :silver, 
               :gold, :bishop, :rook, :king]
   end
+end
+
 end

@@ -8,6 +8,7 @@ end
 $ext = $qApp.findChild(Qt::Object, "kaya extensions") if $qApp
 fake = unless $ext
   # install fake implementations of the extension functions
+  warn "Creating fake extension library"
   $ext = Qt::Object.new
   class << $ext
     def exp_blur(img, radius)

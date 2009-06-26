@@ -1,5 +1,3 @@
-require 'ext/loader'
-
 module Background
   HALO_DELTA = 0.1
   def halo(size, color)

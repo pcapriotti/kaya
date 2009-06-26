@@ -1,5 +1,3 @@
-require 'ext/loader'
-
 module Shadower
   ShadowData = Struct.new(:radius, :color, :grow, :offset)
   DEFAULT_SHADOW_DATA = 
