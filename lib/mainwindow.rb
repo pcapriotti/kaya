@@ -71,7 +71,6 @@ private
                           :text => KDE.i18n("F&lip") do
       @table.flip(! @table.flipped?)
     end
-                  
   end
   
   def startup

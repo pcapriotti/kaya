@@ -2,8 +2,6 @@ require 'observer_utils'
 require 'history'
 
 module Player
-  include Observer
-  
   def name
   end
 end

@@ -268,6 +268,8 @@ module ActionHandler
       else
         KDE::Icon.new(opts[:icon].to_s)
       end
+    else
+      KDE::Icon.new
     end
     
     KDE::Action.new(icon, opts[:text], self).tap do |a|
