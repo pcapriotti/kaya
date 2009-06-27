@@ -14,8 +14,10 @@ class NewGame < KDE::Dialog
     label = Qt::Label.new(KDE.i18n("&Game:"), @widget)
     @games = KDE::ComboBox.new(@widget) do
       self.editable = false
-      Game.each do |id, game|
-        add_item(game.class.data(:name), id.to_s)
+      Game.to_enum(:each).map do |id, g|
+        [g.class.data(:name), id.to_s]
+      end.sort.each do |name, id|
+        add_item(name, id)
       end
     end
     label.buddy = @games
@@ -61,6 +63,7 @@ class NewGame < KDE::Dialog
     @player_widget.dispose if @player_widget
     @player_widget = Qt::Widget.new(@widget)
     layout = Qt::VBoxLayout.new(@player_widget)
+    layout.margin = 0
     @layout.add_widget(@player_widget)
     
     @players = { }
