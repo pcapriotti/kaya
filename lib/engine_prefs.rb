@@ -96,6 +96,7 @@ class EnginePrefs < KDE::Dialog
   def initialize(loader, parent)
     super(parent)
     @loader = loader
+    self.caption = KDE.i18n("Configure Engines")
     self.buttons = KDE::Dialog::Ok | KDE::Dialog::Cancel
     widget = Qt::Frame.new(self)
     
@@ -103,7 +104,7 @@ class EnginePrefs < KDE::Dialog
     
     @list = Qt::ListView.new(widget)
     @list.model = Qt::StringListModel.new(
-      @loader.map{|name, engine| name })
+      @loader.map{|name, engine| name }, self)
     
     # save loader state
     @engines = { }
