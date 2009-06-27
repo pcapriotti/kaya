@@ -15,6 +15,7 @@ require 'console'
 
 require 'filewriter'
 require 'newgame'
+require 'engine_prefs'
 
 class MainWindow < KDE::XmlGuiWindow
   include ActionHandler
@@ -65,6 +66,13 @@ private
                           :text => KDE.i18n("F&lip") do
       @table.flip(! @table.flipped?)
     end
+    
+    regular_action :configure_engines,
+                   :icon => 'help-hint',
+                   :text => KDE.i18n("Configure &Engines...") do
+      dialog = EnginePrefs.new(@engine_loader, self)
+      dialog.show
+    end
   end
   
   def startup
@@ -74,7 +82,7 @@ private
     @table.observe(:reset) do |match|
       update_game_actions(match)
     end
-    @engine_loader = @loader.get_matching(:engine_loader).new(@loader)
+    @engine_loader = @loader.get_matching(:engine_loader).new
 
     movelist = @loader.get_matching(:movelist).new(@controller)
     movelist_dock = Qt::DockWidget.new(self)

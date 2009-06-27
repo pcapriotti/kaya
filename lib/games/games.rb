@@ -1,5 +1,6 @@
 require 'factory'
 require 'plugins/loader'
+require 'qtutils'
 
 class Game
   GAMES = { }
@@ -26,7 +27,18 @@ class Game
   def self.each(&blk)
     GAMES.each(&blk)
   end
- 
+
+  def self.new_combo(parent)
+    KDE::ComboBox.new(parent) do
+      self.editable = false
+      GAMES.map do |id, g|
+        [g.class.data(:name), id.to_s]
+      end.sort.each do |name, id|
+        add_item(name, id)
+      end
+    end
+  end
+
   private
   
   def self.register_game(klasses, klass)

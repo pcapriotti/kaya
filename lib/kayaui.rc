@@ -37,7 +37,8 @@
    <Action name="toggleMoveList" />
   </Menu>
   <Menu name="settings">
-    <Action name="configure" />
+    <Action name="preferences" />
+    <Action name="configure_engines" />
   </Menu>
  </MenuBar>
  <ToolBar name="mainToolBar" >
