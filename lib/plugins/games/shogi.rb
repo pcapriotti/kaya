@@ -33,7 +33,7 @@ class Game
     @animator = chess.animator
     @policy = Factory.new(Policy) { Policy.new(move, validator, true) }
     
-    @players = [:white, :black]
+    @players = [:black, :white]
     @types = [:pawn, :lance, :horse, :silver, 
               :gold, :bishop, :rook, :king]
               
