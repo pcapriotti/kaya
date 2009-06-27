@@ -11,16 +11,21 @@ class NewGame < KDE::Dialog
     @widget = Qt::Widget.new(self)
     
     @engine_loader = engine_loader
+    label = Qt::Label.new(KDE.i18n("&Game:"), @widget)
     @games = KDE::ComboBox.new(@widget) do
       self.editable = false
       Game.each do |id, game|
         add_item(game.class.data(:name), id.to_s)
       end
     end
+    label.buddy = @games
+    hlayout = Qt::HBoxLayout.new
+    hlayout.add_widget(label)
+    hlayout.add_widget(@games)
     @players = { }
 
     @layout = Qt::VBoxLayout.new(@widget)
-    @layout.add_widget(@games)
+    @layout.add_layout(hlayout)
 
     @games.on('currentIndexChanged(int)') do |index|
       update_players(index)
@@ -53,12 +58,17 @@ class NewGame < KDE::Dialog
   end
   
   def update_players(index)
-    @players.each {|player, combo| combo.dispose }
+    @player_widget.dispose if @player_widget
+    @player_widget = Qt::Widget.new(@widget)
+    layout = Qt::VBoxLayout.new(@player_widget)
+    @layout.add_widget(@player_widget)
+    
     @players = { }
     g = game(index)
     engines = @engine_loader.find_by_game(g)
     g.players.each do |player|
-      combo = KDE::ComboBox.new(@widget) do
+      label = Qt::Label.new(player.to_s.capitalize + ':', @player_widget)
+      combo = KDE::ComboBox.new(@player_widget) do
         self.editable = false
         add_item(KDE.i18n('Human'), Qt::Variant.new(['human']))
       end
@@ -66,7 +76,11 @@ class NewGame < KDE::Dialog
         combo.add_item(engine.name, Qt::Variant.new(['engine', engine.name]))
       end
       @players[player] = combo
-      @layout.add_widget(combo)
+      
+      hlayout = Qt::HBoxLayout.new
+      hlayout.add_widget(label)
+      hlayout.add_widget(combo)
+      layout.add_layout(hlayout)
     end
   end
   
