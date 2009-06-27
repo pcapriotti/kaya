@@ -90,10 +90,10 @@ class XBoardEngine
   
   def process_command(text)
     args = text.split(/\s+/)
-    cmd = args.pop
+    cmd = args[0]
     m = "on_command_#{cmd}"
     if respond_to?(m)
-      send(m, *args)
+      send(m, *args[1..-1])
     else
       extra_command(text)
     end
