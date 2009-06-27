@@ -143,7 +143,10 @@ private
   end
 
   def create_game
-    diag = NewGame.new(self, @engine_loader)
+    current_game = if @controller.match 
+      @controller.match.game
+    end
+    diag = NewGame.new(self, @engine_loader, current_game)
     diag.observe(:ok) do |data|
       game = data[:game]
       match = Match.new(game)

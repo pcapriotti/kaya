@@ -3,7 +3,9 @@ require 'qtutils'
 class NewGame < KDE::Dialog
   include Observable
   
-  def initialize(parent, engine_loader)
+  def initialize(parent, 
+                 engine_loader, 
+                 current_game)
     super(parent)
     self.caption = KDE.i18n("New game")
     self.buttons = KDE::Dialog::Ok | KDE::Dialog::Cancel
@@ -20,6 +22,7 @@ class NewGame < KDE::Dialog
         add_item(name, id)
       end
     end
+    
     label.buddy = @games
     hlayout = Qt::HBoxLayout.new
     hlayout.add_widget(label)
@@ -29,6 +32,10 @@ class NewGame < KDE::Dialog
     @layout = Qt::VBoxLayout.new(@widget)
     @layout.add_layout(hlayout)
 
+    current = (0...@games.count).
+      map{|i| @games.item_data(i).toString }.
+      index(current_game.class.data(:id).to_s)
+    @games.current_index = current if current
     @games.on('currentIndexChanged(int)') do |index|
       update_players(index)
     end
