@@ -84,7 +84,7 @@ class Controller
     end
     
     @clocks[@match.game.players.first].active = true
-    @table.flip(@color != @match.game.players.first)
+    @table.flip(@color && (@color != @match.game.players.first))
     
     if @match.history.move
       @board.highlight(@match.history.move)
