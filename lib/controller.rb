@@ -77,9 +77,9 @@ class Controller
     end
     
     @match.history.observe(:current_changed) { refresh }
-    @match.history.observe(:new_move) { refresh }
     
     @match.observe(:move) do |data|
+      refresh(data[:opts])
       @clocks[data[:old_state].turn].stop
       @clocks[data[:state].turn].start
     end
@@ -93,9 +93,10 @@ class Controller
   end
   
   def perform!(move, opts = {})
-    col = @match.history.state.turn
-    if @controlled[col] 
-      @match.move(@controlled[col], move)
+    turn = @match.history.state.turn
+    if @controlled[turn]
+      @next_refresh_opts = opts
+      @match.move(@controlled[turn], move, opts)
     end
   end
   
@@ -113,16 +114,16 @@ class Controller
   
   # sync displayed state with current history item
   # 
-  def refresh
+  def refresh(opts = { })
     if @match
       index = @match.history.current
       if index > @current
         (@current + 1..index).each do |i|
-          animate(:forward, @match.history[i].state, @match.history[i].move)
+          animate(:forward, @match.history[i].state, @match.history[i].move, opts)
         end
       elsif index < @current
         @current.downto(index + 1).each do |i|
-          animate(:back, @match.history[i - 1].state, @match.history[i].move)
+          animate(:back, @match.history[i - 1].state, @match.history[i].move, opts)
         end
       end
       @current = index
@@ -180,7 +181,7 @@ class Controller
       if validate[move]
         @board.add_to_group data[:item]
         @board.lower data[:item]
-        perform! move, :dropped => data[:item]
+        perform! move, :adjust => true, :dropped => data[:item]
       else
         cancel_drop(data)
       end

@@ -49,10 +49,12 @@ class History
   end
   
   def go_to(index)
-    item = self[index]
-    @current = index
-    fire :current_changed
-    [item.state, item.move]
+    if index != @current
+      item = self[index]
+      @current = index
+      fire :current_changed
+      [item.state, item.move]
+    end
   end
   
   def go_to_last

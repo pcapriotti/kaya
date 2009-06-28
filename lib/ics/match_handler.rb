@@ -43,7 +43,7 @@ class MatchHandler
         # last_move = icsapi.parse_verbose(style12.last_move, match.state)
         move = match.game.serializer.new(:compact).deserialize(style12.last_move_san, match.state)
         if move
-          match.move(nil, move, style12.state)
+          match.move(nil, move, :state => style12.state)
         else
           warn "Received invalid move from ICS: #{style12.last_move_san}"
         end

@@ -53,7 +53,7 @@ class Match
     true
   end
   
-  def move(player, move, state = nil)
+  def move(player, move, opts)
     return false if @closed
     return false unless @history
     
@@ -87,7 +87,8 @@ class Match
       :player => player,
       :move => move,
       :state => state,
-      :old_state => old_state }
+      :old_state => old_state,
+      :opts => opts }
     true
   end
   
