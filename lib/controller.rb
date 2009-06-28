@@ -32,7 +32,7 @@ class Controller
   end
   
   def on_board_click(p)
-    state = @match.state
+    state = @match.history.state
     if @board.selection
       move = @policy.new_move(state, @board.selection, p)
       validate = @match.game.validator.new(state)
@@ -93,7 +93,7 @@ class Controller
   end
   
   def perform!(move, opts = {})
-    col = @match.state.turn
+    col = @match.history.state.turn
     if @controlled[col] 
       @match.move(@controlled[col], move)
     end
@@ -145,7 +145,7 @@ class Controller
   
   def update_pools
     @pools.each do |col, pool|
-      anim = pool.animator.warp(@match.state.pool(col))
+      anim = pool.animator.warp(@match.history.state.pool(col))
       @field.run anim
     end
   end
@@ -159,8 +159,8 @@ class Controller
       elsif data[:dst]
         # normal move
         move = @policy.new_move(
-          @match.state, data[:src], data[:dst])
-        validate = @match.game.validator.new(@match.state)
+          @match.history.state, data[:src], data[:dst])
+        validate = @match.game.validator.new(@match.history.state)
         validate[move]
       end
       
@@ -174,9 +174,9 @@ class Controller
     elsif data[:index] and data[:dst]
       # actual drop
       move = @policy.new_move(
-        @match.state, nil, data[:dst], 
+        @match.history.state, nil, data[:dst], 
         :dropped => data[:item].name)
-      validate = @match.game.validator.new(@match.state)
+      validate = @match.game.validator.new(@match.history.state)
       if validate[move]
         @board.add_to_group data[:item]
         @board.lower data[:item]
@@ -188,7 +188,7 @@ class Controller
   end
   
   def on_board_drag(data)
-    if @policy.movable?(@match.state, data[:src]) and 
+    if @policy.movable?(@match.history.state, data[:src]) and 
        movable?(data[:src])
       @board.raise data[:item]
       @board.remove_from_group data[:item]
@@ -198,7 +198,7 @@ class Controller
   end
   
   def on_pool_drag(c, data)
-    if @policy.droppable?(@match.state, c, data[:index]) and 
+    if @policy.droppable?(@match.history.state, c, data[:index]) and 
        droppable?(c, data[:index])
        
        
@@ -277,7 +277,7 @@ class Controller
   private
   
   def can_play?
-    return false unless @controlled[@match.state.turn]
+    return false unless @controlled[@match.history.state.turn]
     if @match.history.current < @match.index
       @match.editable?
     else
