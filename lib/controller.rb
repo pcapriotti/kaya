@@ -49,6 +49,7 @@ class Controller
   def reset(match)
     @match = match
     @policy = match.game.policy.new
+    @current = match.history.current
     
     @table.reset(@match)
     @board = @table.elements[:board]
@@ -74,13 +75,13 @@ class Controller
       clock.data = { :color => col,
                      :player => match.player(col).name }
     end
-    @noncontrolled = @match.observe(:move) do |data|
-      unless @controlled[data[:player].color] == data[:player]
-        animate(:forward, data[:state], data[:move])
-        @board.highlight(data[:move])
-        @clocks[data[:old_state].turn].stop
-        @clocks[data[:state].turn].start
-      end
+    
+    @match.history.observe(:current_changed) { refresh }
+    @match.history.observe(:new_move) { refresh }
+    
+    @match.observe(:move) do |data|
+      @clocks[data[:old_state].turn].stop
+      @clocks[data[:state].turn].start
     end
     
     @clocks[@match.game.players.first].active = true
@@ -93,45 +94,44 @@ class Controller
   
   def perform!(move, opts = {})
     col = @match.state.turn
-    if @controlled[col] and @match.move(@controlled[col], move)
-      animate(:forward, @match.state, move, opts)
-      @board.highlight(move)
-      
-      @clocks[col].stop
-      @clocks[@match.state.turn].start
+    if @controlled[col] 
+      @match.move(@controlled[col], move)
     end
   end
   
   def back
-    state, move = @match.history.back
-    animate(:back, state, move)
-    @board.highlight(@match.history.move)
+    @match.history.back
   rescue History::OutOfBound
     puts "error: first move"
   end
   
   def forward
-    state, move = @match.history.forward
-    animate(:forward, state, move)
-    @board.highlight(move)
+    @match.history.forward
   rescue History::OutOfBound
     puts "error: last move"
   end
   
-  def go_to(index)
-    cur = @match.history.current
-    state, move = @match.history.go_to(index)
-    if index > cur
-      (cur + 1..index).each do |i|
-        animate(:forward, @match.history[i].state, @match.history[i].move)
+  # sync displayed state with current history item
+  # 
+  def refresh
+    if @match
+      index = @match.history.current
+      if index > @current
+        (@current + 1..index).each do |i|
+          animate(:forward, @match.history[i].state, @match.history[i].move)
+        end
+      elsif index < @current
+        @current.downto(index + 1).each do |i|
+          animate(:back, @match.history[i - 1].state, @match.history[i].move)
+        end
       end
-      @board.highlight(move)
-    elsif index < cur
-      (cur).downto(index + 1).each do |i|
-        animate(:back, @match.history[i - 1].state, @match.history[i].move)
-      end
-      @board.highlight(@match.history.move)
+      @current = index
+      @board.highlight(@match.history[@current].move)
     end
+  end
+  
+  def go_to(index)
+    @match.history.go_to(index)
   rescue History::OutOfBound
     puts "error: no such index #{index}"
   end
@@ -257,11 +257,9 @@ class Controller
   end
   
   def color=(value)
-    if @match
-      # ignore further moves from other players
-      @match.delete_observer(@noncontrolled)
-      @match.close 
-    end
+    @match.close if @match
+    @match = nil
+    
     @color = value
     if @color
       @controlled = { @color => self }

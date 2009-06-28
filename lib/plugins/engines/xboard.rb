@@ -115,7 +115,7 @@ class XBoardEngine
   end
   
   def on_command_move(move)
-    move = @serializer.deserialize(move, @match.history.state)
+    move = @serializer.deserialize(move, @match.state)
     if move
       @match.move(self, move)
     end

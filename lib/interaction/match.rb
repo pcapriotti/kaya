@@ -21,6 +21,7 @@ class Match
     @history = nil
     @kind = opts[:kind] || :local
     @editable = opts.fetch(:editable, true)
+    @closed = false
     @info = { }
   end
   
@@ -53,7 +54,14 @@ class Match
   end
   
   def move(player, move, state = nil)
+    return false if @closed
     return false unless @history
+    
+    # if the match is non-editable, jump to the last move    
+    unless editable?
+      @history.go_to_last 
+    end
+    
     # if player is nil, assume the current player is moving
     if player == nil
       player = current_player
@@ -64,7 +72,10 @@ class Match
 
     validate = @game.validator.new(@history.state)
     valid = validate[move]
-    return false unless valid
+    unless valid
+      warn "Invalid move from #{player.name}: #{move}"
+      return false 
+    end
 
     old_state = @history.state
     state = old_state.dup
@@ -95,7 +106,7 @@ class Match
   end
   
   def state
-    @history.state
+    @history[index].state
   end
   
   def editable?
@@ -106,11 +117,16 @@ class Match
     @players.keys.find{|p| p.color == color }
   end
   
+  # end the match
+  # players must not send any more 'move' events to
+  # a closed game
+  # 
   def close(result = nil, message = nil)
     @info[:result] = result if result
     broadcast nil, :close => { 
       :result => result,
       :message => message }
+    @closed = true
   end
   
   def info

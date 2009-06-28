@@ -55,6 +55,14 @@ class History
     [item.state, item.move]
   end
   
+  def go_to_last
+    go_to(size - 1)
+  end
+  
+  def go_to_first
+    go_to(0)
+  end
+  
   def state
     @history[current].state
   end

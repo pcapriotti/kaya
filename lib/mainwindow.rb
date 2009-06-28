@@ -157,7 +157,7 @@ private
     diag = NewGame.new(self, @engine_loader, current_game)
     diag.observe(:ok) do |data|
       game = data[:game]
-      match = Match.new(game)
+      match = Match.new(game, :editable => data[:engines].empty?)
       
       match.observe(:started) { @controller.reset(match) }
       
