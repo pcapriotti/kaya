@@ -4,14 +4,14 @@ require 'point'
 module Chess
 
 class Serializer
-  include SAN
-
   def initialize(rep, validator_factory, 
-                 move_factory, piece_factory)
+                 move_factory, piece_factory, 
+                 notation)
     @rep = rep
     @validator = validator_factory
     @move = move_factory
     @piece = piece_factory
+    @notation = notation
   end
   
   def serialize(move, ref)
@@ -29,15 +29,8 @@ class Serializer
   end
   
   def deserialize(s, ref)
-    ysize = ref.board.size.y
-    san = case s
-    when String
-      SAN.san_from_s(@piece, s, ysize)
-    else
-      # assume it's a scanner
-      SAN.san_from_scanner(@piece, s, ysize)
-    end
-    read_san ref, san
+    notation = @notation.read(s)
+    read_san ref, notation if notation
   end
   
   def read_san(ref, san)
@@ -117,23 +110,11 @@ class Serializer
   end
   
   def minimal_notation(ref, san)
-    result = san.dup
-
-    # try notation without starting point
-    result[:src] = nil
-    return result if read_san(ref, result)
-
-    # add row indication
-    result[:src] = Point.new(san[:src].x, nil)
-    return result if read_san(ref, result)
+    @notation.each_alternative(san) do |alternative|
+      return alternative if read_san(ref, alternative)
+    end
     
-    # add column indication
-    result[:src] = Point.new(nil, san[:src].y)
-    return result if read_san(ref, result)
-
-    # add complete starting point
-    result[:src] = san[:src]
-    result
+    san
   end
 end
 

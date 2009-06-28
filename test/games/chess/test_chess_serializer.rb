@@ -90,11 +90,6 @@ class TestChessSerializer < Test::Unit::TestCase
   
   private
   
-  def serialize(serializer, *args)
-    move = unpack_move(*args)
-    serializer.serialize(move, @state)
-  end
-  
   def assert_deserialize(san, a, b, c, d, opts = {})
     move = unpack_move(a, b, c, d)
     move.promotion = opts[:promotion]

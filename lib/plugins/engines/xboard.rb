@@ -1,4 +1,5 @@
 require 'plugins/plugin'
+require 'interaction/match'
 
 class XBoardEngine
   include Plugin

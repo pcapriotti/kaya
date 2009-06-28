@@ -37,7 +37,7 @@ module Chess
     end
     
     def eql?(other)
-      other.instance_of?(Piece) and self == other
+      other.instance_of?(self.class) and self == other
     end
     
     def hash

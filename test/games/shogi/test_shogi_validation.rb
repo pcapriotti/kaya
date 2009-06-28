@@ -66,13 +66,13 @@ class TestShogiValidation < Test::Unit::TestCase
     assert_not_valid 1, 8, 2, 6
     assert_not_valid 1, 8, 3, 7
     
-    @board[Point.new(0, 6)] = Chess::Piece.new(:white, :bishop)
+    @board[Point.new(0, 6)] = @game.piece.new(:white, :bishop)
     
     assert_valid 1, 8, 0, 6
   end
   
   def test_white_silver_move
-    @board[Point.new(4, 4)] = Chess::Piece.new(:white, :silver)
+    @board[Point.new(4, 4)] = @game.piece.new(:white, :silver)
     @state.turn = :white
     
     assert_valid 4, 4, 5, 3
@@ -85,12 +85,12 @@ class TestShogiValidation < Test::Unit::TestCase
     assert_not_valid 4, 4, 3, 4
     assert_not_valid 4, 4, 5, 4
     
-    @board[Point.new(5, 3)] = Chess::Piece.new(:black, :rook)
+    @board[Point.new(5, 3)] = @game.piece.new(:black, :rook)
     assert_valid 4, 4, 5, 3
   end
   
   def test_silver_move
-    @board[Point.new(4, 4)] = Chess::Piece.new(:black, :silver)
+    @board[Point.new(4, 4)] = @game.piece.new(:black, :silver)
     assert_valid 4, 4, 5, 5
     assert_valid 4, 4, 3, 5
     assert_valid 4, 4, 3, 3
@@ -102,12 +102,12 @@ class TestShogiValidation < Test::Unit::TestCase
     assert_not_valid 4, 4, 5, 4
     assert_not_valid 4, 4, 2, 3
     
-    @board[Point.new(3, 5)] = Chess::Piece.new(:white, :rook)
+    @board[Point.new(3, 5)] = @game.piece.new(:white, :rook)
     assert_valid 4, 4, 3, 5
   end
   
   def test_gold_move
-    @board[Point.new(4, 4)] = Chess::Piece.new(:black, :gold)
+    @board[Point.new(4, 4)] = @game.piece.new(:black, :gold)
     
     assert_valid 4, 4, 4, 5
     assert_valid 4, 4, 3, 4
@@ -120,12 +120,12 @@ class TestShogiValidation < Test::Unit::TestCase
     assert_not_valid 4, 4, 3, 5
     assert_not_valid 4, 4, 2, 3
     
-    @board[Point.new(4, 5)] = Chess::Piece.new(:white, :rook)
+    @board[Point.new(4, 5)] = @game.piece.new(:white, :rook)
     assert_valid 4, 4, 4, 5
   end
   
   def test_white_gold_move
-    @board[Point.new(4, 4)] = Chess::Piece.new(:white, :gold)
+    @board[Point.new(4, 4)] = @game.piece.new(:white, :gold)
     @state.turn = :white
     
     assert_valid 4, 4, 4, 3
@@ -138,12 +138,12 @@ class TestShogiValidation < Test::Unit::TestCase
     assert_not_valid 4, 4, 5, 3
     assert_not_valid 4, 4, 3, 3
     
-    @board[Point.new(4, 3)] = Chess::Piece.new(:black, :rook)
+    @board[Point.new(4, 3)] = @game.piece.new(:black, :rook)
     assert_valid 4, 4, 4, 3
   end
   
   def test_king_move
-    @board[Point.new(4, 4)] = Chess::Piece.new(:black, :king)
+    @board[Point.new(4, 4)] = @game.piece.new(:black, :king)
     
     assert_valid 4, 4, 5, 4
     assert_valid 4, 4, 5, 5
@@ -175,7 +175,7 @@ class TestShogiValidation < Test::Unit::TestCase
   end
   
   def test_illegal_move
-    @board[Point.new(4, 6)] = Chess::Piece.new(:white, :pawn)
+    @board[Point.new(4, 6)] = @game.piece.new(:white, :pawn)
     assert_valid 4, 8, 5, 7
     assert_valid 4, 8, 3, 7
     assert_not_valid 4, 8, 4, 7
@@ -227,28 +227,34 @@ class TestShogiValidation < Test::Unit::TestCase
 
   def test_promotion_on_enter
     @state.board[Point.new(2, 6)] = nil
-    @state.board[Point.new(2, 3)] = Chess::Piece.new(:black, :pawn)
+    @state.board[Point.new(2, 3)] = @game.piece.new(:black, :pawn)
     
     assert_valid 2, 3, 2, 2, :promote => true
     assert_valid 2, 3, 2, 2, :promote => false
     
     @state.board[Point.new(2, 3)] = nil
-    @state.board[Point.new(2, 4)] = Chess::Piece.new(:black, :pawn)
+    @state.board[Point.new(2, 4)] = @game.piece.new(:black, :pawn)
     
     assert_valid 2, 4, 2, 3
     assert_valid 2, 4, 2, 3, :promote => false
     assert_not_valid 2, 4, 2, 3, :promote => true
   end
   
+  def test_horse_promotion
+    @state.board[Point.new(6, 3)] = @game.piece.new(:black, :horse)
+    
+    assert_valid 6, 3, 7, 1, :promote => true
+  end
+  
   def test_promotion_on_exit
-    @state.board[Point.new(0, 2)] = Chess::Piece.new(:black, :rook)
+    @state.board[Point.new(0, 2)] = @game.piece.new(:black, :rook)
     
     assert_valid 0, 2, 0, 4, :promote => true
     assert_valid 0, 2, 0, 4, :promote => false
   end
   
   def test_promotion_on_move_inside
-    @state.board[Point.new(0, 2)] = Chess::Piece.new(:black, :rook)
+    @state.board[Point.new(0, 2)] = @game.piece.new(:black, :rook)
     
     assert_valid 0, 2, 1, 2, :promote => true
     assert_valid 0, 2, 1, 2, :promote => false
@@ -256,26 +262,26 @@ class TestShogiValidation < Test::Unit::TestCase
   
   def test_mandatory_promotion
     @state.board[Point.new(0, 6)] = nil
-    @state.board[Point.new(0, 1)] = Chess::Piece.new(:black, :pawn)
+    @state.board[Point.new(0, 1)] = @game.piece.new(:black, :pawn)
     
     assert_valid 0, 1, 0, 0, :promote => true
     assert_not_valid 0, 1, 0, 0, :promote => false
     
     
-    @state.board[Point.new(0, 2)] = Chess::Piece.new(:black, :horse)
+    @state.board[Point.new(0, 2)] = @game.piece.new(:black, :horse)
     
     assert_valid 0, 2, 1, 0, :promote => true
     assert_not_valid 0, 2, 1, 0, :promote => false
     
     @state.board[Point.new(0, 2)] = nil
-    @state.board[Point.new(0, 3)] = Chess::Piece.new(:black, :horse)
+    @state.board[Point.new(0, 3)] = @game.piece.new(:black, :horse)
     
     assert_valid 0, 3, 1, 1, :promote => true
     assert_not_valid 0, 3, 1, 1, :promote => false
   end
   
   def test_promote_twice
-    @state.board[Point.new(2, 3)] = Chess::Piece.new(:black, :promoted_lance)
+    @state.board[Point.new(2, 3)] = @game.piece.new(:black, :promoted_lance)
     
 #     assert_not_valid 2, 3, 2, 2, :promote => true
     assert_valid 2, 3, 2, 2, :promote => false

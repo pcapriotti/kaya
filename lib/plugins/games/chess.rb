@@ -24,7 +24,7 @@ class Game
   attr_reader :size, :policy, :state, :board, :move,
               :animator, :validator, :piece, :players,
               :types, :serializer, :game_writer,
-              :game_extensions
+              :game_extensions, :notation
               
   def initialize
     @size = Point.new(8, 8)
@@ -38,8 +38,9 @@ class Game
     @policy = Factory.new { Policy.new(Move) }
     @players = [:white, :black]
     @types = [:pawn, :knight,:bishop, :rook, :queen, :king]
+    @notation = SAN.new(piece, size)
     @serializer = Factory.new(Serializer) {|rep| 
-      Serializer.new(rep, validator, move, piece) }
+      Serializer.new(rep, validator, move, piece, notation) }
     @keywords = %w(chess)
 
     @game_writer = PGN.new(serializer.new(:compact), state)

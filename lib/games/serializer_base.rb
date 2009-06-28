@@ -1,0 +1,3 @@
+module SerializerBase
+  
+end

@@ -60,4 +60,9 @@ module ValidationHelper
     piece = @state.piece_factory.new(color, type)
     assert_equal number, @state.pool(color).pieces[piece]
   end
+  
+  def serialize(serializer, *args)
+    move = unpack_move(*args)
+    serializer.serialize(move, @state)
+  end
 end
