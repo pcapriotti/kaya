@@ -1,11 +1,12 @@
+#!/usr/bin/env ruby
 $:.unshift(File.dirname(__FILE__))
 require 'qtutils'
 require 'mainwindow'
 require 'plugins/loader'
 require 'games/all'
 
-if $0 == __FILE__
-  DEFAULT_GAME = :chess
+def start_kaya
+  default_game = :chess
 
   app = KDE::Application.init(
     :version => '0.1',
@@ -25,13 +26,13 @@ if $0 == __FILE__
     name = args.arg(0)
     g = Game.get(name.to_sym)
     unless g
-      warn "No such game #{name}. Defaulting to #{DEFAULT_GAME}"
+      warn "No such game #{name}. Defaulting to #{default_game}"
       nil
     else
       g
     end
   end
-  game ||= Game.get(DEFAULT_GAME)
+  game ||= Game.get(default_game)
 
   plugin_loader = PluginLoader.new
   main = MainWindow.new(plugin_loader, game)

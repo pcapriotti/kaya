@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Kaya
+GenericName=Generic Board Game
+Exec=kaya %i %m -caption "%c"
+Icon=kaya
+Type=Application
+DocPath=kaya/kaya.html
+Comment=A generic board game application.
+Terminal=false
