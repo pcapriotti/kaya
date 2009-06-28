@@ -7,8 +7,9 @@
  - Play or edit chess and shogi games locally.
  - Basic ICS support with text console.
  - Game history sidebar.
- - Load and save games in PGN format.
+ - Load and save chess and shogi games in PGN/PSN format.
  - XBoard-compatible chess engine support.
+ - GNUShogi engine support.
  - Customizable interface.
 
 [![A Kasparov game displayed by Kaya][thumb1]][shot1]
