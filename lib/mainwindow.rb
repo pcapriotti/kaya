@@ -32,6 +32,13 @@ class MainWindow < KDE::XmlGuiWindow
     setupGUI
     new_game(Match.new(game))
   end
+  
+  def closeEvent(event)
+    if @controller.match
+      @controller.match.close
+    end
+    event.accept
+  end
 
 private
 

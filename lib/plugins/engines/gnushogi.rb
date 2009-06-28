@@ -99,9 +99,7 @@ class GNUShogiEngine
   
   def extra_command(text)
     if text =~ /^[0-9]*\. (\.\.\.) (\S+)/
-      puts "move text = #{$2}"
       move = @serializer.deserialize($2, @match.state)
-      puts "move = #{move}"
       if move
         @match.move(self, move)
       end
