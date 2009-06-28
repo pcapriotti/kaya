@@ -22,8 +22,7 @@ class PGN
     tag(:site, info[:site]) +
     tag(:date, date) +
     tag(:round, info[:round]) +
-    tag(:white, info.fetch(:players, {})[:white]) +
-    tag(:black, info.fetch(:players, {})[:black]) +
+    player_tags(info[:players] || { }) +
     tag(:result, result(info[:result])) +
     "\n" +
     game(history) + " " +
@@ -39,11 +38,7 @@ class PGN
     scanner.scan(/\n*/)
     
     # insert players into info[:players]
-    info[:players] = {
-      :white => info[:white],
-      :black => info[:black] }
-    info.delete(:white)
-    info.delete(:black)
+    info[:players] = read_players(info)
     
     state = @state_factory.new
     state.setup
@@ -74,8 +69,7 @@ class PGN
     end
     
     result = scanner.scan(/1-0|0-1|1\/2-1\/2|\*/)
-    raise ParseError.new("Expected result") unless result
-    info[:result] = result
+    info[:result] = result if result
     history
   end
   
@@ -85,6 +79,20 @@ class PGN
     else
       ""
     end
+  end
+  
+  def read_players(info)
+    result = {
+      :white => info[:white],
+      :black => info[:black] }
+    info.delete(:white)
+    info.delete(:black)
+    result
+  end
+  
+  def player_tags(players)
+    tag(:white, players[:white]) +
+    tag(:black, players[:black])
   end
   
   def result(value)

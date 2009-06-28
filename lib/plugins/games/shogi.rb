@@ -6,6 +6,7 @@ require 'games/shogi/policy'
 require 'games/shogi/serializer'
 require 'games/shogi/notation'
 require 'games/shogi/piece'
+require 'games/shogi/psn'
 require 'plugins/plugin'
 require 'games/game_actions'
 
@@ -24,7 +25,7 @@ class Game
   attr_reader :size, :state, :board, :pool,
               :policy, :move, :animator, :validator,
               :piece, :players, :types, :serializer,
-              :notation
+              :notation, :game_writer, :game_extensions
               
   def initialize
     @size = Point.new(9, 9)
@@ -44,12 +45,19 @@ class Game
     @serializer = Factory.new(Serializer) {|rep| 
       Serializer.new(rep, validator, move, piece, notation) }
     @notation = Notation.new(piece, size)
+    
+    @game_writer = PSN.new(serializer.new(:compact), state)
+    @game_extensions = %w(psn)
               
     action :autopromote, 
            :checked => true,
            :text => '&Promote Automatically' do |value, policy|
       policy.autopromote = value
     end
+  end
+  
+  def game_reader
+    @game_writer
   end
 end
 

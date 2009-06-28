@@ -9,7 +9,8 @@ class Piece < Chess::Piece
             'N' => :horse,
             'G' => :gold,
             'S' => :silver, 
-            'L' => :lance }
+            'L' => :lance,
+            'K' => :king }
   SYMBOLS = TYPES.invert
   
   def self.type_from_symbol(sym)
