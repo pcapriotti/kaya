@@ -1,4 +1,5 @@
 require 'plugins/plugin'
+require 'observer_utils'
 
 class SimpleMoveList < Qt::ListView
   include Plugin
@@ -46,8 +47,8 @@ class SimpleMoveList < Qt::ListView
         move = @history[i].move
         san = @serializer.serialize(move, state)
         
-        count = i / 2 + 1
-        dots = if i % 2 == 0
+        count = (i + 1) / 2
+        dots = if i % 2 == 1
           '.'
         else
           '...'
