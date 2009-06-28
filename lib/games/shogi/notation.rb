@@ -9,8 +9,8 @@ class Notation
   end
 
   def from_scanner(scanner)
-    if scanner.scan(/(\+?[A-Z])(\d[a-z])?([-*x])?(\d[a-z])([+=])?/)
-      { :type => @piece_factory.type_from_symbol(scanner[1]),
+    if scanner.scan(/(\+?[A-Z])?(\d[a-z])?([-*x])?(\d[a-z])([+=])?/)
+      { :type => (@piece_factory.type_from_symbol(scanner[1]) if scanner[1]),
         :src => point_from_coord(scanner[2]),
         :drop => scanner[3] == '*',
         :dst => point_from_coord(scanner[4]),

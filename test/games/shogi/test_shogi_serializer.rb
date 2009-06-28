@@ -64,6 +64,7 @@ class TestShogiSerializer < Test::Unit::TestCase
   def test_deserialize
     @state.setup
     assert_deserialize('P-7f', 2, 6, 2, 5)
+    assert_deserialize('7g7f', 2, 6, 2, 5)
     execute 2, 6, 2, 5
     assert_deserialize('P-7d', 2, 2, 2, 3)
     execute 2, 2, 2, 3

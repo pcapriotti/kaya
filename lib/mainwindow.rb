@@ -83,6 +83,7 @@ private
       update_game_actions(match)
     end
     @engine_loader = @loader.get_matching(:engine_loader).new
+    @engine_loader.reload
 
     movelist = @loader.get_matching(:movelist).new(@controller)
     movelist_dock = Qt::DockWidget.new(self)

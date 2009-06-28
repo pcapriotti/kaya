@@ -23,9 +23,18 @@ class TestShogiNotation < Test::Unit::TestCase
   
   def test_notation1
     notation = @notation.from_s('+L-4e')
+    assert_not_nil notation
     assert_equal :promoted_lance, notation[:type]
     assert_nil notation[:src]
     assert ! notation[:drop]
     assert_equal Point.new(5, 4), notation[:dst]
+  end
+  
+  def test_notation2
+    notation = @notation.from_s('7g7f')
+    assert_not_nil notation
+    assert_equal Point.new(2, 6), notation[:src]
+    assert_equal Point.new(2, 5), notation[:dst]
+    assert ! notation[:drop]
   end
 end

@@ -47,10 +47,6 @@ class EngineLoader
   
   plugin :name => 'Default Engine Loader',
          :interface => :engine_loader
-         
-  def initialize
-    reload
-  end
 
   def reload
     @entries = { }

@@ -53,7 +53,7 @@ class Match
     true
   end
   
-  def move(player, move, opts)
+  def move(player, move, opts = {})
     return false if @closed
     return false unless @history
     
