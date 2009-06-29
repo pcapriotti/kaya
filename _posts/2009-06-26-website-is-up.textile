@@ -1,5 +1,4 @@
 ---
 title: The website is up!
-url: http://pcapriotti.github.com/kaya
 ---
 Kaya has now a website. Kudos to github for providing <a href="http://pages.github.com/">gh-pages</a>.

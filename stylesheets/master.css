@@ -289,12 +289,10 @@ div.related {
 }
 .repo h3 {
   margin: 0 0 0.3em 0;
-}
-.repo h3 a {
   font-weight: bold;
   color: black;
   letter-spacing: 0;
-  font-size: 1.1em;
+  font-size: 1.5em;
 }
 
 #github-projects.big .repo {
@@ -313,4 +311,13 @@ a img { border: 0; }
 
 .screenshot {
   text-align:center;
+}
+
+.download {
+  font-size: 150%;
+}
+
+code {
+  font-size: 120%;
+  background-color: #d0d0d0;
 }

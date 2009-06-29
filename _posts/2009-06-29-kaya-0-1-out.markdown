@@ -1,0 +1,9 @@
+---
+title: Kaya 0.1 is out
+---
+Kaya 0.1 has been [released](download.html)!
+
+Kaya has now reached a point where it has a consistent, if limited, set of features, which make it quite usable already in many ways, like for playing casually on [FICS](http://www.freechess.org/), or for playing chess or shogi against a computer opponent.
+
+Any feedback will be warmly welcomed, as well as contributions of every sort (new themes or plugins, bug reports, patches...). 
+

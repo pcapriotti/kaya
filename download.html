@@ -5,6 +5,19 @@ title: Download
 
 <h2>Download</h2>
 
-<p>Kaya has not yet been released.</p>
-<p>If you want to try it out, clone our git repository at git://github.com/pcapriotti/kaya.git or visit our <a href="http://github.com/pcapriotti/kaya">github page</a>.</p>
+<h3>Latest Release (0.1)</h3>
+
+<p class='download'><img style="vertical-align: middle;" src="images/download.png" /><a href="http://github.com/pcapriotti/kaya/tarball/v0.1">Download source tarball</a> (or
+<a href="http://github.com/pcapriotti/kaya/zipball/v0.1">zip</a>).</p>
+
+<p>Kaya has some parts written in C++. To compile them, you need a KDE 4 development environment, and the ruby headers. On Ubuntu and similar systems, it should be enough to install <em>kde-devel</em> and <em>ruby1.8-dev</em>. Detailed installation instructions can be found in the <code>INSTALL</code> file.</p>
+
+<p>Note that the C++ extension is optional, but some graphical effects are disabled when it is not installed.</p>
+
+<p>Kaya may also be run without installing (using the <code>kaya</code> script in the root directory), with some caveats:
+<ul>
+<li>If you want the extension to be found, put the compiled library it in the <code>lib/ext</code> directory.</li>
+<li>KDE forces some files to be installed, namely the icons, the <em>XMLGUI</em> configuration file (<code>kayaui.rc</code>), and <code>kaya.notifyrc</code>. You might want to copy (or symlink) those files to the appropriate directories, or the corresponding features will be disabled or possibly misbehaving.</li>
+</ul>
+If you are hacking the code, or developing a plugin, running kaya in place is of course much more convenient than installing every time you make a change.</p>
 
