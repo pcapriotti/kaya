@@ -9,8 +9,9 @@ add_subdirectory(lib)
 configure_file(main.rb main.rb)
 
 install(DIRECTORY lib DESTINATION ${DATA_INSTALL_DIR}/kaya
-  PATTERN "*rc" EXCLUDE
-  PATTERN "*.desktop" EXCLUDE)
+  FILES_MATCHING PATTERN "*.rb"
+  PATTERN "plugins" EXCLUDE)
+install(DIRECTORY lib/plugins DESTINATION ${DATA_INSTALL_DIR}/kaya/lib)
 install(FILES ${PROJECT_BINARY_DIR}/main.rb
         DESTINATION ${CMAKE_INSTALL_PREFIX}/bin
         PERMISSIONS OWNER_READ OWNER_EXECUTE GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
