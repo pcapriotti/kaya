@@ -9,9 +9,7 @@ module TaggableSquares
   TAGS_ZVALUE = -2
   
   module ClassMethods
-    def square_tag(name, element = nil)
-      element = name unless element
-      
+    def square_tag(name, element, opts = {})
       define_method(name) do
         instance_variable_get("@#{name}")
       end
@@ -19,9 +17,9 @@ module TaggableSquares
       define_method("#{name}=") do |val|
         instance_variable_set("@#{name}", val)
         if val
-          add_item name, theme.board.send(element, unit),
-                  :pos => to_real(val),
-                  :z => TAGS_ZVALUE
+          options = { :pos => to_real(val),
+                   :z => TAGS_ZVALUE }.merge(opts)
+          add_item name, theme.board.send(element, unit), options
         else
           remove_item name
         end

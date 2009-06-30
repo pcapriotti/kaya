@@ -16,7 +16,12 @@ module Chess
     
     def movable?(state, p)
       piece = state.board[p]
-      piece && piece.color == state.turn
+      return false unless piece 
+      if piece.color == state.turn
+        :movable
+      else
+        :premovable
+      end
     end
     
     def droppable?(state, color, index)

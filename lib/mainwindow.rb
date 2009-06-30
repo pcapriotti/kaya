@@ -150,6 +150,7 @@ private
   
   def setup_single_player(match)
     @controller.color = match.game.players.first
+    @controller.premove = false
     opponents = match.game.players[1..-1].map do |color|
       DummyPlayer.new(color)
     end
@@ -188,6 +189,7 @@ private
         @controller.color = nil
       else
         @controller.color = data[:humans].first
+        @controller.premove = data[:humans].size == 1
         match.register(@controller)
         
         data[:humans][1..-1].each do |player|

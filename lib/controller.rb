@@ -21,6 +21,7 @@ class Controller
   attr_reader :table
   attr_reader :policy
   attr_accessor :name
+  attr_accessor :premove
   
   def initialize(table)
     @table = table
@@ -36,21 +37,6 @@ class Controller
     yield @board if @board
     @pools.each {|c, pool| yield pool }
     @clocks.each {|c, clock| yield clock }
-  end
-  
-  def on_board_click(p)
-    state = @match.history.state
-    if @board.selection
-      move = @policy.new_move(state, @board.selection, p)
-      validate = @match.game.validator.new(state)
-      if validate[move]
-        perform! move
-      end
-      
-      @board.selection = nil
-    elsif @policy.movable?(state, p) and movable?(p)
-      @board.selection = p
-    end
   end
   
   def reset(match)
@@ -135,6 +121,10 @@ class Controller
       end
       @current = index
       @board.highlight(@match.history[@current].move)
+      if @board.premove_src and @board.premove_dst
+        execute_move(@board.premove_src, @board.premove_dst)
+      end
+      @board.cancel_premove
     end
   end
   
@@ -158,6 +148,34 @@ class Controller
     end
   end
   
+  def execute_move(src, dst)
+    state = @match.history.state
+    move = @policy.new_move(state, src, dst)
+    validate = @match.game.validator.new(state)
+    if validate[move]
+      perform! move
+    end    
+  end
+  
+  def on_board_click(p)
+    state = @match.history.state
+    if @board.selection
+      case @policy.movable?(@match.history.state, @board.selection)
+      when :movable
+        execute_move(@board.selection, p)
+      else
+        if p == @board.selection
+          @board.cancel_premove
+        else
+          @board.premove(@board.selection, p) 
+        end
+      end
+      @board.selection = nil
+    elsif movable?(state, p)
+      @board.selection = p
+    end
+  end
+  
   def on_board_drop(data)
     if data[:src]
       move = nil
@@ -165,11 +183,16 @@ class Controller
       if data[:src] == data[:dst]
         @board.selection = data[:src]
       elsif data[:dst]
-        # normal move
-        move = @policy.new_move(
-          @match.history.state, data[:src], data[:dst])
-        validate = @match.game.validator.new(@match.history.state)
-        validate[move]
+        # normal move/premove
+        case @policy.movable?(@match.history.state, data[:src])
+        when :movable
+          move = @policy.new_move(
+            @match.history.state, data[:src], data[:dst])
+          validate = @match.game.validator.new(@match.history.state)
+          validate[move]
+        when :premovable
+          @board.premove(data[:src], data[:dst])
+        end
       end
       
       if move and move.valid?
@@ -196,8 +219,7 @@ class Controller
   end
   
   def on_board_drag(data)
-    if @policy.movable?(@match.history.state, data[:src]) and 
-       movable?(data[:src])
+    if movable?(@match.history.state, data[:src])
       @board.raise data[:item]
       @board.remove_from_group data[:item]
       @board.selection = nil
@@ -274,17 +296,16 @@ class Controller
     end
   end
     
-  def movable?(p)
-    can_play?
+  def movable?(state, p)
+    result = @policy.movable?(state, p)
+    return false unless result
+    return false unless result == :movable || @premove
+    return false unless @controlled[state.board[p].color]
+    return false if @match.history.current < @match.index and (not @match.editable?)
+    result
   end
   
   def droppable?(color, index)
-    can_play?
-  end
-  
-  private
-  
-  def can_play?
     return false unless @controlled[@match.history.state.turn]
     if @match.history.current < @match.index
       @match.editable?

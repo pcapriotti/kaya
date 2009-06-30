@@ -21,8 +21,8 @@ class TestChessPolicy < Test::Unit::TestCase
   def test_movable
     @state.setup
     
-    assert_movable 4, 6
-    assert_not_movable 4, 1
+    assert_movable :movable, 4, 6
+    assert_movable :premovable, 4, 1
     assert_not_movable 5, 5
   end
   
@@ -39,8 +39,8 @@ class TestChessPolicy < Test::Unit::TestCase
   
   private
   
-  def assert_movable(*args)
-    assert @policy.movable?(@state, unpack_point(*args))
+  def assert_movable(result, *args)
+    assert_equal result, @policy.movable?(@state, unpack_point(*args))
   end
   
   def assert_not_movable(*args)

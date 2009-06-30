@@ -71,6 +71,7 @@ class MatchHandler
         match.game.serializer.new(:compact),
         match_info[opponent_color][:name])
       @user.name = match_info[@user.color][:name]
+      @user.premove = true
       
       match.register(@user)
       match.register(opponent)

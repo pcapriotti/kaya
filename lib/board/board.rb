@@ -17,12 +17,16 @@ class Board < Qt::GraphicsItemGroup
   include PointConverter
   include ItemBag
   include ItemUtils
+  
+  PREMOVE_ZVALUE = 3
+  SELECTION_ZVALUE = 4
 
   attr_reader :scene, :items, :unit, :rect, :theme
-  attr_accessor :movable
-  square_tag :selection
+  square_tag :selection, :selection, :z => SELECTION_ZVALUE
   square_tag :last_move_src, :highlight
   square_tag :last_move_dst, :highlight
+  square_tag :premove_src, :premove, :z => PREMOVE_ZVALUE
+  square_tag :premove_dst, :premove, :z => PREMOVE_ZVALUE
 
   def initialize(scene, theme, game)
     super(nil, scene)
@@ -34,7 +38,6 @@ class Board < Qt::GraphicsItemGroup
     @game = game
     
     @flipped = false
-    @movable = lambda { true }
   end
   
   def flipped?
@@ -155,5 +158,14 @@ class Board < Qt::GraphicsItemGroup
       self.last_move_src = nil
       self.last_move_dst = nil
     end
+  end
+  
+  def premove(src, dst)
+    self.premove_src = src
+    self.premove_dst = dst
+  end
+  
+  def cancel_premove
+    premove(nil, nil)
   end
 end
