@@ -14,7 +14,7 @@ module ActionProvider
   end
   
   def xml_file
-    File.join(self.class.base_dir, 'ui.rc')
+    rel('ui.rc')
   end
   
   def each_action(&blk)

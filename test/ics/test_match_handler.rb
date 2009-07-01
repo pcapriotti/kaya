@@ -5,10 +5,11 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+require 'require_bundle'
 require 'test/unit'
 require 'rubygems'
 require 'mocha'
-require 'ics/match_handler'
+require_bundle 'ics', 'match_handler'
 require 'games/games'
 require 'ostruct'
 

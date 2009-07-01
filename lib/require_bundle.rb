@@ -5,21 +5,6 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-require 'qtutils'
-require 'plugins/svg_theme'
-
-class CelticTheme < SvgTheme
-  include Plugin
-  plugin :name => 'Celtic Pieces',
-         :interface => :pieces,
-         :keywords => %w(chess),
-         :bundle => 'celtic'
-
-  def initialize(opts = {})
-    super(opts)
-  end
-
-  def filename
-    rel('celtic.svg')
-  end
+def require_bundle(bundle, file)
+  require File.join('plugins', bundle, 'lib', file)
 end

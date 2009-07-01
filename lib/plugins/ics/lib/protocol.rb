@@ -6,7 +6,7 @@
 # (at your option) any later version.
 
 require 'observer_utils'
-require 'ics/style12'
+require_bundle 'ics', 'style12'
 
 module ICS
 

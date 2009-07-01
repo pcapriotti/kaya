@@ -12,13 +12,14 @@ class FantasyTheme < SvgTheme
   include Plugin
   plugin :name => 'Fantasy Pieces',
          :interface => :pieces,
-         :keywords => %w(chess)
+         :keywords => %w(chess),
+         :bundle => 'fantasy'
 
   def initialize(opts = {})
     super(opts)
   end
 
   def filename
-    File.join(File.dirname(__FILE__), 'fantasy.svg')
+    rel('fantasy.svg')
   end
 end

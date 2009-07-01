@@ -6,8 +6,9 @@
 # (at your option) any later version.
 
 require 'test/unit'
-require 'ics/style12'
-require 'ics/icsapi'
+require 'require_bundle'
+require_bundle 'ics', 'protocol'
+require_bundle 'ics', 'icsapi'
 require 'games/all'
 
 class TestStyle12 < Test::Unit::TestCase

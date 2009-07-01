@@ -13,17 +13,23 @@ module Plugin
       else
         base.extend ClassMethods
       end
-      
-      if $currently_loading_plugin_file
-        base.instance_variable_set(
-          "@main_plugin_file",
-          $currently_loading_plugin_file)
-      end
+    end
+  end
+  
+  module Bundle
+    BASE_PLUGIN_PATH = File.expand_path(File.dirname(__FILE__))
+    def bundle_rel(bundle, *args)
+      File.join(BASE_PLUGIN_PATH, bundle, *args)
+    end
+    
+    def rel(*args)
+      bundle_rel(bundle, *args)
     end
   end
   
   module ClassMethods
-    attr_reader :main_plugin_file
+    include Bundle
+    attr_reader :bundle_dir
     
     def plugin(args)
       @plugin_data = args
@@ -44,15 +50,21 @@ module Plugin
     def data(key)
       @plugin_data[key]
     end
-    
-    def base_dir
-      File.dirname(main_plugin_file)
+
+    def bundle
+      @plugin_data[:bundle] or
+      raise("No bundle specified")
     end
   end
   
   extend ModuleMethods
+  include Bundle
   
   def keywords
     self.class.data(:keywords)
+  end
+  
+  def bundle
+    self.class.bundle
   end
 end

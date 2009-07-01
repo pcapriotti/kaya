@@ -15,9 +15,6 @@ require 'controller'
 
 require 'interaction/match'
 
-require 'ics/protocol'
-require 'ics/match_handler'
-require 'ics/connection'
 require 'console'
 
 require 'filewriter'

@@ -19,7 +19,8 @@ class ShogibanBackground
   
   plugin :name => 'Shogiban',
          :interface => :board,
-         :keywords => %w(shogi)
+         :keywords => %w(shogi),
+         :bundle => 'shogi'
         
   def initialize(opts = {})
     @squares = opts[:board_size] || opts[:game].size
@@ -29,7 +30,7 @@ class ShogibanBackground
   def pixmap(size)
     Qt::Image.painted(Qt::Point.new(size.x * @squares.x, size.y * @squares.y)) do |p|
       if @background
-        bg = Qt::Image.new(File.join(self.class.base_dir, @background + '.png'))
+        bg = Qt::Image.new(rel(@background + '.png'))
         p.draw_tiled_pixmap(Qt::Rect.new(0, 0, size.x * @squares.x, size.y * @squares.y), bg.to_pix)
       else
         (0...@squares.x).each do |x|
@@ -56,9 +57,14 @@ end
 class ShogiTheme
   include Plugin
   include Shadower
+
+  plugin :name => 'Shogi Pieces',
+         :interface => :pieces,
+         :keywords => %w(shogi),
+         :bundle => 'shogi'
   
   TYPES = { :knight => 'n' }
-  NUDE_TILE = File.join(base_dir, 'nude_tile.svg')
+  NUDE_TILE = rel('nude_tile.svg')
   RATIOS = {
     :king => 1.0,
     :rook => 0.96,
@@ -68,10 +74,6 @@ class ShogiTheme
     :knight => 0.86,
     :lance => 0.83,
     :pawn => 0.8 }
-
-  plugin :name => 'Shogi Pieces',
-         :interface => :pieces,
-         :keywords => %w(shogi)
 
   def initialize(opts = {})
     @loader = lambda do |piece, size|
@@ -101,9 +103,8 @@ class ShogiTheme
   
   def filename(piece)
     color = piece.color.to_s[0, 1]
-#     type = TYPES[piece.type] || piece.type.to_s[0, 1]
     name = piece.type.to_s.gsub(/^promoted_/, 'p') + ".svg"
-    File.join(self.class.base_dir, name)
+    rel(name)
   end
   
   def flip(value)

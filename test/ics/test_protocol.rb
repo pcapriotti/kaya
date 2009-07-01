@@ -6,7 +6,8 @@
 # (at your option) any later version.
 
 require 'test/unit'
-require 'ics/protocol'
+require 'require_bundle'
+require_bundle 'ics', 'protocol'
 
 class TestProtocol < Test::Unit::TestCase
   def setup

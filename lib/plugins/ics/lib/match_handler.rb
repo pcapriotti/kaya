@@ -6,7 +6,7 @@
 # (at your option) any later version.
 
 require 'interaction/match'
-require 'ics/icsplayer'
+require_bundle 'ics', 'icsplayer'
 
 module ICS
 
