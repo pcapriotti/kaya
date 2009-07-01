@@ -26,7 +26,8 @@ class Game
   plugin :name => 'Chess',
          :id => :chess,
          :interface => :game,
-         :keywords => %w(chess)
+         :keywords => %w(chess),
+         :bundle => 'chess'
          
   attr_reader :size, :policy, :state, :board, :move,
               :animator, :validator, :piece, :players,
