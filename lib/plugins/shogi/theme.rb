@@ -30,7 +30,7 @@ class ShogibanBackground
   def pixmap(size)
     Qt::Image.painted(Qt::Point.new(size.x * @squares.x, size.y * @squares.y)) do |p|
       if @background
-        bg = Qt::Image.new(rel(@background + '.png'))
+        bg = Qt::Image.new(rel('pics', @background + '.png'))
         p.draw_tiled_pixmap(Qt::Rect.new(0, 0, size.x * @squares.x, size.y * @squares.y), bg.to_pix)
       else
         (0...@squares.x).each do |x|
@@ -64,7 +64,7 @@ class ShogiTheme
          :bundle => 'shogi'
   
   TYPES = { :knight => 'n' }
-  NUDE_TILE = rel('nude_tile.svg')
+  NUDE_TILE = rel('pics', 'nude_tile.svg')
   RATIOS = {
     :king => 1.0,
     :rook => 0.96,
@@ -104,7 +104,7 @@ class ShogiTheme
   def filename(piece)
     color = piece.color.to_s[0, 1]
     name = piece.type.to_s.gsub(/^promoted_/, 'p') + ".svg"
-    rel(name)
+    rel('pics', name)
   end
   
   def flip(value)
