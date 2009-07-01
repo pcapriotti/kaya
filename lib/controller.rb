@@ -231,7 +231,6 @@ class Controller
     if @policy.droppable?(@match.history.state, c, data[:index]) and 
        droppable?(c, data[:index])
        
-       
       # replace item with a correctly sized one
       item = @board.create_piece(data[:item].name)
       @board.raise item

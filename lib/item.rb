@@ -43,7 +43,7 @@ module ItemUtils
   
   def create_item(key, pix, opts = {})
     name = opts[:name] || key.to_s
-    item = Item.new(name, pix, self)
+    item = Item.new(name, pix, item_parent)
     item.pos = opts[:pos] || Qt::PointF.new(0, 0)
     item.z_value = opts[:z] || 0
     item.visible = false if opts[:hidden]
@@ -60,5 +60,9 @@ module ItemUtils
   
   def lower(item)
     item.z_value = 0
+  end
+  
+  def item_parent
+    self
   end
 end

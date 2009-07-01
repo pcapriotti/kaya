@@ -12,9 +12,11 @@ class Pool < Qt::GraphicsItemGroup
   
   include Observable
   include ItemUtils
+  include TaggableSquares
   
-  attr_reader :rect, :scene, :items
-  attr_reader :animator
+  attr_reader :rect, :scene, :items, :theme
+  attr_reader :animator, :unit
+  square_tag :premove_src, :premove, :target => :extra
   
   def initialize(scene, theme, game)
     super(nil, scene)
@@ -25,6 +27,7 @@ class Pool < Qt::GraphicsItemGroup
     @game = game
     
     @items = []
+    @extra = ExtraItemContainer.new(self)
     @size = Point.new(3, 5)
     
     @type_values = Hash.new(-1)
@@ -36,6 +39,10 @@ class Pool < Qt::GraphicsItemGroup
     
     @animator = PoolAnimator.new(self)
     @flipped = false
+  end
+  
+  def square_tag_container
+    @extra
   end
   
   def flip(value)
@@ -56,6 +63,8 @@ class Pool < Qt::GraphicsItemGroup
     pieces.each_with_index do |piece, index|
       add_piece(index, piece)
     end
+    
+    @extra.redraw
   end
 
   def set_geometry(rect)
@@ -133,5 +142,31 @@ class Pool < Qt::GraphicsItemGroup
   def compare(piece1, piece2)
     [piece1.color.to_s, @type_values[piece1.type], piece1.type.to_s] <=>
     [piece2.color.to_s, @type_values[piece2.type], piece2.type.to_s]
+  end
+  
+  class ExtraItemContainer
+    include ItemBag
+    include ItemUtils
+    
+    attr_reader :items
+    
+    def initialize(pool)
+      @pool = pool
+      @items = { }
+    end
+    
+    def redraw
+      @items.each do |key, item|
+        @pool.set_tag(key, @pool.tag(key))
+      end
+    end
+    
+    def item_parent
+      @pool
+    end
+    
+    def scene
+      @pool.scene
+    end
   end
 end

@@ -19,9 +19,12 @@ module TaggableSquares
         if val
           options = { :pos => to_real(val),
                    :z => TAGS_ZVALUE }.merge(opts)
-          add_item name, theme.board.send(element, unit), options
+          square_tag_container.add_item(
+            name, 
+            theme.board.send(element, unit), 
+            options)
         else
-          remove_item name
+          square_tag_container.remove_item(name)
         end
       end
     end
@@ -35,6 +38,10 @@ module TaggableSquares
   
   def set_tag(name, value)
     send("#{name}=", value)
+  end
+  
+  def square_tag_container
+    self
   end
 end
 
