@@ -5,7 +5,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-require 'games/chess/pgn'
+require_bundle 'chess', 'pgn'
 
 module Shogi
 

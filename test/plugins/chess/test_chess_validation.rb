@@ -6,11 +6,11 @@
 # (at your option) any later version.
 
 require 'test/unit'
-require 'games/chess/state'
-require 'games/chess/board'
-require 'games/chess/move'
-require 'games/chess/piece'
-require 'games/chess/validator'
+require_bundle 'chess', 'state'
+require_bundle 'chess', 'board'
+require_bundle 'chess', 'move'
+require_bundle 'chess', 'piece'
+require_bundle 'chess', 'validator'
 require 'helpers/validation_helper'
 require 'enumerator'
 

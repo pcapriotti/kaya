@@ -5,7 +5,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-require 'games/chess/move'
+require_bundle 'chess', 'move'
 
 module Shogi
   class Move < Chess::Move

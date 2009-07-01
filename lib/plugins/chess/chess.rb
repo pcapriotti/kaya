@@ -6,14 +6,15 @@
 # (at your option) any later version.
 
 require 'games/games'
-require 'games/chess/state'
-require 'games/chess/move'
-require 'games/chess/board'
-require 'games/chess/policy'
-require 'games/chess/animator'
-require 'games/chess/validator'
-require 'games/chess/serializer'
-require 'games/chess/pgn'
+require_bundle 'chess', 'state'
+require_bundle 'chess', 'move'
+require_bundle 'chess', 'board'
+require_bundle 'chess', 'policy'
+require_bundle 'chess', 'animator'
+require_bundle 'chess', 'validator'
+require_bundle 'chess', 'serializer'
+require_bundle 'chess', 'pgn'
+require_bundle 'chess', 'san'
 require 'plugins/plugin'
 require 'games/game_actions'
 

@@ -6,7 +6,7 @@
 # (at your option) any later version.
 
 require 'test/unit'
-require 'games/chess/board'
+require_bundle 'chess', 'board'
 require 'point'
 require 'enumerator'
 

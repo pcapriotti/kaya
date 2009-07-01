@@ -6,7 +6,7 @@
 # (at your option) any later version.
 
 require 'test/unit'
-require 'games/chess/piece'
+require_bundle 'chess', 'piece'
 
 class TestChessPiece < Test::Unit::TestCase
   def test_fields

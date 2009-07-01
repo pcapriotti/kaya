@@ -6,8 +6,8 @@
 # (at your option) any later version.
 
 require 'test/unit'
-require 'games/chess/state'
-require 'games/chess/piece'
+require_bundle 'chess', 'state'
+require_bundle 'chess', 'piece'
 require 'enumerator'
 require 'helpers/validation_helper'
 

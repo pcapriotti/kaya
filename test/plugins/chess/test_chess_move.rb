@@ -6,7 +6,7 @@
 # (at your option) any later version.
 
 require 'test/unit'
-require 'games/chess/move'
+require_bundle 'chess', 'move'
 
 class TestChessMove < Test::Unit::TestCase
   def test_simple_move_fields
