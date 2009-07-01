@@ -16,7 +16,6 @@ class ShogibanBackground
   
   BACKGROUND_COLOR = Qt::Color.new(0xeb, 0xd6, 0xa0)
   LINE_COLOR = Qt::Color.new(0x9c, 0x87, 0x55)
-  BASE_DIR = File.dirname(__FILE__)
   
   plugin :name => 'Shogiban',
          :interface => :board,
@@ -30,7 +29,7 @@ class ShogibanBackground
   def pixmap(size)
     Qt::Image.painted(Qt::Point.new(size.x * @squares.x, size.y * @squares.y)) do |p|
       if @background
-        bg = Qt::Image.new(File.join(BASE_DIR, @background + '.png'))
+        bg = Qt::Image.new(File.join(self.class.base_dir, @background + '.png'))
         p.draw_tiled_pixmap(Qt::Rect.new(0, 0, size.x * @squares.x, size.y * @squares.y), bg.to_pix)
       else
         (0...@squares.x).each do |x|
@@ -58,9 +57,8 @@ class ShogiTheme
   include Plugin
   include Shadower
   
-  BASE_DIR = File.dirname(__FILE__)
   TYPES = { :knight => 'n' }
-  NUDE_TILE = File.join(BASE_DIR, 'nude_tile.svg')
+  NUDE_TILE = File.join(base_dir, 'nude_tile.svg')
   RATIOS = {
     :king => 1.0,
     :rook => 0.96,
@@ -105,7 +103,7 @@ class ShogiTheme
     color = piece.color.to_s[0, 1]
 #     type = TYPES[piece.type] || piece.type.to_s[0, 1]
     name = piece.type.to_s.gsub(/^promoted_/, 'p') + ".svg"
-    File.join(BASE_DIR, name)
+    File.join(self.class.base_dir, name)
   end
   
   def flip(value)

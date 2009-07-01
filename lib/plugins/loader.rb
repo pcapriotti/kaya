@@ -6,7 +6,7 @@
 # (at your option) any later version.
 
 class PluginLoader
-  BASE_DIR = File.dirname(__FILE__)
+  BASE_DIR = File.expand_path(File.dirname(__FILE__))
   
   NoPluginFound = Class.new(Exception)
   
@@ -15,10 +15,12 @@ class PluginLoader
     Dir[File.join(BASE_DIR, '*')].each do |f|
       if File.directory?(f)
         Dir[File.join(f, '*.rb')].each do |rb_file|
+          $currently_loading_plugin_file = rb_file
           require rb_file
         end
       end
     end
+    $currently_loading_plugin_file = nil
     
     @plugins = {}
     ObjectSpace::each_object(Class) do |k|

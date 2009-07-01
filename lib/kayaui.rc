@@ -1,25 +1,9 @@
 <!DOCTYPE kpartgui SYSTEM "kpartgui.dtd">
-<kpartgui version="2" name="kaya" >
+<gui version="2" name="kaya" >
  <MenuBar>
   <Menu name="file">
-   <Action name="new" />
-   <Action name="load" />
-   <Action name="save" />
-   <Separator/>
-   <Action name="connect" />
-   <Action name="disconnect" />
-   <Separator/>
-   <Action name="quit" />
+    <DefineGroup name="file_extensions" />
   </Menu>
-<!--  <Menu name="edit">
-      <Text>&amp;Edit</Text>
-      <Action name="copyPosition" />
-      <Action name="pastePosition" />-->
-<!--      <Separator />
-      <Action name="editPosition" />
-      <Action name="clearBoard" />
-      <Action name="setStartingPosition" />-->
-<!--   </Menu> -->
   <Menu name="gameMenu">
    <text>&amp;Game</text>
    <Action name="begin" />
@@ -54,4 +38,4 @@
   <Action name="end" />
   <ActionList name="variantActions" />
  </ToolBar>
-</kpartgui>
+</gui>

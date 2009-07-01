@@ -27,6 +27,9 @@ require 'engine_prefs'
 class MainWindow < KDE::XmlGuiWindow
   include ActionHandler
   include FileWriter
+  
+  attr_reader :console
+  attr_reader :controller
 
   def initialize(loader, game)
     super nil
@@ -36,6 +39,7 @@ class MainWindow < KDE::XmlGuiWindow
     
     startup
     setup_actions
+    load_action_providers
     setupGUI
     new_game(Match.new(game))
   end
@@ -64,17 +68,6 @@ private
                              :text => KDE.i18n("&Forward") do
       @controller.forward
     end
-    regular_action :connect, :icon => 'network-connect',
-                             :text => KDE.i18n("&Connect to ICS") do
-      connect_to_ics
-    end
-    regular_action :disconnect, :icon => 'network-disconnect',
-                                :text => KDE.i18n("&Disconnect from ICS") do
-      if @connection
-        @connection.close
-        @connection = nil
-      end
-    end
     
     regular_action :flip, :icon => 'object-rotate-left',
                           :text => KDE.i18n("F&lip") do
@@ -86,6 +79,13 @@ private
                    :text => KDE.i18n("Configure &Engines...") do
       dialog = EnginePrefs.new(@engine_loader, self)
       dialog.show
+    end
+  end
+  
+  def load_action_providers
+    @loader.get_all_matching(:action_provider).each do |provider_klass|
+      provider = provider_klass.new
+      ActionProviderClient.new(self, provider)
     end
   end
   
@@ -118,29 +118,6 @@ private
     console_dock.show
     
     self.central_widget = @table
-  end
-  
-  def connect_to_ics
-    protocol = ICS::Protocol.new(:debug)
-    @connection = ICS::Connection.new('freechess.org', 23)
-    config = KDE::Global.config.group("ICS")
-    protocol.add_observer ICS::AuthModule.new(@connection, 
-      config.read_entry('username', 'guest'), 
-      config.read_entry('password', ''))
-    protocol.add_observer ICS::StartupModule.new(@connection)
-    protocol.link_to @connection
-
-    protocol.observe :text do |text|
-      @console.append(text)
-    end
-
-    @console.observe :input do |text|
-      @connection.send_text text
-    end
-
-    handler = ICS::MatchHandler.new(@controller, protocol)
-
-    @connection.start
   end
   
   def new_game(match)

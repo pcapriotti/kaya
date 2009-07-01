@@ -1,0 +1,49 @@
+require 'action_provider'
+
+class ICSPlugin
+  include Plugin
+  include ActionProvider
+  
+  plugin :name => 'ICS Plugin',
+         :interface => :action_provider
+         
+  def initialize
+    action(:connect,
+           :text => KDE.i18n("&Connect to ICS"),
+           :icon => 'network-connect') do |parent|
+      connect_to_ics(parent)
+    end
+    action(:disconnect,
+           :text => KDE.i18n("&Disconnect from ICS"),
+           :icon => 'network-disconnect') do |parent|
+      if @connection
+        @connection.close
+        @connection = nil
+      end
+    end
+  end
+  
+  def connect_to_ics(parent)
+    protocol = ICS::Protocol.new(:debug)
+    @connection = ICS::Connection.new('freechess.org', 23)
+    config = KDE::Global.config.group("ICS")
+    protocol.add_observer ICS::AuthModule.new(@connection, 
+      config.read_entry('username', 'guest'), 
+      config.read_entry('password', ''))
+    protocol.add_observer ICS::StartupModule.new(@connection)
+    protocol.link_to @connection
+
+    protocol.observe :text do |text|
+      parent.console.append(text)
+    end
+
+    parent.console.observe :input do |text|
+      @connection.send_text text
+    end
+
+    @handler = ICS::MatchHandler.new(parent.controller, 
+                                    protocol)
+
+    @connection.start
+  end
+end

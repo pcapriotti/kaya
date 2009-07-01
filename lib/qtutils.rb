@@ -261,9 +261,9 @@ module ActionHandler
   
   def get_slot(s = nil, &blk)
     target, slot = if block_given?
-      [Qt::BlockInvocation.new(self, blk, 'invoke()'), SLOT(:invoke)]
+      [Qt::SignalBlockInvocation.new(action_parent, blk, 'invoke()'), SLOT('invoke()')]
     else
-      [self, SLOT(s)]
+      [action_parent, SLOT(s)]
     end
   end
   
@@ -279,10 +279,13 @@ module ActionHandler
       KDE::Icon.new
     end
     
-    KDE::Action.new(icon, opts[:text], self).tap do |a|
-      action_collection.add_action(name.to_s, a)
-      target, slot = get_slot(opts[:slot], &blk)
-      connect(a, SIGNAL('triggered(bool)'), target, slot)
+    KDE::Action.new(icon, opts[:text], action_parent).tap do |a|
+      action_collection.add_action(name.to_s, a)  
+      a.connect(SIGNAL('triggered(bool)'), &blk)
     end
+  end
+  
+  def action_parent
+    self
   end
 end

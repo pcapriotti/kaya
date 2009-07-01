@@ -13,10 +13,18 @@ module Plugin
       else
         base.extend ClassMethods
       end
+      
+      if $currently_loading_plugin_file
+        base.instance_variable_set(
+          "@main_plugin_file",
+          $currently_loading_plugin_file)
+      end
     end
   end
   
   module ClassMethods
+    attr_reader :main_plugin_file
+    
     def plugin(args)
       @plugin_data = args
     end
@@ -35,6 +43,10 @@ module Plugin
     
     def data(key)
       @plugin_data[key]
+    end
+    
+    def base_dir
+      File.dirname(main_plugin_file)
     end
   end
   

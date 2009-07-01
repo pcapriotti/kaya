@@ -1,0 +1,13 @@
+<!DOCTYPE kpartgui SYSTEM "kpartgui.dtd">
+<gui version="2" name="icsplugin" >
+ <MenuBar>
+  <Menu name="file">
+   <Action name="connect" group="file_extensions"/>
+   <Action name="disconnect" group="file_extensions"/>
+  </Menu>
+ </MenuBar>
+ <ToolBar name="mainToolBar" >
+  <Action name="connect" />
+  <Action name="disconnect" />
+ </ToolBar>
+</gui>

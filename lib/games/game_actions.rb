@@ -6,21 +6,15 @@
 # (at your option) any later version.
 
 require 'qtutils'
-
-Action = Struct.new(:id, :opts, :action)
+require 'action_provider'
 
 module GameActions
-  def action(id, opts = {}, &action)
-    @action_data ||= []
-    @action_data << Action.new(id, opts, action)
-  end
+  include ActionProvider
   
   def actions(parent, collection, policy)
     actions = (@action_data || []).map{|data| create_action(data, parent, collection, policy) }
     actions
   end
-  
-  private
   
   def create_action(data, parent, collection, policy)
     icon = if data.opts[:icon]
