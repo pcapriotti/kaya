@@ -5,16 +5,17 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-require 'games/shogi/state'
-require 'games/shogi/pool'
-require 'games/shogi/move'
-require 'games/shogi/validator'
-require 'games/shogi/policy'
-require 'games/shogi/serializer'
-require 'games/shogi/notation'
-require 'games/shogi/piece'
-require 'games/shogi/psn'
+require 'require_bundle'
 require 'plugins/plugin'
+require_bundle 'shogi', 'state'
+require_bundle 'shogi', 'pool'
+require_bundle 'shogi', 'move'
+require_bundle 'shogi', 'validator'
+require_bundle 'shogi', 'serializer'
+require_bundle 'shogi', 'notation'
+require_bundle 'shogi', 'piece'
+require_bundle 'shogi', 'psn'
+require_bundle 'shogi', 'policy'
 require 'games/game_actions'
 
 module Shogi

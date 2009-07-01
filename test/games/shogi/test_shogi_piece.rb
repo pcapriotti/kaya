@@ -6,7 +6,7 @@
 # (at your option) any later version.
 
 require 'test/unit'
-require 'games/shogi/piece'
+require_bundle 'shogi', 'piece'
 
 class TestShogiPiece < Test::Unit::TestCase
   def test_type_from_symbol
