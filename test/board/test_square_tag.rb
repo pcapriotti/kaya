@@ -15,7 +15,7 @@ class FakeTaggableBoard
   include PointConverter
   include TaggableSquares
   
-  square_tag :selection
+  square_tag :selection, :selection
   
   class FakeTheme
     def method_missing(m, *args)

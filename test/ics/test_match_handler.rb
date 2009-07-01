@@ -34,6 +34,7 @@ class TestMatchHandler < Test::Unit::TestCase
       x.expects(:reset)
       x.expects(:color=).with(:white)
       x.expects(:color).at_least_once.returns(:white)
+      x.expects(:premove=)
       x.expects(:name=).with('hello')
       x.expects(:update)
     end
