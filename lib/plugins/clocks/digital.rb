@@ -5,9 +5,11 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+require 'qtutils'
 require 'plugins/plugin'
 require 'constrained_text_item'
 require 'board/item_bag'
+require 'observer_utils'
 
 class DigitalClock < Qt::GraphicsItemGroup
   include Plugin

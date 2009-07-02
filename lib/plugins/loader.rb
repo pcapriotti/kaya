@@ -52,4 +52,8 @@ class PluginLoader
       @instance ||= PluginLoader.internal_new
     end
   end
+  
+  def self.base_dir
+    File.expand_path(BASE_DIR)
+  end
 end
