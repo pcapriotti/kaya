@@ -1,6 +1,7 @@
+require 'qtutils'
+require 'plugins/plugin'
 require 'require_bundle'
 require 'action_provider'
-require 'qtutils'
 require_bundle 'ics', 'protocol'
 require_bundle 'ics', 'connection'
 require_bundle 'ics', 'match_handler'

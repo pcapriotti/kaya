@@ -52,4 +52,8 @@ class PluginLoader
       @instance ||= PluginLoader.internal_new
     end
   end
+  
+  def self.base_dir
+    BASE_DIR
+  end
 end
