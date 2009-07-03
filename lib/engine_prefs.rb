@@ -70,8 +70,8 @@ class EngineData < KDE::Dialog
 
     if engine
       name.text = engine.name
-      path.path = engine.path
-      workdir.path = engine.workdir
+      path.url = KDE::Url.new(engine.path)
+      workdir.url = KDE::Url.new(engine.workdir)
       current = (0...games.count).
         map{|i| games.item_data(i).toString }.
         index(engine.game.class.data(:id).to_s)
@@ -92,8 +92,8 @@ class EngineData < KDE::Dialog
           :name => name.text,
           :protocol => type.current_text,
           :game => game,
-          :path => path.text,
-          :workdir => workdir.text }
+          :path => path.url.path,
+          :workdir => workdir.url.path }
       end
     end
   end
