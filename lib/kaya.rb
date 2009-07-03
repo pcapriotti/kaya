@@ -16,7 +16,7 @@ def start_kaya
   default_game = :chess
 
   app = KDE::Application.init(
-    :version => '0.1',
+    :version => '0.1.1',
     :id => 'kaya',
     :name => KDE.ki18n('Kaya'),
     :description => KDE.ki18n('KDE Board Game Suite'),
