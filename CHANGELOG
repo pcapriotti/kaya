@@ -1,0 +1,11 @@
+## Version 0.1.1 (03 Jul 2009)
+
+- Plugins can be loaded in any order.
+- Workaround for a crash in smoke when QGraphicsItems are deleted by the
+  garbage collector.
+- Fix crash in the engine dialog with smoke 4.3 beta.
+
+## Version 0.1 (28 Jun 2009)
+
+- First release
+
