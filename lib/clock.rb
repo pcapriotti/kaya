@@ -112,6 +112,12 @@ class Clock
   def set_time(milliseconds)
     # update time
     @main = milliseconds / 1000
+
+    # stop timer if we are below 0
+    if @main <= 0
+      @main = 0
+      @timer.stop
+    end
     
     # reset counter
     @count = 0
