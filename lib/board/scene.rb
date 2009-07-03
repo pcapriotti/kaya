@@ -135,5 +135,6 @@ class Scene < Qt::GraphicsScene
   def remove_element(item)
     @elements.delete(item)
     remove_item(item)
+    item.dispose
   end
 end
