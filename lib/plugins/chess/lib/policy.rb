@@ -25,7 +25,11 @@ module Chess
     end
     
     def droppable?(state, color, index)
-      color == state.turn
+      if color == state.turn
+        :droppable
+      else
+        :predroppable
+      end
     end
     
     def new_move(state, src, dst, opts = {})

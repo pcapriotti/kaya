@@ -10,6 +10,7 @@ require 'history'
 require 'board/pool_animator'
 require 'clock'
 require 'interaction/match'
+require 'premover'
 
 class Controller
   include Observer
@@ -48,6 +49,7 @@ class Controller
     @board = @table.elements[:board]
     @pools = @table.elements[:pools]
     @clocks = @table.elements[:clocks]
+    @premover = Premover.new(self, @board, @pools)
     
     @animator = @match.game.animator.new(@board)
     @board.reset(match.state.board)
@@ -87,10 +89,7 @@ class Controller
   
   def perform!(move, opts = {})
     turn = @match.history.state.turn
-    if @controlled[turn]
-      @next_refresh_opts = opts
-      @match.move(@controlled[turn], move, opts)
-    end
+    @match.move(@controlled[turn], move, opts)
   end
   
   def back
@@ -121,10 +120,7 @@ class Controller
       end
       @current = index
       @board.highlight(@match.history[@current].move)
-      if @board.premove_src and @board.premove_dst
-        execute_move(@board.premove_src, @board.premove_dst)
-      end
-      @board.cancel_premove
+      @premover.execute
     end
   end
   
@@ -148,74 +144,93 @@ class Controller
     end
   end
   
-  def execute_move(src, dst)
+  def execute_move(src, dst, opts = { })
     state = @match.history.state
     move = @policy.new_move(state, src, dst)
     validate = @match.game.validator.new(state)
     if validate[move]
-      perform! move
-    end    
+      perform!(move, opts)
+      move
+    end
+  end
+
+  def execute_drop(item, dst)
+    state = @match.history.state
+    move = @policy.new_move(state, nil, dst,
+                            :dropped => item.name)
+    validate = @match.game.validator.new(state)
+    if validate[move]
+      perform! move, :adjust => true, :dropped => item
+      move
+    end
+  end
+  
+  def execute_direct_drop(color, index, dst)
+    state = @match.history.state
+    item = @pools[color].items[index]
+    if item
+      move = @policy.new_move(state, nil, dst,
+                              :dropped => item.name)
+      validate = @match.game.validator.new(state)
+      if validate[move]
+        perform! move
+        move
+      end
+    end
   end
   
   def on_board_click(p)
     state = @match.history.state
+    # if there is a selection already, move or premove
+    # to the clicked square
     if @board.selection
       case @policy.movable?(@match.history.state, @board.selection)
       when :movable
+        # move directly
         execute_move(@board.selection, p)
-      else
-        if p == @board.selection
-          @board.cancel_premove
-        else
-          @board.premove(@board.selection, p) 
-        end
+      when :premovable
+        # schedule a premove on the board
+        @premover.move(@board.selection, p)
       end
       @board.selection = nil
     elsif movable?(state, p)
+      # only set selection
       @board.selection = p
     end
   end
   
   def on_board_drop(data)
+    move = nil
+    @board.add_to_group data[:item]
+    @board.lower data[:item]
+    
     if data[:src]
-      move = nil
-      
+      # board to board drop
       if data[:src] == data[:dst]
+        # null drop, handle as a click
         @board.selection = data[:src]
       elsif data[:dst]
         # normal move/premove
         case @policy.movable?(@match.history.state, data[:src])
         when :movable
-          move = @policy.new_move(
-            @match.history.state, data[:src], data[:dst])
-          validate = @match.game.validator.new(@match.history.state)
-          validate[move]
+          move = execute_move(data[:src], data[:dst], :adjust => true)
         when :premovable
-          @board.premove(data[:src], data[:dst])
+          @premover.move(data[:src], data[:dst])
         end
-      end
-      
-      if move and move.valid?
-        @board.add_to_group data[:item]
-        @board.lower data[:item]
-        perform! move, :adjust => true
-      else
-        cancel_drop(data)
       end
     elsif data[:index] and data[:dst]
       # actual drop
-      move = @policy.new_move(
-        @match.history.state, nil, data[:dst], 
-        :dropped => data[:item].name)
-      validate = @match.game.validator.new(@match.history.state)
-      if validate[move]
-        @board.add_to_group data[:item]
-        @board.lower data[:item]
-        perform! move, :adjust => true, :dropped => data[:item]
-      else
-        cancel_drop(data)
+      case droppable?(@match.history.state, 
+                      data[:pool_color], 
+                      data[:index])
+      when :droppable
+        move = execute_drop(data[:item], data[:dst])
+      when :predroppable
+        @premover.drop(data[:pool_color], data[:index], data[:dst])
       end
     end
+    
+    cancel_drop(data) unless move
   end
   
   def on_board_drag(data)
@@ -228,9 +243,7 @@ class Controller
   end
   
   def on_pool_drag(c, data)
-    if @policy.droppable?(@match.history.state, c, data[:index]) and 
-       droppable?(c, data[:index])
-       
+    if droppable?(@match.history.state, c, data[:index])
       # replace item with a correctly sized one
       item = @board.create_piece(data[:item].name)
       @board.raise item
@@ -259,14 +272,12 @@ class Controller
         data[:index],
         data[:item].name)
     elsif data[:src]
-      @board.add_to_group data[:item]
-      @board.lower data[:item]
       @animator.movement(data[:item], nil, data[:src], Path::Linear)
     end
     
     @field.run(anim) if anim
   end
-  
+    
   def on_time(time)
     time.each do |pl, seconds|
       @clocks[pl].clock ||= Clock.new(seconds, 0, nil)
@@ -304,12 +315,12 @@ class Controller
     result
   end
   
-  def droppable?(color, index)
-    return false unless @controlled[@match.history.state.turn]
-    if @match.history.current < @match.index
-      @match.editable?
-    else
-      true
-    end
+  def droppable?(state, color, index)
+    result = @policy.droppable?(state, color, index)
+    return false unless result
+    return false unless result == :droppable || @premove
+    return false unless @controlled[color]
+    return false if @match.history.current < @match.index and (not @match.editable?)
+    result
   end
 end
