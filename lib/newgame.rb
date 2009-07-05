@@ -31,10 +31,12 @@ class NewGame < KDE::Dialog
 
     @layout = Qt::VBoxLayout.new(@widget)
     @layout.add_layout(hlayout)
-
-    current = (0...@games.count).
-      map{|i| @games.item_data(i).toString }.
-      index(current_game.class.data(:id).to_s)
+    
+    if current_game
+      current = (0...@games.count).
+        map{|i| @games.item_data(i).toString }.
+        index(current_game.class.data(:id).to_s)
+    end
     @games.current_index = current if current
     @games.on('currentIndexChanged(int)') do |index|
       update_players(index)

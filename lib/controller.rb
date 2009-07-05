@@ -11,12 +11,14 @@ require 'board/pool_animator'
 require 'clock'
 require 'interaction/match'
 require 'premover'
+require 'executor'
 
 class Controller
   include Observer
   include Player
+  include Executor
   
-  attr_reader :match
+  attr_reader :match, :policy
   attr_reader :color
   attr_reader :controlled
   attr_reader :table
@@ -45,13 +47,13 @@ class Controller
     @policy = match.game.policy.new
     @current = match.history.current
     
-    @table.reset(@match)
+    @table.reset(match)
     @board = @table.elements[:board]
     @pools = @table.elements[:pools]
     @clocks = @table.elements[:clocks]
     @premover = Premover.new(self, @board, @pools)
     
-    @animator = @match.game.animator.new(@board)
+    @animator = match.game.animator.new(@board)
     @board.reset(match.state.board)
     update_pools
     
@@ -71,35 +73,32 @@ class Controller
                      :player => match.player(col).name }
     end
     
-    @match.history.observe(:current_changed) { refresh }
+    match.history.observe(:current_changed) { refresh }
     
-    @match.observe(:move) do |data|
+    match.observe(:move) do |data|
       refresh(data[:opts])
       @clocks[data[:old_state].turn].stop
       @clocks[data[:state].turn].start
     end
     
-    @clocks[@match.game.players.first].active = true
-    @table.flip(@color && (@color != @match.game.players.first))
+    @clocks[match.game.players.first].active = true
+    @table.flip(@color && (@color != match.game.players.first))
     
-    if @match.history.move
-      @board.highlight(@match.history.move)
+    if match.history.move
+      @board.highlight(match.history.move)
     end
   end
   
-  def perform!(move, opts = {})
-    turn = @match.history.state.turn
-    @match.move(@controlled[turn], move, opts)
-  end
-  
   def back
-    @match.history.back
+    return unless match
+    match.history.back
   rescue History::OutOfBound
     puts "error: first move"
   end
   
   def forward
-    @match.history.forward
+    return unless match
+    match.history.forward
   rescue History::OutOfBound
     puts "error: last move"
   end
@@ -107,25 +106,25 @@ class Controller
   # sync displayed state with current history item
   # 
   def refresh(opts = { })
-    if @match
-      index = @match.history.current
-      if index > @current
-        (@current + 1..index).each do |i|
-          animate(:forward, @match.history[i].state, @match.history[i].move, opts)
-        end
-      elsif index < @current
-        @current.downto(index + 1).each do |i|
-          animate(:back, @match.history[i - 1].state, @match.history[i].move, opts)
-        end
+    return unless match
+    index = match.history.current
+    if index > @current
+      (@current + 1..index).each do |i|
+        animate(:forward, match.history[i].state, match.history[i].move, opts)
       end
-      @current = index
-      @board.highlight(@match.history[@current].move)
-      @premover.execute
+    elsif index < @current
+      @current.downto(index + 1).each do |i|
+        animate(:back, match.history[i - 1].state, match.history[i].move, opts)
+      end
     end
+    @current = index
+    @board.highlight(match.history[@current].move)
+    @premover.execute
   end
   
   def go_to(index)
-    @match.history.go_to(index)
+    return unless match
+    match.history.go_to(index)
   rescue History::OutOfBound
     puts "error: no such index #{index}"
   end
@@ -137,54 +136,13 @@ class Controller
     update_pools
   end
   
-  def update_pools
-    @pools.each do |col, pool|
-      anim = pool.animator.warp(@match.history.state.pool(col))
-      @field.run anim
-    end
-  end
-  
-  def execute_move(src, dst, opts = { })
-    state = @match.history.state
-    move = @policy.new_move(state, src, dst)
-    validate = @match.game.validator.new(state)
-    if validate[move]
-      perform!(move, opts)
-      move
-    end
-  end
-
-  def execute_drop(item, dst)
-    state = @match.history.state
-    move = @policy.new_move(state, nil, dst,
-                            :dropped => item.name)
-    validate = @match.game.validator.new(state)
-    if validate[move]
-      perform! move, :adjust => true, :dropped => item
-      move
-    end
-  end
-  
-  def execute_direct_drop(color, index, dst)
-    state = @match.history.state
-    item = @pools[color].items[index]
-    if item
-      move = @policy.new_move(state, nil, dst,
-                              :dropped => item.name)
-      validate = @match.game.validator.new(state)
-      if validate[move]
-        perform! move
-        move
-      end
-    end
-  end
-  
   def on_board_click(p)
-    state = @match.history.state
+    return unless match
+    state = match.history.state
     # if there is a selection already, move or premove
     # to the clicked square
     if @board.selection
-      case @policy.movable?(@match.history.state, @board.selection)
+      case policy.movable?(match.history.state, @board.selection)
       when :movable
         # move directly
         execute_move(@board.selection, p)
@@ -200,6 +158,7 @@ class Controller
   end
   
   def on_board_drop(data)
+    return unless match
     move = nil
     @board.add_to_group data[:item]
     @board.lower data[:item]
@@ -211,7 +170,7 @@ class Controller
         @board.selection = data[:src]
       elsif data[:dst]
         # normal move/premove
-        case @policy.movable?(@match.history.state, data[:src])
+        case policy.movable?(match.history.state, data[:src])
         when :movable
           move = execute_move(data[:src], data[:dst], :adjust => true)
         when :premovable
@@ -220,7 +179,7 @@ class Controller
       end
     elsif data[:index] and data[:dst]
       # actual drop
-      case droppable?(@match.history.state, 
+      case droppable?(match.history.state, 
                       data[:pool_color], 
                       data[:index])
       when :droppable
@@ -234,7 +193,8 @@ class Controller
   end
   
   def on_board_drag(data)
-    if movable?(@match.history.state, data[:src])
+    return unless match
+    if movable?(match.history.state, data[:src])
       @board.raise data[:item]
       @board.remove_from_group data[:item]
       @board.selection = nil
@@ -243,7 +203,8 @@ class Controller
   end
   
   def on_pool_drag(c, data)
-    if droppable?(@match.history.state, c, data[:index])
+    return unless match
+    if droppable?(match.history.state, c, data[:index])
       # replace item with a correctly sized one
       item = @board.create_piece(data[:item].name)
       @board.raise item
@@ -261,21 +222,6 @@ class Controller
   
   def on_pool_drop(color, data)
     cancel_drop(data)
-  end
-  
-  def cancel_drop(data)
-    anim = if data[:index]
-      # remove dragged item
-      data[:item].remove
-      # make original item reappear in its place
-      @pools[data[:pool_color]].animator.insert_piece(
-        data[:index],
-        data[:item].name)
-    elsif data[:src]
-      @animator.movement(data[:item], nil, data[:src], Path::Linear)
-    end
-    
-    @field.run(anim) if anim
   end
     
   def on_time(time)
@@ -306,21 +252,50 @@ class Controller
     end
   end
     
+  private
+  
   def movable?(state, p)
-    result = @policy.movable?(state, p)
+    result = policy.movable?(state, p)
     return false unless result
     return false unless result == :movable || @premove
     return false unless @controlled[state.board[p].color]
-    return false if @match.history.current < @match.index and (not @match.editable?)
+    return false if match.history.current < match.index and (not match.editable?)
     result
   end
   
   def droppable?(state, color, index)
-    result = @policy.droppable?(state, color, index)
+    result = policy.droppable?(state, color, index)
     return false unless result
     return false unless result == :droppable || @premove
     return false unless @controlled[color]
-    return false if @match.history.current < @match.index and (not @match.editable?)
+    return false if match.history.current < match.index and (not match.editable?)
     result
+  end
+  
+  def perform!(move, opts = {})
+    turn = match.history.state.turn
+    match.move(@controlled[turn], move, opts)
+  end
+  
+  def cancel_drop(data)
+    anim = if data[:index]
+      # remove dragged item
+      data[:item].remove
+      # make original item reappear in its place
+      @pools[data[:pool_color]].animator.insert_piece(
+        data[:index],
+        data[:item].name)
+    elsif data[:src]
+      @animator.movement(data[:item], nil, data[:src], Path::Linear)
+    end
+    
+    @field.run(anim) if anim
+  end
+  
+  def update_pools
+    @pools.each do |col, pool|
+      anim = pool.animator.warp(match.history.state.pool(col))
+      @field.run anim
+    end
   end
 end
