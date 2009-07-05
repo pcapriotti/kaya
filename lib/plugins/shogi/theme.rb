@@ -9,6 +9,8 @@ require 'qtutils'
 require 'plugins/plugin'
 require 'plugins/shadow'
 require 'plugins/background'
+require 'require_bundle'
+require_bundle 'shogi', 'type'
 
 class ShogibanBackground
   include Plugin
@@ -103,7 +105,8 @@ class ShogiTheme
   
   def filename(piece)
     color = piece.color.to_s[0, 1]
-    name = piece.type.to_s.gsub(/^promoted_/, 'p') + ".svg"
+    name = Promoted.demote(piece.type).to_s + ".svg"
+    name = 'p' + name if Promoted.promoted?(piece.type)
     rel('pics', name)
   end
   

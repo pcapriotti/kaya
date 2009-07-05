@@ -42,7 +42,7 @@ class TestShogiSerializer < Test::Unit::TestCase
     assert_equal 'R-1e', serialize(@compact, 4, 4, 8, 4)
     assert_equal 'Rx5c+', serialize(@compact, 4, 4, 4, 2, :promote => true)
     
-    @state.board[Point.new(4, 4)] = @game.piece.new(:black, :promoted_silver)
+    @state.board[Point.new(4, 4)] = @game.piece.new(:black, Promoted.new(:silver))
     assert_equal '+S-6e', serialize(@compact, 4, 4, 3, 4)
     
     @state.board[Point.new(4, 4)] = nil
@@ -64,7 +64,7 @@ class TestShogiSerializer < Test::Unit::TestCase
     @state.board[Point.new(1, 0)] = @game.piece.new(:black, :horse)
     assert_equal 'R9ax8a', serialize(@compact, 0, 0, 1, 0, :promote => false)
     
-    @state.board[Point.new(0, 0)] = @game.piece.new(:black, :promoted_rook)
+    @state.board[Point.new(0, 0)] = @game.piece.new(:black, Promoted.new(:rook))
     assert_equal '+R9ax8a+', serialize(@compact, 0, 0, 1, 0, :promote => true)
   end
   
@@ -89,7 +89,7 @@ class TestShogiSerializer < Test::Unit::TestCase
   
   def test_deserialize_promoted
     @state.setup
-    @state.board[Point.new(4, 4)] = @game.piece.new(:black, :promoted_lance)
+    @state.board[Point.new(4, 4)] = @game.piece.new(:black, Promoted.new(:lance))
     
     assert_deserialize('+L-4e', 4, 4, 5, 4)
   end

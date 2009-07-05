@@ -7,6 +7,7 @@
 
 require 'games/state_base'
 require 'point'
+require_bundle 'shogi', 'type'
 
 module Shogi
   class State < StateBase
@@ -83,9 +84,11 @@ module Shogi
         if move.promote?
           board[move.dst] = promoted(board[move.dst])
         end
+        
         if captured
-          piece = piece_factory.new(turn, captured.type)
-          pool(turn).add(demoted(piece))
+          piece = piece_factory.new(turn, 
+            Promoted.demote(captured.type))
+          pool(turn).add(piece)
         end
       end
       switch_turn!
@@ -105,22 +108,8 @@ module Shogi
     
     def promoted(piece)
       piece_factory.new(
-        piece.color, 
-        ('promoted_' + piece.type.to_s).to_sym)
-    end
-    
-    def demoted(piece)
-      piece_factory.new(
         piece.color,
-        piece.type.to_s.gsub(/^promoted_/, '').to_sym)
-    end
-    
-    def promoted_type?(type)
-      type.to_s =~ /^promoted_/
-    end
-    
-    def promoted?(piece)
-      promoted_type? piece.type
+        Promoted.promote(piece.type))
     end
   end
 end

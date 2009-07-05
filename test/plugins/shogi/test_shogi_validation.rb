@@ -8,6 +8,7 @@
 require 'test/unit'
 require 'games/all'
 require 'helpers/validation_helper'
+require_bundle 'shogi', 'type'
 
 class TestShogiValidation < Test::Unit::TestCase
   include ValidationHelper
@@ -299,7 +300,7 @@ class TestShogiValidation < Test::Unit::TestCase
   end
   
   def test_promote_twice
-    @state.board[Point.new(2, 3)] = @game.piece.new(:black, :promoted_lance)
+    @state.board[Point.new(2, 3)] = @game.piece.new(:black, Promoted.new(:lance))
     
 #     assert_not_valid 2, 3, 2, 2, :promote => true
     assert_valid 2, 3, 2, 2, :promote => false

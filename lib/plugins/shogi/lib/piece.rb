@@ -6,6 +6,7 @@
 # (at your option) any later version.
 
 require_bundle 'chess', 'piece'
+require_bundle 'shogi', 'type'
 
 module Shogi
 
@@ -24,19 +25,14 @@ class Piece < Chess::Piece
     promoted = sym[0,1] == '+'
     sym = sym[1..-1] if promoted
     type = TYPES[sym.upcase]
-    type = ('promoted_' + type.to_s).to_sym if promoted
+    type = Promoted.new(type) if promoted
     type
   end
   
   def self.symbol(type)
-    promoted = type.to_s =~ /^promoted_/
-    base_type = if promoted
-      type.to_s.gsub(/^promoted_/, '').to_sym
-    else
-      type
-    end
+    base_type = Promoted.demote(type)
     result = SYMBOLS[base_type] || '?'
-    result = '+' + result if promoted
+    result = '+' + result if Promoted.promoted?(type)
     result
   end
 end

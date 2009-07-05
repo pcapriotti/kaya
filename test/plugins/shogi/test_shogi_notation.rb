@@ -7,6 +7,7 @@
 
 require 'test/unit'
 require 'games/all'
+require_bundle 'shogi', 'type'
 
 class TestShogiNotation < Test::Unit::TestCase
   def setup
@@ -31,7 +32,7 @@ class TestShogiNotation < Test::Unit::TestCase
   def test_notation1
     notation = @notation.from_s('+L-4e')
     assert_not_nil notation
-    assert_equal :promoted_lance, notation[:type]
+    assert_equal Promoted.new(:lance), notation[:type]
     assert_nil notation[:src]
     assert ! notation[:drop]
     assert_equal Point.new(5, 4), notation[:dst]

@@ -6,6 +6,7 @@
 # (at your option) any later version.
 
 require 'games/validator_base'
+require_bundle 'shogi', 'type'
 
 module Shogi
   class Validator < ValidatorBase
@@ -61,12 +62,11 @@ module Shogi
     
     def validator_method(type)
       m = super(type)
-      if @state.promoted_type?(type)
+      if Promoted.promoted? type
+        m += '_promoted'
         m = super(:gold) unless respond_to?(m)
-        m
-      else
-        m
       end
+      m
     end
     
     def check_pseudolegality(piece, target, move)
@@ -76,7 +76,7 @@ module Shogi
           @state.in_promotion_zone?(move.src, piece.color) ||
           @state.in_promotion_zone?(move.dst, piece.color)
           
-        return false if @state.promoted?(piece)
+        return false if Promoted.promoted?(piece.type)
       else
         # check for cases when it is mandatory to promote
         case piece.type
@@ -135,12 +135,12 @@ module Shogi
       @state.board.clear_path? range
     end
     
-    def validate_promoted_rook(piece, target, move)
+    def validate_rook_promoted(piece, target, move)
       validate_king(piece, target, move) ||
       validate_rook(piece, target, move)
     end
     
-    def validate_promoted_bishop(piece, target, move)
+    def validate_bishop_promoted(piece, target, move)
       validate_king(piece, target, move) ||
       validate_bishop(piece, target, move)
     end
