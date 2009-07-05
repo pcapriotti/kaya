@@ -48,9 +48,9 @@ class EngineLoader
     
     def save(group)
       group.write_entry('game', @game.class.data(:id).to_s)
-      group.write_entry('path', @path)
-      group.write_entry('protocol', @protocol)
-      group.write_entry('workdir', @workdir)
+      group.write_entry('path', @path.to_s)
+      group.write_entry('protocol', @protocol.to_s)
+      group.write_entry('workdir', @workdir.to_s)
     end
   end
   
