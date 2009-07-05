@@ -27,6 +27,7 @@ module Shogi
       if piece
         return false unless piece.color == @state.turn
         return false unless @state.pool(piece.color).has_piece?(piece)
+        return false if move.promote?
         return false if @state.board[move.dst]
         if piece.type == :pawn
           # pawns cannot be dropped on the last rank
