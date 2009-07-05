@@ -12,6 +12,8 @@ require 'action_provider'
 require_bundle 'ics', 'protocol'
 require_bundle 'ics', 'connection'
 require_bundle 'ics', 'match_handler'
+require_bundle 'ics', 'preferences'
+require_bundle 'ics', 'config'
 
 class ICSPlugin
   include Plugin
@@ -35,15 +37,19 @@ class ICSPlugin
         @connection = nil
       end
     end
+    action(:configure_ics,
+           :text => KDE.i18n("&Configure ICS")) do |parent|
+      dialog = ICS::Preferences.new(parent)
+      dialog.show
+    end
   end
   
   def connect_to_ics(parent)
     protocol = ICS::Protocol.new(:debug)
     @connection = ICS::Connection.new('freechess.org', 23)
-    config = KDE::Global.config.group("ICS")
+    config = ICS::Config.load
     protocol.add_observer ICS::AuthModule.new(@connection, 
-      config.read_entry('username', 'guest'), 
-      config.read_entry('password', ''))
+      config[:username], config[:password])
     protocol.add_observer ICS::StartupModule.new(@connection)
     protocol.link_to @connection
 

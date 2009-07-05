@@ -5,6 +5,9 @@
    <Action name="connect" group="file_extensions"/>
    <Action name="disconnect" group="file_extensions"/>
   </Menu>
+  <Menu name="settings">
+    <Action name="configure_ics" />
+  </Menu>
  </MenuBar>
  <ToolBar name="mainToolBar" >
   <Action name="connect" />
