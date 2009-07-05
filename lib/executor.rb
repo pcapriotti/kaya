@@ -16,7 +16,7 @@ module Executor
     end
   end
 
-  def execute_drop(item, dst)
+  def execute_drop(item, dst, opts = { })
     state = match.history.state
     move = policy.new_move(state, nil, dst,
                             :dropped => item.name)
