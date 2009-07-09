@@ -67,6 +67,10 @@ module Shogi
       color == :black ? @board.size.y - 1 - i : i
     end
     
+    def col(i, color)
+      color == :black ? i : @board.size.x - 1 - i
+    end
+
     def opposite_color(color)
       color == :black ? :white : :black
     end
@@ -111,5 +115,33 @@ module Shogi
         piece.color,
         Promoted.promote(piece.type))
     end
+  end
+end
+
+module MiniShogi
+  class State < Shogi::State
+
+    def setup
+      each_color do |color|
+
+        r = row(0, color)
+        set_piece = lambda do |x, type|
+          @board[Point.new(x, r)] = piece_factory.new(color, type)
+        end
+        set_piece[col(0,color), :king]
+        set_piece[col(1,color), :gold]
+        set_piece[col(2,color), :silver]
+        set_piece[col(3,color), :bishop]
+        set_piece[col(4,color), :rook]
+
+        r = row(1, color)
+        set_piece[col(0,color), :pawn]
+      end
+    end
+
+    def in_promotion_zone?(p, color)
+      (row(4, color) <=> p.y) != (color == :black ? -1 : 1)
+    end
+
   end
 end

@@ -71,3 +71,22 @@ class Game
 end
 
 end
+
+module MiniShogi
+
+class Game < Shogi::Game
+  plugin :name => 'MiniShogi',
+         :id => :minishogi,
+         :interface => :game,
+         :keywords => %w(shogi)
+
+  def initialize
+    super
+    @size = Point.new(5, 5)
+    @state = Factory.new { State.new(board.new, pool, move, piece) }
+    @game_extensions = []
+  end
+
+end
+
+end
