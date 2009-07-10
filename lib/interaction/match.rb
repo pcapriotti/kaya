@@ -99,6 +99,14 @@ class Match
     true
   end
   
+  def undo(player, action)
+    allowed = @players.all? do |p|
+      p.allow_undo?(player, action)
+    end
+    action.undo if allowed
+    allowed
+  end
+  
   def update_time(time)
     broadcast nil, :time => time
   end

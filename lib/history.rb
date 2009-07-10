@@ -6,18 +6,20 @@
 # (at your option) any later version.
 
 require 'observer_utils.rb'
+require 'interaction/operation'
 
 class History
   include Enumerable
   include Observable
+  include OperationInterface
   
   attr_reader :current
   
-  Item = Struct.new(:state, :move, :text)
+  Item = Struct.new(:state, :move)
   OutOfBound = Class.new(Exception)
 
   def initialize(state)
-    @history = [Item.new(state.dup, nil, "Mainline")]
+    @history = [Item.new(state.dup, nil)]
     @current = 0
   end
   
@@ -26,15 +28,10 @@ class History
   end
   
   def add_move(state, move)
-    item = Item.new(state.dup, move, nil)
-    old_size = @history.size
-    
-    @history = @history[0..@current]
-
-    @history << item
-    @current = @history.size - 1
-    
-    fire :new_move
+    operation(:execute => true) do |op|
+      op.truncate(@current + 1)
+      op.move(Item.new(state.dup, move))
+    end
   end
   
   def forward
@@ -89,5 +86,22 @@ class History
       raise OutOfBound 
     end
     @history[index]
+  end
+  
+  # item interface
+  
+  def add_items(*items)
+    @history += items
+    @history.size - 1
+  end
+  
+  def remove_items_at(index)
+    items = @history[index..-1]
+    @history = @history[0...index]
+    items
+  end
+  
+  def current=(value)
+    @current = value
   end
 end
