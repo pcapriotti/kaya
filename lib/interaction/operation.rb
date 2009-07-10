@@ -38,6 +38,8 @@ end
 # the end
 # 
 class TruncateOperation
+  include Operation
+  
   def initialize(history, index)
     @history = history
     @index = index
@@ -47,7 +49,7 @@ class TruncateOperation
     @history.current = @index.pred
     items = @history.remove_items_at(@index)
     if opts.fetch(:undoable, true)
-      @undo_op = MoveOperation.new(@history, items)
+      @undo_op = MoveOperation.new(@history, *items)
     end
   end
 end
@@ -59,7 +61,7 @@ class CompositeOperation
   
   def undo
     @actions.reverse.each do |action|
-      action.undo!
+      action.undo
     end
   end
   

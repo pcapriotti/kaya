@@ -80,6 +80,20 @@ class History
     @history[current].move
   end
   
+  def undo!
+    op = @operations.undo_operation
+    if op
+      op.undo
+    end
+  end
+  
+  def redo!
+    op = @operations.redo_operation
+    if op
+      op.execute
+    end
+  end
+  
   def size
     @history.size
   end

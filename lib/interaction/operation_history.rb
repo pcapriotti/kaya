@@ -14,6 +14,7 @@ class OperationHistory
   def <<(op)
     @operations = @operations[0..@current]
     @operations << op
+    @current += 1
   end
   
   def undo_operation

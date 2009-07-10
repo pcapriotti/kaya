@@ -78,4 +78,35 @@ class TestHistory < Test::Unit::TestCase
     @history.add_move("new_new_state1", "second_move1")
     assert_equal 2, @history.operations.size
   end
+  
+  def test_undo
+    @history.add_move("new_state1", "first_move1")
+    @history.add_move("new_new_state1", "second_move1")
+    @history.undo!
+    assert_equal 1, @history.current
+    assert_equal "new_state1", @history.state
+    assert_equal "first_move1", @history.move
+  end
+  
+  def test_redo
+    @history.add_move("new_state1", "first_move1")
+    @history.add_move("new_new_state1", "second_move1")
+    @history.undo!
+    @history.redo!
+    assert_equal 2, @history.current
+    assert_equal "new_new_state1", @history.state
+    assert_equal "second_move1", @history.move
+  end
+  
+  def test_undo_overwrite
+    @history.add_move("new_state1", "first_move1")
+    @history.add_move("new_new_state1", "second_move1")
+    @history.back
+    @history.back
+    @history.add_move("new_state2", "first_move2")
+    @history.undo!
+    assert_equal 2, @history.current
+    assert_equal "new_new_state1", @history.state
+    assert_equal "second_move1", @history.move
+  end
 end
