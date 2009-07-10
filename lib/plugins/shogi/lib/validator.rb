@@ -62,10 +62,7 @@ module Shogi
     
     def validator_method(type)
       m = super(type)
-      if Promoted.promoted? type
-        m += '_promoted'
-        m = super(:gold) unless respond_to?(m)
-      end
+      m = super(:gold) unless respond_to?(m)
       m
     end
     
@@ -135,12 +132,12 @@ module Shogi
       @state.board.clear_path? range
     end
     
-    def validate_rook_promoted(piece, target, move)
+    def validate_promoted_rook(piece, target, move)
       validate_king(piece, target, move) ||
       validate_rook(piece, target, move)
     end
     
-    def validate_bishop_promoted(piece, target, move)
+    def validate_promoted_bishop(piece, target, move)
       validate_king(piece, target, move) ||
       validate_bishop(piece, target, move)
     end

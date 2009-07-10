@@ -305,4 +305,30 @@ class TestShogiValidation < Test::Unit::TestCase
 #     assert_not_valid 2, 3, 2, 2, :promote => true
     assert_valid 2, 3, 2, 2, :promote => false
   end
+  
+  def test_promoted_rook
+    @state.board[Point.new(7, 6)] = nil
+    execute 7, 7, 7, 2, :promote => true
+    execute 0, 2, 0, 3
+    
+    assert_valid 7, 2, 7, 3
+    assert_valid 7, 2, 7, 1
+    assert_valid 7, 2, 6, 1
+    assert_valid 7, 2, 6, 3
+    assert_valid 7, 2, 8, 1
+    assert_not_valid 7, 2, 5, 1
+    assert_valid 7, 2, 7, 5
+  end
+  
+  def test_promoted_bishop
+    @state.board[Point.new(2, 6)] = nil
+    execute 1, 7, 6, 2, :promote => true
+    execute 4, 0, 3, 1
+    
+    assert_valid 6, 2, 6, 3
+    assert_valid 6, 2, 6, 1
+    assert_valid 6, 2, 5, 3
+    assert_valid 6, 2, 7, 1
+    assert_valid 6, 2, 2, 6
+  end
 end
