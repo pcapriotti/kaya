@@ -50,6 +50,7 @@ class Game
   
   def self.register_game(klasses, klass)
     unless Game.get(klass.data(:id))
+      # register dependencies
       (klass.data(:depends) || []).each do |dep|
         depklass = klasses[dep] or
           raise "Invalid dependency #{dep} for game #{klass.plugin_name}"
@@ -57,6 +58,10 @@ class Game
         klass.instance_eval do
           define_method(dep) { Game.get(dep) }
         end
+      end
+      # register superclass
+      if klasses.values.include?(klass.superclass)
+        register_game(klasses, klass.superclass)
       end
       GAMES[klass.data(:id)] = klass.new
     end
