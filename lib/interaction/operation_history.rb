@@ -6,6 +6,8 @@
 # (at your option) any later version.
 
 class OperationHistory
+  attr_reader :current
+  
   def initialize
     @operations = []
     @current = -1
