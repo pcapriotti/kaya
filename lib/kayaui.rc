@@ -4,6 +4,10 @@
   <Menu name="file">
     <DefineGroup name="file_extensions" />
   </Menu>
+  <Menu name="edit">
+    <Action name="undo" />
+    <Action name="redo" />
+  </Menu>
   <Menu name="gameMenu">
    <text>&amp;Game</text>
    <Action name="begin" />

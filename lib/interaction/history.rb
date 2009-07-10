@@ -30,11 +30,12 @@ class History
     @history.each {|item| yield item.state, item.move }
   end
   
-  def add_move(state, move)
-    operation do |op|
+  def add_move(state, move, opts = { })
+    op = operation do |op|
       op.truncate(@current + 1)
       op.move(Item.new(state.dup, move))
     end
+    op.execute :extra => opts
   end
   
   def forward
@@ -107,14 +108,28 @@ class History
   
   # item interface
   
-  def add_items(*items)
+  def add_items(opts, *items)
     @history += items
-    @history.size - 1
+    old_current = @current
+    old_state = state
+    @current = @history.size - 1
+    fire :new_move => {
+      :old_current => old_current,
+      :old_state => old_state,
+      :state => state,
+      :opts => opts }
+    @current
   end
   
   def remove_items_at(index)
     items = @history[index..-1]
     @history = @history[0...index]
+    @current = if @current >= index
+      index.pred
+    else
+      @current
+    end
+    fire :truncate => @current
     items
   end
   

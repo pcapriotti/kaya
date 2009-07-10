@@ -74,11 +74,16 @@ class Controller
     end
     
     match.history.observe(:current_changed) { refresh }
-    
-    match.observe(:move) do |data|
+    match.history.observe(:truncate) { refresh :instant => true }
+    match.history.observe(:new_move) do |data|
       refresh(data[:opts])
-      @clocks[data[:old_state].turn].stop
-      @clocks[data[:state].turn].start
+      @clocks.each do |player, clock|
+        if data[:state].turn == player
+          clock.start
+        else
+          clock.stop
+        end
+      end
     end
     
     @clocks[match.game.players.first].active = true
@@ -108,7 +113,10 @@ class Controller
   def refresh(opts = { })
     return unless match
     index = match.history.current
-    if index > @current
+    if opts[:instant]
+      anim = @animator.warp(match.history.state, opts)
+      perform_animation anim
+    elsif index > @current
       (@current + 1..index).each do |i|
         animate(:forward, match.history[i].state, match.history[i].move, opts)
       end
@@ -119,7 +127,6 @@ class Controller
     end
     @current = index
     @board.highlight(match.history[@current].move)
-    @premover.execute
   end
   
   def go_to(index)
@@ -131,8 +138,11 @@ class Controller
   
   def animate(direction, state, move, opts = {})
     anim = @animator.send(direction, state, move, opts)
+    perform_animation anim
+  end
+  
+  def perform_animation(anim)
     @field.run anim
-    
     update_pools
   end
   

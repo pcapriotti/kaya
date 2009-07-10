@@ -77,6 +77,14 @@ private
       dialog = EnginePrefs.new(@engine_loader, self)
       dialog.show
     end
+    
+    std_action(:undo) do
+      @controller.match.history.undo! if @controller.match
+    end
+
+    std_action(:redo) do
+      @controller.match.history.redo! if @controller.match
+    end
   end
   
   def load_action_providers

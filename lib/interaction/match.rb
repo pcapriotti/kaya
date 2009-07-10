@@ -87,15 +87,14 @@ class Match
     old_state = @history.state
     state = old_state.dup
     state.perform! move
-    @history.add_move(state, move)
     @index += 1
+    @history.add_move(state, move, opts)
     
     broadcast player, :move => {
       :player => player,
       :move => move,
       :state => state,
-      :old_state => old_state,
-      :opts => opts }
+      :old_state => old_state }
     true
   end
   

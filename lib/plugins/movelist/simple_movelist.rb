@@ -33,14 +33,21 @@ class SimpleMoveList < Qt::ListView
       end
     end
     
-    def on_new_move
-      if @history.size > rowCount
-        insert_rows(rowCount, @history.size - rowCount)
+    def on_new_move(data)
+      old_count = rowCount
+      if @history.size > old_count
+        insert_rows(old_count, @history.size - old_count)
       else
-        remove_rows(@history.size, rowCount - @history.size)
+        remove_rows(@history.size, old_count - @history.size)
       end
-      update_row(@history.current)
+      (data[:old_current] + 1...rowCount).each do |i|
+        update_row(i)
+      end
       on_current_changed
+    end
+    
+    def on_truncate(index)
+      remove_rows(index + 1, rowCount - index - 1)
     end
 
     def on_current_changed
@@ -95,7 +102,8 @@ class SimpleMoveList < Qt::ListView
       end
       sig = 'selectionChanged(QItemSelection, QItemSelection)'
       selection_model.on(sig) do |selected, deselected|
-        match.history.go_to(selected.indexes.first.row)
+        index = selected.indexes.first
+        match.history.go_to(index.row) if index
       end
       # select last item
       select(model.index(model.row_count - 1, 0))

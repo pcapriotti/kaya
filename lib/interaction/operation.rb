@@ -24,9 +24,7 @@ class MoveOperation
   end
   
   def execute(opts = { })
-    index = @history.add_items(*@items)
-    @history.current = index
-    @history.fire :new_move
+    index = @history.add_items(opts[:extra] || { }, *@items)
     
     if opts.fetch(:undoable, true)
       @undo_op = TruncateOperation.new(@history, index)
@@ -65,9 +63,9 @@ class CompositeOperation
     end
   end
   
-  def execute
+  def execute(opts = { })
     @actions.each do |action|
-      action.execute
+      action.execute(opts)
     end
   end
 end
@@ -98,7 +96,6 @@ module OperationInterface
     else
       CompositeOperation.new(*ops)
     end
-    op.execute if opts.fetch(:execute, true)
     operations << op if opts.fetch(:save, true)
     op
   end
