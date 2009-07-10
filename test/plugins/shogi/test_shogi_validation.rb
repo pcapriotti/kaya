@@ -299,6 +299,12 @@ class TestShogiValidation < Test::Unit::TestCase
     assert_not_valid 0, 3, 1, 1, :promote => false
   end
   
+  def test_lance_mandatory_promotion
+    @state.board[Point.new(0, 1)] = @game.piece.new(:black, :lance)
+    assert_valid 0, 1, 0, 0, :promote => true
+    assert_not_valid 0, 1, 0, 0, :promote => false
+  end
+  
   def test_promote_twice
     @state.board[Point.new(2, 3)] = @game.piece.new(:black, Promoted.new(:lance))
     

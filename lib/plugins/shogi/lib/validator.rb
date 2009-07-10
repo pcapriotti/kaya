@@ -77,7 +77,7 @@ module Shogi
       else
         # check for cases when it is mandatory to promote
         case piece.type
-        when :pawn
+        when :pawn, :lance
           return false if move.dst.y == @state.row(@state.board.size.y - 1, piece.color)
         when :horse
           return false if 
