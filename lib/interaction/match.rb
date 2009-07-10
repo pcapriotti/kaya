@@ -6,7 +6,7 @@
 # (at your option) any later version.
 
 require 'observer_utils'
-require 'history'
+require 'interaction/history'
 
 module Player
   def name

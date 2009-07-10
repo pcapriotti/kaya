@@ -10,7 +10,7 @@ require 'board/board'
 require 'board/pool'
 require 'board/table'
 require 'board/scene'
-require 'history'
+require 'interaction/history'
 require 'controller'
 
 require 'interaction/match'

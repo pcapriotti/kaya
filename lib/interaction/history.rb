@@ -7,6 +7,7 @@
 
 require 'observer_utils.rb'
 require 'interaction/operation'
+require 'interaction/operation_history'
 
 class History
   include Enumerable
@@ -14,6 +15,7 @@ class History
   include OperationInterface
   
   attr_reader :current
+  attr_reader :operations
   
   Item = Struct.new(:state, :move)
   OutOfBound = Class.new(Exception)
@@ -21,6 +23,7 @@ class History
   def initialize(state)
     @history = [Item.new(state.dup, nil)]
     @current = 0
+    @operations = OperationHistory.new
   end
   
   def each
@@ -28,7 +31,7 @@ class History
   end
   
   def add_move(state, move)
-    operation(:execute => true) do |op|
+    operation do |op|
       op.truncate(@current + 1)
       op.move(Item.new(state.dup, move))
     end

@@ -7,7 +7,7 @@
 
 require 'test/unit'
 require 'games/all'
-require 'history'
+require 'interaction/history'
 require 'helpers/validation_helper'
 
 class TestPGN < Test::Unit::TestCase

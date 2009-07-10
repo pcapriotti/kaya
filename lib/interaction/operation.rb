@@ -96,7 +96,8 @@ module OperationInterface
     else
       CompositeOperation.new(*ops)
     end
-    op.execute if opts.fetch(:execute, false)
+    op.execute if opts.fetch(:execute, true)
+    operations << op if opts.fetch(:save, true)
     op
   end
 end

@@ -6,7 +6,7 @@
 # (at your option) any later version.
 
 require 'observer_utils'
-require 'history'
+require 'interaction/history'
 require 'board/pool_animator'
 require 'clock'
 require 'interaction/match'

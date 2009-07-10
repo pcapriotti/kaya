@@ -6,7 +6,7 @@
 # (at your option) any later version.
 
 require 'strscan'
-require 'history'
+require 'interaction/history'
 require 'qtutils'
 
 module Chess

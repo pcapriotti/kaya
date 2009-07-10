@@ -6,7 +6,7 @@
 # (at your option) any later version.
 
 require 'test/unit'
-require 'history'
+require 'interaction/history'
 
 class TestHistory < Test::Unit::TestCase
   def setup
@@ -71,5 +71,11 @@ class TestHistory < Test::Unit::TestCase
     assert_equal "new_state2", @history.state
     assert_equal "first_move2", @history.move
     assert_equal 2, @history.size
+  end
+  
+  def test_operations
+    @history.add_move("new_state1", "first_move1")
+    @history.add_move("new_new_state1", "second_move1")
+    assert_equal 2, @history.operations.size
   end
 end
