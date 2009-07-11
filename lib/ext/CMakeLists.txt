@@ -1,6 +1,14 @@
 find_package(Qt4 REQUIRED)
 find_package(Ruby REQUIRED)
 
+option(RUBY_BACKTRACE
+  "Display a ruby backtrace for exceptions originating in native code"
+  OFF)
+
+if(RUBY_BACKTRACE)
+  add_definitions("-DRUBY_EXCEPTIONS_ONLY")
+endif(RUBY_BACKTRACE)
+
 add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
 include_directories(${KDE4_INCLUDES} ${RUBY_INCLUDE_PATH})
 
