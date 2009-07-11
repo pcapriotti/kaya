@@ -66,28 +66,28 @@ module Animations
     end
   end
 
-  def disappear(item, name = "disappear")
+  def disappear(item, name, opts = { })
     if item
-      SimpleAnimation.new name, LENGTH,
-        lambda { item.opacity = 1.0; item.visible = true },
-        lambda {|t| item.opacity = 1.0 - t },
-        lambda { item.remove }
+      if opts[:instant]
+        Animation.new(name) { item.visible = false; true }
+      else
+        SimpleAnimation.new name, LENGTH,
+          lambda { item.opacity = 1.0; item.visible = true },
+          lambda {|t| item.opacity = 1.0 - t },
+          lambda { item.remove }
+      end
     end
   end
   
-  def appear(item, name = "appear")
-    SimpleAnimation.new name, LENGTH,
-      lambda { item.opacity = 0.0; item.visible = true },
-      lambda {|i| item.opacity = i },
-      lambda { item.opacity = 1.0 }
-  end
-  
-  def instant_appear(p, piece, name = "appear")
-    Animation.new(name) { board.add_piece p, piece }
-  end
-  
-  def instant_disappear(p, name = "disappear")
-    Animation.new(name) { board.remove_item p }
+  def appear(item, name, opts = { })
+    if opts[:instant]
+      Animation.new(name) { item.opacity = 1.0; item.visible = true; true }
+    else
+      SimpleAnimation.new name, LENGTH,
+        lambda { item.opacity = 0.0; item.visible = true },
+        lambda {|i| item.opacity = i },
+        lambda { item.opacity = 1.0 }
+    end
   end
 end
 

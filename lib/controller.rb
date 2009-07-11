@@ -113,6 +113,7 @@ class Controller
   def refresh(opts = { })
     return unless match
     index = match.history.current
+    return if index == @current
     if opts[:instant]
       anim = @animator.warp(match.history.state, opts)
       perform_animation anim
