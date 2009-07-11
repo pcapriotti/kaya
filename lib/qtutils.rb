@@ -97,7 +97,7 @@ class Qt::Point
   include PrintablePoint
   
   def to_f
-    Qt::PointF.new(x, y)
+    Qt::PointF.new(self.x, self.y)
   end
 end
 
@@ -105,7 +105,7 @@ class Qt::PointF
   include PrintablePoint
   
   def to_i
-    Qt::Point.new(x.to_i, y.to_i)
+    Qt::Point.new(self.x.to_i, self.y.to_i)
   end
 end
 
