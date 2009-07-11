@@ -8,8 +8,10 @@
 require 'qtutils'
 
 module AnimationBase
+  attr_reader :name
+  
   def to_s
-    "#<#{self.class.name}:#{@name}>"
+    "#<#{self.class.name}:#{name}>"
   end
 end
 

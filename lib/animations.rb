@@ -14,7 +14,14 @@ module Animations
   def group(*animations)
     unless animations.empty?
       anim = animations.dup.compact
-      Animation.new("group (#{anim.map{|a| a.to_s}.join(',')})") do |i|
+      return nil if anim.empty?
+      name = case anim.size
+      when 1
+        anim.first.name
+      else
+        "group (#{anim.map{|a| a.to_s}.join(',')})"
+      end
+      Animation.new(name) do |i|
         anim.reject! do |a| 
           a[i]
         end
@@ -26,7 +33,13 @@ module Animations
   def sequence(*animations)
     anim = animations.dup.compact
     return nil if anim.empty?
-    Animation.new("sequence (#{anim.size})") do |i|
+    name = case anim.size
+    when 1
+      anim.first.name
+    else
+      "sequence (#{anim.map{|a| a.to_s}.join(',')})"
+    end
+    Animation.new(name) do |i|
       if anim.first[i]
         anim.shift
       end
@@ -36,6 +49,7 @@ module Animations
   
   def movement(item, src, dst, path_factory)
     if item
+      name = "move to #{dst}"
       src = if src
         board.to_real(src)
       else
@@ -45,7 +59,7 @@ module Animations
       dst = board.to_real(dst)
       path = path_factory.new(src, dst)
       
-      SimpleAnimation.new "move to #{dst}", LENGTH,
+      SimpleAnimation.new name, LENGTH,
         lambda { board.raise(item) },
         lambda {|i| item.pos = src + path[i] },
         lambda { item.pos = dst; board.lower(item) }
