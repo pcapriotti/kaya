@@ -46,7 +46,7 @@ class TestAnimations < Test::Unit::TestCase
   
   def test_disappear
     item = GeneralMock.new
-    @field.run @c.disappear(item)
+    @field.run @c.disappear(item, "disappear")
     @field.run_test
     
     assert_equal [:opacity=, [1.0]], item.calls.shift
@@ -66,7 +66,7 @@ class TestAnimations < Test::Unit::TestCase
   
   def test_appear
     item = GeneralMock.new
-    @field.run @c.appear(item)
+    @field.run @c.appear(item, "appear")
     @field.run_test
     
     assert_equal [:opacity=, [0.0]], item.calls.shift

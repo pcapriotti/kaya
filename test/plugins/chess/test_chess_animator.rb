@@ -51,8 +51,8 @@ class TestChessAnimator < Test::Unit::TestCase
       assert_equal 2, args.size
       
       appear, disappear = args.sort
-      assert_animation :instant_appear, appear
-      assert_animation :instant_disappear, disappear
+      assert_animation :appear, appear
+      assert_animation :disappear, disappear
     end
   end
   

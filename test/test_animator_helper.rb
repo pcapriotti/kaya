@@ -41,12 +41,12 @@ class TestAnimatorHelper < Test::Unit::TestCase
   def test_instant_disappear
     @items[Point.new(3, 3)] = "white knight"
     anim = @animator.disappear_on!(Point.new(3, 3), :instant => true)
-    assert_animation(:instant_disappear, anim)
+    assert_animation(:disappear, anim)
   end
   
   def test_instant_appear
     anim = @animator.appear_on!(Point.new(3, 3), "black king", :instant => true)
-    assert_animation(:instant_appear, anim)
+    assert_animation(:appear, anim)
   end
   
   def test_move
