@@ -5,12 +5,16 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+require 'board/element_manager'
+require 'board/theme_loader'
+
 class Table < Qt::GraphicsView
   include Observable
+  include ThemeLoader
+  include ElementManager
   
-  attr_reader :elements
-
-  Theme = Struct.new(:pieces, :board, :layout)
+  attr_reader :elements, :scene, :theme, :game
+  private :game, :scene, :theme
 
   def initialize(scene, loader, parent)
     super(@scene = scene, parent)
@@ -18,7 +22,7 @@ class Table < Qt::GraphicsView
   end
   
   def reset(match)
-    game = match.game
+    @game = match.game
     # destroy old elements
     if @elements
       @scene.remove_element(@elements[:board])
@@ -30,34 +34,8 @@ class Table < Qt::GraphicsView
       end
     end
     
-    # load theme
-    @theme = Theme.new
-    @theme.pieces = @loader.
-      get_matching(:pieces, game.keywords || []).
-      new(:game => game, :shadow => true)
-    @theme.board = @loader.
-      get_matching(:board, game.keywords || []).
-      new(:game => game)
-    @theme.layout = @loader.
-      get_matching(:layout, game.keywords || []).
-      new(game)
-
-    # recreate elements
-    @elements = { }
-    @elements[:board] = Board.new(@scene, @theme, game)
-    @elements[:pools] = if game.respond_to? :pool
-      game.players.inject({}) do |res, player|
-        res[player] = Pool.new(@scene, @theme, game)
-        res
-      end
-    else
-      {}
-    end
-    clock_class = @loader.get_matching(:clock)
-    @elements[:clocks] = game.players.inject({}) do |res, player|
-      res[player] = clock_class.new(scene)
-      res
-    end
+    @theme = load_theme
+    @elements = create_elements
     
     relayout
     fire :reset => match

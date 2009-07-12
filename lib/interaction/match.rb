@@ -16,8 +16,9 @@ end
 class Match
   include Observable
   
+  GameNotStarted = Class.new(Exception)
+  
   attr_reader :game
-  attr_reader :history
   attr_reader :kind
   attr_reader :index
   attr_accessor :url
@@ -156,6 +157,10 @@ class Match
         p.name = name
       end
     end
+  end
+  
+  def history
+    @history or raise(GameNotStarted)
   end
   
   def history=(history)

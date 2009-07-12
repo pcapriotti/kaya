@@ -26,14 +26,13 @@ class Controller
   attr_accessor :name
   attr_accessor :premove
   
-  def initialize(table)
+  def initialize(table, field)
     @table = table
     @scene = @table.scene
 
     @pools = { }
     @clocks = { }
-    
-    @field = AnimationField.new(20)
+    @field = field
   end
   
   def each_element

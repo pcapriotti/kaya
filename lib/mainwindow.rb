@@ -12,6 +12,7 @@ require 'board/table'
 require 'board/scene'
 require 'interaction/history'
 require 'controller'
+require 'dummy_player'
 
 require 'interaction/match'
 
@@ -97,7 +98,8 @@ private
   def startup
     scene = Scene.new
     @table = Table.new scene, @loader, self
-    @controller = Controller.new(@table)
+    field = AnimationField.new(20)
+    @controller = Controller.new(@table, field)
     @table.observe(:reset) do |match|
       update_game_actions(match)
     end
@@ -288,17 +290,5 @@ private
       []
     end
     plug_action_list('game_actions', actions)
-  end
-end
-
-class DummyPlayer
-  include Observer
-  include Player
-  
-  attr_reader :color
-  attr_accessor :name
-  
-  def initialize(color)
-    @color = color
   end
 end
