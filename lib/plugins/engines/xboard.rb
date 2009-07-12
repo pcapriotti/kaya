@@ -7,37 +7,24 @@
 
 require 'plugins/plugin'
 require 'interaction/match'
+require_bundle 'engines', 'engine'
 
-class XBoardEngine
+class XBoardEngine < Engine
   include Plugin
-  include Observer
-  include Player
   
   plugin :name => 'XBoard Engine Protocol',
          :protocol => 'XBoard',
-         :interface => :engine
+         :interface => :engine,
+         :bundle => 'engines'
   
   FEATURES = %w(ping setboard playother san usermove time draw sigint sigterm
                 reuse analyze myname variants colors ics name pause done)
-
-  attr_reader :name, :color
-         
-  def initialize(path, name, color, match, opts = {})
-    @name = name
-    @color = color
-    @match = match
-    @path = path
-    @opts = opts
-    @playing = false
-    @serializer = @match.game.serializer.new(:compact)
-    @features = { }
-    
-    @engine = KDE::Process.new
-    @engine.on(:readyReadStandardOutput) { process_input }
-    @engine.on(:started) { on_started }
-    @engine.on('finished(int, QProcess::ExitStatus)') { on_quit }
-    
-    @command_queue = []
+  
+  def setup
+    super
+    send_command "xboard"
+    send_command "protover 2"
+    send_command "nopost"
   end
   
   def on_move(data)
@@ -48,65 +35,17 @@ class XBoardEngine
       @playing = true
     end
   end
+
   
-  def start
-    @engine.working_directory = @opts[:workdir] if @opts[:workdir]
-    @engine.output_channel_mode = KDE::Process::OnlyStdoutChannel
-    @engine.set_program(@path, @opts[:args] || [])
-    @engine.start
-    
-    @match.register(self)
-    setup
-  end
-  
-  def setup
-    @match.observe(:started) do
-      send_command "new"
-      send_command "force"
-      if @color == :white
-        send_command "go"
-        @playing = true
-      end
-    end
-    send_command "xboard"
-    send_command "protover 2"
-    send_command "nopost"
-  end
-  
-  def send_command(text)
-    if @engine.state == Qt::Process::Running
-      begin
-        os = Qt::TextStream.new(@engine)
-        os << text << "\n"
-        puts "> #{text}" if @opts[:debug]
-      ensure
-        os.flush
-      end
-    else
-      @command_queue << text
+  def on_engine_start
+    send_command "new"
+    send_command "force"
+    if @color == :white
+      send_command "go"
+      @playing = true
     end
   end
-  
-  def process_input
-    while @engine.can_read_line
-      line = @engine.read_line.to_s
-      line.gsub!(/\r?\n?$/, '')
-      puts "< #{line}" if @opts[:debug]
-      process_command(line)
-    end
-  end
-  
-  def process_command(text)
-    args = text.split(/\s+/)
-    cmd = args[0]
-    m = "on_command_#{cmd}"
-    if respond_to?(m)
-      send(m, *args[1..-1])
-    else
-      extra_command(text)
-    end
-  end
-  
+
   def on_command_feature(*args)
     args.each do |arg|
       if arg =~ /^(\S+)=(\S+)$/
@@ -135,23 +74,7 @@ class XBoardEngine
     end
   end
   
-  def on_started
-    @command_queue.each do |cmd|
-      send_command cmd
-    end
-    @command_queue = []
-    
-    @match.start(self)
-  end
-  
-  def on_quit
-  end
-  
   def on_close(data)
     send_command "quit"
-  end
-  
-  def allow_undo?(player)
-    false
   end
 end
