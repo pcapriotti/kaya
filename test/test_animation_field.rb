@@ -8,6 +8,8 @@
 require 'test/unit'
 require 'animation_field'
 require 'qtutils'
+require 'rubygems'
+require 'mocha'
 
 class TestAnimationField < Test::Unit::TestCase
   def setup
