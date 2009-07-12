@@ -15,6 +15,7 @@ require 'executor'
 
 class Controller
   include Observer
+  include Observable
   include Player
   include Executor
   
@@ -91,6 +92,7 @@ class Controller
     if match.history.move
       @board.highlight(match.history.move)
     end
+    fire_active_actions(@current)
   end
   
   def back
@@ -112,6 +114,7 @@ class Controller
   def refresh(opts = { })
     return unless match
     index = match.history.current
+    fire_active_actions(index)
     return if index == @current
     if opts[:instant]
       anim = @animator.warp(match.history.state, opts)
@@ -127,6 +130,15 @@ class Controller
     end
     @current = index
     @board.highlight(match.history[@current].move)
+  end
+  
+  def fire_active_actions(index)
+    fire :active_actions => {
+      :forward => index < match.history.size - 1,
+      :back => index > 0,
+      :undo => match.history.operations.current >= 0,
+      :redo => match.history.operations.current < match.history.operations.size - 1,
+    }
   end
   
   def go_to(index)

@@ -52,17 +52,18 @@ class MainWindow < KDE::XmlGuiWindow
 private
 
   def setup_actions
+    @actions = { }
     std_action(:open_new) { create_game }
     std_action(:open) { load_game }
     std_action :quit, :slot => :close
     std_action(:save) { save_game }
     std_action(:saveAs) { save_game_as }
     
-    regular_action :back, :icon => 'go-previous', 
+    @actions[:back] = regular_action :back, :icon => 'go-previous', 
                           :text => KDE.i18n("B&ack") do
       @controller.back
     end
-    regular_action :forward, :icon => 'go-next', 
+    @actions[:forward] = regular_action :forward, :icon => 'go-next', 
                              :text => KDE.i18n("&Forward") do
       @controller.forward
     end
@@ -79,11 +80,11 @@ private
       dialog.show
     end
     
-    std_action(:undo) do
+    @actions[:undo] = std_action(:undo) do
       @controller.match.history.undo! if @controller.match
     end
 
-    std_action(:redo) do
+    @actions[:redo] = std_action(:redo) do
       @controller.match.history.redo! if @controller.match
     end
   end
@@ -100,6 +101,12 @@ private
     @table = Table.new scene, @loader, self
     field = AnimationField.new(20)
     @controller = Controller.new(@table, field)
+    @controller.observe(:active_actions) do |actions|
+      actions.each do |id, enabled|
+        a = @actions[id]
+        a.enabled = enabled if a
+      end
+    end
     @table.observe(:reset) do |match|
       update_game_actions(match)
     end
