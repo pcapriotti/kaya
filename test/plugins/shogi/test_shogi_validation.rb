@@ -226,6 +226,19 @@ class TestShogiValidation < Test::Unit::TestCase
                                     :promote => true)
   end
   
+  def test_last_row_lance_drop
+    piece = @game.piece.new(:black, :lance)
+    @state.pool(:black).add(piece)
+    
+    @state.board[Point.new(0, 0)] = nil
+    @state.board[Point.new(0, 1)] = nil
+    @state.board[Point.new(0, 2)] = nil
+    
+    assert_not_valid @game.move.drop(piece, Point.new(0, 0))
+    assert_valid @game.move.drop(piece, Point.new(0, 1))
+    assert_valid @game.move.drop(piece, Point.new(0, 2))
+  end
+  
   def test_last_row_pawn_drop
     piece1 = @state.piece_factory.new(:black, :pawn)
     piece2 = @state.piece_factory.new(:black, :horse)

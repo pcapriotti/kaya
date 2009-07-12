@@ -43,6 +43,10 @@ module Shogi
           return false if 
             move.dst.y == @state.row(@state.board.size.y - 1, piece.color) ||
             move.dst.y == @state.row(@state.board.size.y - 2, piece.color)
+        elsif piece.type == :lance
+          # lances cannot be dropped on the last rank
+          return false if 
+            move.dst.y == @state.row(@state.board.size.y - 1, piece.color)
         end
       else
         piece = @state.board[move.src]
