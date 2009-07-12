@@ -66,4 +66,16 @@ class TestOperationHistory < Test::Unit::TestCase
     
     assert_equal 9, @operations.current
   end
+  
+  def test_redo_after_move
+    @operations << "move"
+    assert_equal 1, @operations.size
+    assert_equal 0, @operations.current
+    @operations.undo_operation
+    assert_equal 1, @operations.size
+    assert_equal -1, @operations.current
+    @operations << "move"
+    assert_equal 1, @operations.size
+    assert_equal 0, @operations.current
+  end
 end

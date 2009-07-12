@@ -14,7 +14,11 @@ class OperationHistory
   end
   
   def <<(op)
-    @operations = @operations[0..@current]
+    @operations = if @current >= 0
+      @operations[0..@current]
+    else
+      []
+    end
     @operations << op
     @current += 1
   end
