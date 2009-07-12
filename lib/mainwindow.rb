@@ -81,11 +81,11 @@ private
     end
     
     @actions[:undo] = std_action(:undo) do
-      @controller.match.history.undo! if @controller.match
+      @controller.undo!
     end
 
     @actions[:redo] = std_action(:redo) do
-      @controller.match.history.redo! if @controller.match
+      @controller.redo!
     end
   end
   

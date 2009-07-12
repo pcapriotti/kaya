@@ -15,4 +15,8 @@ class DummyPlayer
   def initialize(color)
     @color = color
   end
+  
+  def allow_undo?(player)
+    true
+  end
 end

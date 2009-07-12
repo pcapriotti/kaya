@@ -150,4 +150,8 @@ class XBoardEngine
   def on_close(data)
     send_command "quit"
   end
+  
+  def allow_undo?(player)
+    false
+  end
 end

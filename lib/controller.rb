@@ -109,6 +109,17 @@ class Controller
     puts "error: last move"
   end
   
+  def undo!
+    return unless match
+    match.undo!(self)
+  end
+  
+  def redo!
+    return unless match
+    return unless match.editable?
+    match.redo!(self)
+  end
+  
   # sync displayed state with current history item
   # 
   def refresh(opts = { })
@@ -137,7 +148,7 @@ class Controller
       :forward => index < match.history.size - 1,
       :back => index > 0,
       :undo => match.history.operations.current >= 0,
-      :redo => match.history.operations.current < match.history.operations.size - 1,
+      :redo => match.editable? && match.history.operations.current < match.history.operations.size - 1,
     }
   end
   
@@ -319,5 +330,9 @@ class Controller
       anim = pool.animator.warp(match.history.state.pool(col))
       @field.run anim
     end
+  end
+  
+  def allow_undo?
+    match && match.editable?
   end
 end

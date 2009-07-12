@@ -129,4 +129,8 @@ class GNUShogiEngine
     send_command "quit"
     @engine.kill
   end
+  
+  def allow_undo?(player)
+    false
+  end
 end

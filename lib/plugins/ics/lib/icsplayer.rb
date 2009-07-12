@@ -29,6 +29,13 @@ class ICSPlayer
     text = @serializer.serialize(data[:move], data[:old_state])
     @out[text]
   end
+  
+  def allow_undo?(player)
+    # request undo
+    @out['takeback']
+    # disallow for now
+    false
+  end
 end
 
 end

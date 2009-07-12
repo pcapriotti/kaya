@@ -99,12 +99,19 @@ class Match
     true
   end
   
-  def undo(player, action)
-    allowed = @players.all? do |p|
-      p.allow_undo?(player, action)
+  def undo!(player)
+    # request permission from other players
+    allowed = @players.keys.all? do |p|
+      p == player or
+      p.allow_undo?(player)
     end
-    action.undo if allowed
+    history.undo! if allowed
     allowed
+  end
+  
+  def redo!(player)
+    history.redo!
+    true
   end
   
   def update_time(time)
