@@ -25,7 +25,7 @@ class XBoardLayout
   def layout(rect, elements)
     has_pools = ! elements[:pools].empty?
     xrel = @size.x + MARGIN * 2 + (has_pools ? POOL_WIDTH + MARGIN : 0)
-    clock_width_rel = @size.x / @game.players.size
+    clock_width_rel = @size.x. / @game.players.size.to_f
     clock_height_rel = clock_width_rel * CLOCK_HEIGHT_RATIO
     yrel = @size.y + MARGIN * 2 + clock_height_rel
     unit = [rect.width / xrel, rect.height / yrel].min.floor
@@ -35,10 +35,6 @@ class XBoardLayout
     clock_height = (clock_height_rel * unit).to_i
     pool_width = POOL_WIDTH * unit
     
-    puts "clock_height = #{clock_height}"
-    puts "clock_width = #{clock_width}"
-    puts "board width = #{@size.x * unit}"
-
     base = Qt::Point.new((rect.width - xrel * unit) / 2,
                           (rect.height - yrel * unit) / 2)
     
