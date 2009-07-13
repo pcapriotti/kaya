@@ -5,8 +5,5 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-def require_relative(file)
-  require File.join(File.dirname(__FILE__), file)
-end
-
-require_relative 'cool/cool'
+require_bundle 'layouts', 'cool'
+require_bundle 'layouts', 'xboard'

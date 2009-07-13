@@ -24,6 +24,11 @@ class Object
   def metaclass_eval(&blk)
     metaclass.instance_eval(&blk)
   end
+  
+  def alter(property)
+    value = yield(send(property))
+    send("#{property}=", value)
+  end
 end
 
 module Enumerable

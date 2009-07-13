@@ -12,7 +12,7 @@ class DefaultBackground
   include Plugin
   include Background
   
-  plugin :name => 'Default',
+  plugin :name => 'Default Background',
          :interface => :board,
          :keywords => %w(chess)
   
@@ -25,7 +25,7 @@ class DefaultBackground
       (0...@squares.x).each do |x|
         (0...@squares.y).each do |y|
           rect = Qt::RectF.new(size.x * x, size.y * y, size.x, size.y)
-          color = if (x + y) % 2 == 0
+          color = if (x + y) % 2 == 1
             Qt::Color.new(0x6b, 0x82, 0x9c)
           else
             Qt::Color.new(0xb8, 0xc0, 0xc0)
