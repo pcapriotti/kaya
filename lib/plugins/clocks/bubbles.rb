@@ -7,22 +7,22 @@
 
 require 'qtutils'
 require 'plugins/plugin'
-require 'constrained_text_item'
 require 'board/item_bag'
 require 'observer_utils'
+require_bundle 'clocks', 'clock_display'
 
-class DigitalClock < Qt::GraphicsItemGroup
+class BubblesClock < Qt::GraphicsItemGroup
   include Plugin
   include ItemBag
   include ItemUtils
   include Observer
+  include ClockDisplay
   
-  plugin :name => 'Digital Clock',
-         :interface => :clock
+  plugin :name => 'Bubbles Clock Skin',
+         :interface => :clock2
 
   attr_reader :items, :rect, :clock
   
-  OFF_TEXT = '-'
   BASE_DIR = File.dirname(__FILE__)
   ACTIVE_SKIN_RENDERER = Qt::SvgRenderer.new(
       File.join(BASE_DIR, 'active_clock.svg'))
@@ -31,20 +31,8 @@ class DigitalClock < Qt::GraphicsItemGroup
           
   def initialize(scene)
     super(nil, @scene = scene)
-    
-    @items = {
-      :time => ConstrainedTextItem.new(OFF_TEXT, self),
-      :player => ConstrainedTextItem.new('', self),
-      :caption => ConstrainedTextItem.new('', self)
-    }
-    
+    @items = create_display_items
     @active = false
-  end
-  
-  def set_geometry(rect)
-    @rect = Qt::RectF.new(rect)
-    self.pos = @rect.top_left
-    redraw
   end
   
   def redraw
@@ -61,24 +49,7 @@ class DigitalClock < Qt::GraphicsItemGroup
         @rect.width * 0.69, @rect.height * 0.28)
     end
   end
-  
-  def clock=(clock)
-    if @clock
-      @clock.delete_observer(self)
-    end
-    
-    @clock = clock
-    clock.add_observer(self)
-    on_timer(clock.timer)
-  end
-  
-  def on_timer(data)
-    min = data[:main] / 60
-    sec = data[:main] % 60
-    
-    @items[:time].text = "%02d:%02d" % [min, sec]
-  end
-  
+
   def skin
     renderer = if @active
       ACTIVE_SKIN_RENDERER
@@ -86,32 +57,5 @@ class DigitalClock < Qt::GraphicsItemGroup
       INACTIVE_SKIN_RENDERER
     end
     Qt::Image.from_renderer(@rect.size, renderer).to_pix
-  end
-  
-  def start
-    @clock.start if @clock
-    self.active = true
-  end
-  
-  def stop
-    @clock.stop if @clock
-    self.active = false
-  end
-  
-  def active=(value)
-    @active = value
-    redraw
-  end
-  
-  def active?
-    @active
-  end
-  
-  def data=(d)
-    @caption = d[:color].to_s.capitalize
-    @player = d[:player] || '(unknown)'
-    
-    items[:caption].text = @caption
-    items[:player].text = @player
   end
 end

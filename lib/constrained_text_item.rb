@@ -48,6 +48,11 @@ class ConstrainedTextItem < Qt::GraphicsItem
     update @constraint
   end
   
+  def color=(value)
+    @color = value
+    update @constraint
+  end
+  
   def update_metrics
     if @text.empty?
       @brect = @constraint

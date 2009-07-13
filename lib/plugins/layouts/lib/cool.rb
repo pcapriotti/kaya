@@ -10,7 +10,7 @@ require 'plugins/plugin'
 class CoolLayout
   include Plugin
   
-  plugin :name => 'Layouts/Cool',
+  plugin :name => 'Cool Layout',
          :interface => :layout
         
   # values relative to unit = 1
