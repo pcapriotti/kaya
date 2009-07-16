@@ -141,6 +141,7 @@ class Controller
     end
     @current = index
     @board.highlight(match.history[@current].move)
+    @premover.execute
   end
   
   def fire_active_actions(index)
