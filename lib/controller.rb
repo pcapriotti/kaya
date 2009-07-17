@@ -96,17 +96,11 @@ class Controller
   end
   
   def back
-    return unless match
-    match.history.back
-  rescue History::OutOfBound
-    puts "error: first move"
+    navigate :back
   end
   
   def forward
-    return unless match
-    match.history.forward
-  rescue History::OutOfBound
-    puts "error: last move"
+    navigate :forward
   end
   
   def undo!
@@ -287,6 +281,13 @@ class Controller
   end
     
   private
+  
+  def navigate(direction)
+    return unless match
+    match.history.send(direction)
+  rescue History::OutOfBound
+    puts "error: first move"
+  end
   
   def movable?(state, p)
     result = policy.movable?(state, p)
