@@ -42,7 +42,13 @@ class Engine
   def start
     @engine.working_directory = @opts[:workdir] if @opts[:workdir]
     @engine.output_channel_mode = KDE::Process::OnlyStdoutChannel
-    @engine.set_program(@path, @opts[:args] || [])
+      
+    args = if @opts[:args]
+      KDE::Shell.split_args(@opts[:args])
+    end
+    args ||= []
+    
+    @engine.set_program(@path, args)
     @engine.start
     
     @match.register(self)

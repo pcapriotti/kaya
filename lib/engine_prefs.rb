@@ -61,6 +61,14 @@ class EngineData < KDE::Dialog
     layout.add_layout(tmp)
     
     tmp = Qt::HBoxLayout.new
+    label = Qt::Label.new(KDE.i18n("&Arguments: "), page)
+    tmp.add_widget(label)
+    args = Qt::LineEdit.new(page)
+    label.buddy = args
+    tmp.add_widget(args)
+    layout.add_layout(tmp)
+    
+    tmp = Qt::HBoxLayout.new
     label = Qt::Label.new(KDE.i18n("&Work directory:"), page)
     tmp.add_widget(label)
     workdir = KDE::UrlRequester.new(page)
@@ -71,6 +79,7 @@ class EngineData < KDE::Dialog
     if engine
       name.text = engine.name
       path.url = KDE::Url.new(engine.path) if engine.path
+      args.text = engine.arguments if engine.arguments
       workdir.url = KDE::Url.new(engine.workdir) if engine.workdir
       current = (0...games.count).
         map{|i| games.item_data(i).toString }.
@@ -91,6 +100,7 @@ class EngineData < KDE::Dialog
         fire :ok => {
           :name => name.text,
           :protocol => type.current_text,
+          :arguments => args.text,
           :game => game,
           :path => path.url.path,
           :workdir => workdir.url.path }

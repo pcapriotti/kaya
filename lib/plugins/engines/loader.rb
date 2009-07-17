@@ -19,6 +19,7 @@ class EngineLoader
     attr_reader :protocol
     attr_reader :workdir
     attr_reader :path
+    attr_reader :arguments
   
     def initialize(data)
       loader = PluginLoader.new
@@ -27,13 +28,15 @@ class EngineLoader
       end
       fact = lambda do |color, match|
         plugin.new(@path, @name, color, match, 
-                   :workdir => @workdir)
+                   :workdir => @workdir,
+                   :args => @arguments)
       end
       super(&fact)
       
       @name = data[:name]
       @game = Game.get(data[:game])
       @protocol = data[:protocol]
+      @arguments = data[:arguments]
       @workdir = data[:workdir]
       @path = data[:path]
     end
@@ -43,6 +46,7 @@ class EngineLoader
           :game => group.read_entry('game').to_sym,
           :path => group.read_entry('path'),
           :protocol => group.read_entry('protocol'),
+          :arguments => group.read_entry('arguments'),
           :workdir => group.read_entry('workdir')
     end
     
@@ -50,6 +54,7 @@ class EngineLoader
       group.write_entry('game', @game.class.data(:id).to_s)
       group.write_entry('path', @path.to_s)
       group.write_entry('protocol', @protocol.to_s)
+      group.write_entry('arguments', @arguments.to_s)
       group.write_entry('workdir', @workdir.to_s)
     end
   end
