@@ -44,7 +44,6 @@ class TruncateOperation
   end
   
   def execute(opts = { })
-    @history.current = @index.pred
     items = @history.remove_items_at(@index)
     if opts.fetch(:undoable, true)
       @undo_op = MoveOperation.new(@history, *items)

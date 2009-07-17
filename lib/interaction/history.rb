@@ -122,6 +122,9 @@ class History
   end
   
   def remove_items_at(index)
+    @current = index.pred
+    fire :current_changed
+    
     items = @history[index..-1]
     @history = @history[0...index]
     @current = if @current >= index
