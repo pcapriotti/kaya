@@ -73,7 +73,7 @@ class XBoardLayout
         offx, base.y + margin,
         clock_width, clock_height)
       elements[:clocks][player].set_geometry(clock_rect)
-      offx = clock_rect.right
+      offx = clock_rect.right + 1
     end
   end
   
