@@ -16,6 +16,8 @@
    <Action name="forward" />
    <Action name="end" />
    <Separator />
+   <DefineGroup name="game_extensions" />
+   <Separator />
    <ActionList name="game_actions" />
   </Menu>
   <Menu name="viewMenu" >

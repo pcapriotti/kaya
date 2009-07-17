@@ -76,12 +76,32 @@ class XBoardEngine < Engine
   end
   
   def on_command_move(move)
+    if @undo_requested
+      # We receive a move now because the engine is dumb and not 
+      # able to process our undo request while thinking.
+      # We try to be smart here and ignore this move, while telling
+      # the engine to undo it.
+      # Since the following 'undo' command will be received _after_
+      # 'force', there is no risk of having the engine repeat it
+      # (undoing an engine move outside of force mode results in
+      # undefined behavior).
+      send_command 'undo'
+      return
+    end
+    
+    # ignore any sign of wrong synchronization
+    # no point in trying to recover, it can also mean that
+    # the engine is broken
     if @color == @match.state.turn
       move = @serializer.deserialize(move, @match.state)
       if move
         @engine_turn = @match.state.opposite_turn(@match.state.turn)
         @match.move(self, move)
+      else
+        warn "Illegal move #{move} received from engine #{name}"
       end
+    else
+      warn "Engine #{name} sent a move on the wrong turn"
     end
   end
   
@@ -99,6 +119,15 @@ class XBoardEngine < Engine
     send_command "quit"
   end
   
+  def move_now
+    # send a SIGINT whenever the platform allows
+    begin
+      Process.kill("INT", @engine.pid)
+    rescue
+    end
+    send_command '?' 
+  end
+  
   def allow_undo?(player, manager)
     manager.observe(:complete) do |moves|
       # Important note: this block may be called when the match state
@@ -109,21 +138,29 @@ class XBoardEngine < Engine
       case moves
       when 1
         send_command "undo"
+        @engine_turn = @match.state.opposite_turn(@engine_turn)
       when 2
         send_command "remove"
       end
       if (!@playing) and @color == @engine_turn
         send_command "go"
       end
+      @undo_requested = nil
     end
+    
+    # safe, because undo requests cannot be nested
+    @undo_requested = true
     
     if @features['ping']
       send_command 'force'
+      move_now
+      # If the engine is not playing, this has no effect.
+      # Otherwise, it will cause a temporary move to be performed, which
+      # will be immediately retracted.
       @playing = false
-      # wait for the 'force' command to be processed, 
+      # wait for the 'force' and '?' commands to be processed, 
       # to avoid race conditions
       sync do
-        
         moves = if @color == @match.state.turn
           # engine's turn, just undo the last move
           1
@@ -169,3 +206,4 @@ class XBoardEngine < Engine
     end
   end
 end
+
