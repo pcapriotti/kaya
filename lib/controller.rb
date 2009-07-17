@@ -280,6 +280,14 @@ class Controller
     end
   end
     
+  def allow_undo?
+    if match && match.editable?
+      manager.undo(1, :allow_more => true)
+    else
+      manager.undo(nil)
+    end
+  end
+    
   private
   
   def navigate(direction)
@@ -331,14 +339,6 @@ class Controller
     @pools.each do |col, pool|
       anim = pool.animator.warp(match.history.state.pool(col))
       @field.run anim
-    end
-  end
-  
-  def allow_undo?
-    if match && match.editable?
-      manager.undo(1, :allow_more => true)
-    else
-      manager.undo(nil)
     end
   end
 end
