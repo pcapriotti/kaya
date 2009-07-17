@@ -12,17 +12,22 @@ require 'mainwindow'
 require 'plugins/loader'
 require 'games/all'
 
+def version
+  "0.2"
+end
+
 def start_kaya
   default_game = :chess
 
   app = KDE::Application.init(
-    :version => '0.1',
+    :version => version,
     :id => 'kaya',
     :name => KDE.ki18n('Kaya'),
     :description => KDE.ki18n('KDE Board Game Suite'),
     :copyright => KDE.ki18n('(C) 2009 Paolo Capriotti'),
     :authors => [[KDE.ki18n('Paolo Capriotti'), 'p.capriotti@gmail.com']],
-    :contributors => [[KDE.ki18n("Jani Huhtanen"), KDE.ki18n('Gaussian blur code')]],
+    :contributors => [[KDE.ki18n("Jani Huhtanen"), KDE.ki18n('Gaussian blur code')],
+                      [KDE.ki18n("Yann Dirson"), KDE.ki18n('Minishogi')]],
     :bug_tracker => 'http://github.com/pcapriotti/kaya/issues',
     :options => [['+[game]', KDE.ki18n('Initial game')]])
     
