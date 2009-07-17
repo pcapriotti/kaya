@@ -5,10 +5,13 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+require 'enumerator'
+
 class PluginLoader
   BASE_DIR = File.expand_path(File.dirname(__FILE__))
   
   NoPluginFound = Class.new(Exception)
+  include Enumerable
   
   def initialize
     # load all ruby files in subdirectories
@@ -20,28 +23,27 @@ class PluginLoader
       end
     end
     
-    @plugins = {}
-    ObjectSpace::each_object(Class) do |k|
-      if k.include?(Plugin) and k.plugin_name
-        @plugins[k.plugin_name] = k
-      end
+    @plugins = ObjectSpace.
+               to_enum(:each_object, Class).
+               select do |k|
+      k.include?(Plugin) and k.plugin_name
     end
   end
   
   def each(&blk)
-    @plugins.each_value(&blk)
+    @plugins.each(&blk)
   end
   
   def get_matching(interface, keywords = [])
     plugins = get_all_matching(interface).
       sort_by {|x| x.score(keywords) }
       
-    raise NoPluginFound if plugins.empty?
+    raise NoPluginFound("No plugins matching interface #{interface}") if plugins.empty?
     plugins.last
   end
   
   def get_all_matching(interface)
-    @plugins.values.reject {|x| not x.implements?(interface) }
+    @plugins.reject {|x| not x.implements?(interface) }
   end
   
    # singleton

@@ -8,7 +8,7 @@
 require 'qtutils'
 require 'plugins/svg_theme'
 
-class CelticTheme < SvgTheme
+class CelticPieces < SvgTheme
   include Plugin
   plugin :name => 'Celtic Pieces',
          :interface => :pieces,

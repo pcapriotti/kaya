@@ -6,11 +6,9 @@
 # (at your option) any later version.
 
 require 'board/element_manager'
-require 'board/theme_loader'
 
 class Table < Qt::GraphicsView
   include Observable
-  include ThemeLoader
   include ElementManager
   
   attr_reader :elements, :scene, :theme, :game
@@ -34,7 +32,8 @@ class Table < Qt::GraphicsView
       end
     end
     
-    @theme = load_theme
+    theme_loader = @loader.get_matching(:theme_loader).new
+    @theme = theme_loader.load(@game)
     @elements = create_elements
     
     relayout

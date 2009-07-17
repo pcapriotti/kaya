@@ -16,7 +16,7 @@ class SvgTheme
     @loader = lambda do |piece, size|
       Qt::Image.from_renderer(size, renderer, piece_id(piece))
     end
-    if opts.has_key?(:shadow)
+    if opts.fetch(:shadow, true)
       @loader = with_shadow(@loader)
     end
   end

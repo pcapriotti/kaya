@@ -5,21 +5,14 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-require 'qtutils'
-require 'plugins/svg_theme'
-
-class FantasyPieces < SvgTheme
-  include Plugin
-  plugin :name => 'Fantasy Pieces',
-         :interface => :pieces,
-         :keywords => %w(chess),
-         :bundle => 'fantasy'
-
-  def initialize(opts = {})
-    super(opts)
-  end
-
-  def filename
-    rel('fantasy.svg')
+class Theme
+  attr_reader :pieces, :board,
+              :clock, :layout
+  
+  def initialize(opts = { })
+    @pieces = opts[:pieces]
+    @board = opts[:board]
+    @clock = opts[:clock]
+    @layout = opts[:layout]
   end
 end

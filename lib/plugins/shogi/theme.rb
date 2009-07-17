@@ -56,7 +56,7 @@ class ShogibanBackground
   end
 end
 
-class ShogiTheme
+class ShogiPieces
   include Plugin
   include Shadower
 

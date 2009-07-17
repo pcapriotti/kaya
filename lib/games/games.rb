@@ -45,7 +45,7 @@ class Game
       end
     end
   end
-
+  
   private
   
   def self.register_game(klasses, klass)

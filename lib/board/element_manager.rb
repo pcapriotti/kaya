@@ -20,9 +20,8 @@ module ElementManager
       else
         {}
       end
-      clock_class = loader.get_matching(:clock)
       elements[:clocks] = game.players.inject({}) do |res, player|
-        res[player] = clock_class.new(scene)
+        res[player] = theme.clock.new(scene)
         res
       end
     end
