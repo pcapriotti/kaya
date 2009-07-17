@@ -6,6 +6,7 @@
 # (at your option) any later version.
 
 require 'korundum4'
+require 'observer_utils'
 
 ParseException = Class.new(Exception)
 
@@ -13,16 +14,6 @@ class Object
   def tap
     yield self
     self
-  end
-  
-  def metaclass
-    class << self
-      self
-    end
-  end
-  
-  def metaclass_eval(&blk)
-    metaclass.instance_eval(&blk)
   end
   
   def alter(property)
