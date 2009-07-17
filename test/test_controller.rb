@@ -13,12 +13,10 @@ require "games/all"
 require 'dummy_player'
 require 'board/scene'
 require 'qtutils'
-require 'board/theme_loader'
 require 'board/element_manager'
 
 class TestController < Test::Unit::TestCase
   class FakeTable
-    include ThemeLoader
     include ElementManager
     attr_reader :scene, :elements, :game, :theme
     
@@ -29,7 +27,7 @@ class TestController < Test::Unit::TestCase
     end
     
     def reset(match)
-      @theme = load_theme
+      @theme = @loader.get_matching(:theme_loader).new.load(@game)
       @elements = create_elements
     end
     

@@ -38,7 +38,7 @@ class PluginLoader
     plugins = get_all_matching(interface).
       sort_by {|x| x.score(keywords) }
       
-    raise NoPluginFound("No plugins matching interface #{interface}") if plugins.empty?
+    raise NoPluginFound.new("No plugins matching interface #{interface}") if plugins.empty?
     plugins.last
   end
   
