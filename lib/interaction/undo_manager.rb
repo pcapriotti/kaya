@@ -9,21 +9,38 @@ require 'observer_utils'
 
 class UndoManager
   include Observable
-  DuplicatedUndoInformation = Class.new(Exception)
+  DuplicateUndoInformation = Class.new(Exception)
+  NoSuchPlayer = Class.new(Exception)
   
-  def initialize
+  def initialize(players)
     @players = { }
+    players.each do |player|
+      @players[player] = nil
+    end
   end
   
   def undo(player, moves, opts = { })
-    raise DuplicatedUndoInformation if @players[player]
-    @players[player] = {
-      :moves => moves,
-      :more => opts[:allow_more] }
+    unless @cancelled
+      raise NoSuchPlayer unless @players.has_key?(player)
+      unless @players[player].nil?
+        raise DuplicateUndoInformation.new(
+          "player #{player.inspect} already specified undo information")
+      end
+      @players[player] = {
+        :moves => moves,
+        :more => opts[:allow_more] }
+      if @players.all?{|p, info| info }
+        common = find_common
+        fire :complete => common
+        fire :execute => common
+      end
+    end
   end
   
-  def complete
-    fire :complete => find_common
+  def cancel
+    puts "cancelling undo"
+    @cancelled = true
+    fire :complete => nil
   end
   
   private
@@ -33,14 +50,16 @@ class UndoManager
     common_more = true
     
     @players.each do |player, data|
-      return nil unless data[:moves]
-      if common.nil? || data[:moves] > common
-        return nil unless common_more
-        common = data[:moves]
-        common_more = data[:more]
-      elsif data[:moves] < common
-        return nil unless data[:more]
-      end        
+      if data
+        return nil unless data[:moves]
+        if common.nil? || data[:moves] > common
+          return nil unless common_more
+          common = data[:moves]
+          common_more = data[:more]
+        elsif data[:moves] < common
+          return nil unless data[:more]
+        end
+      end
     end
     
     common

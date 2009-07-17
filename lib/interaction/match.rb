@@ -7,9 +7,14 @@
 
 require 'observer_utils'
 require 'interaction/history'
+require 'interaction/undo_manager'
 
 module Player
   def name
+  end
+
+  def inspect
+    "<#{name}:#{self.class.name}>"
   end
 end
 
@@ -20,7 +25,6 @@ class Match
   
   attr_reader :game
   attr_reader :kind
-  attr_reader :index
   attr_accessor :url
   
   def initialize(game, opts = {})
@@ -54,7 +58,6 @@ class Match
       state = @game.state.new
       state.setup
       @history = History.new(state)
-      @index = 0
       fire :started
     end
 
@@ -62,6 +65,7 @@ class Match
   end
   
   def move(player, move, opts = {})
+    cancel_undo
     return false if @closed
     return false unless @history
     
@@ -88,7 +92,6 @@ class Match
     old_state = @history.state
     state = old_state.dup
     state.perform! move
-    @index += 1
     @history.add_move(state, move, opts)
     
     broadcast player, :move => {
@@ -100,16 +103,26 @@ class Match
   end
   
   def undo!(player)
-    # request permission from other players
-    allowed = @players.keys.all? do |p|
-      p == player or
-      p.allow_undo?(player)
+    cancel_undo
+    @manager = UndoManager.new(@players.keys)
+    @manager.observe(:execute) do |moves|
+      if moves
+        moves.times do
+          history.undo!
+        end
+      end
+      @manager = nil
     end
-    history.undo! if allowed
-    allowed
+    @manager.undo(player, 1, :allow_more => true)
+    
+    # request permission from other players
+    @players.keys.each do |p|
+      p.allow_undo?(p, @manager) unless p == player
+    end
   end
   
   def redo!(player)
+    cancel_undo
     history.redo!
     true
   end
@@ -145,6 +158,7 @@ class Match
   # a closed game
   # 
   def close(result = nil, message = nil)
+    cancel_undo
     @info[:result] = result if result
     broadcast nil, :close => { 
       :result => result,
@@ -165,6 +179,10 @@ class Match
       end
     end
   end
+
+  def index
+    @history.size - 1
+  end
   
   def history
     @history or raise(GameNotStarted)
@@ -172,7 +190,6 @@ class Match
   
   def history=(history)
     @history = history
-    @index = history.size - 1
   end
     
   private
@@ -186,5 +203,10 @@ class Match
   
   def current_player
     @players.keys.find {|p| p.color == state.turn }
+  end
+  
+  def cancel_undo
+    @manager.cancel if @manager
+    @manager = nil
   end
 end

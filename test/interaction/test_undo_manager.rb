@@ -11,7 +11,7 @@ require "interaction/undo_manager"
 
 class TestUndoManager < Test::Unit::TestCase
   def setup
-    @manager = UndoManager.new
+    @manager = UndoManager.new([:a, :b, :c])
     @manager.metaclass_eval do
       public :find_common
     end

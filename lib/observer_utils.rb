@@ -36,6 +36,12 @@ module Observable
     # return observer so that we can remove it later
     obs
   end
+  
+  def observe_limited(event, &blk)
+    obs = LimitedObserver.new(self, event, &blk)
+    add_observer obs
+    obs
+  end
 
   def fire(e)
     changed
@@ -51,6 +57,19 @@ module Observable
   end
 end
 
+class Proc
+  def generic_call(args)
+    case arity
+    when 0
+      call
+    when 1
+      call(args)
+    else
+      call(*args)
+    end
+  end
+end
+
 class SimpleObserver
   def initialize(event, &blk)
     @event = event
@@ -59,15 +78,21 @@ class SimpleObserver
   
   def update(data)
     if data.has_key?(@event)
-      case @blk.arity
-      when 0
-        @blk[]
-      when 1
-        @blk[data[@event]]
-      else
-        @blk[*data[@event]]
-      end
+      @blk.generic_call(data[@event])
     end
+  end
+end
+
+class LimitedObserver < SimpleObserver
+  def initialize(observed, event, &blk)
+    super(event, &blk)
+    @observed = observed
+  end
+  
+  def update(data)
+    remove = super(data)
+    @observed.delete_observer(self) if remove
+    remove
   end
 end
 

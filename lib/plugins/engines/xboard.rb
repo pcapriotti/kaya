@@ -11,6 +11,7 @@ require_bundle 'engines', 'engine'
 
 class XBoardEngine < Engine
   include Plugin
+  include Observable
   
   plugin :name => 'XBoard Engine Protocol',
          :protocol => 'XBoard',
@@ -22,14 +23,17 @@ class XBoardEngine < Engine
   
   def setup
     super
+    @ping = 0
+    @opts[:debug] = true
+    @features = { }
     send_command "xboard"
-    send_command "protover 2"
-    send_command "nopost"
+    send_command "" # an empty line helps getting rid of the prompt
   end
   
   def on_move(data)
     text = @serializer.serialize(data[:move], data[:old_state])
     send_command text
+    @engine_turn = @match.state.turn
     unless @playing
       send_command "go"
       @playing = true
@@ -38,9 +42,12 @@ class XBoardEngine < Engine
 
   
   def on_engine_start
+    send_command "protover 2"
+    send_command "nopost"
     send_command "new"
     send_command "force"
-    if @color == :white
+    @engine_turn = @match.game.players.first
+    if @color == @engine_turn
       send_command "go"
       @playing = true
     end
@@ -50,9 +57,16 @@ class XBoardEngine < Engine
     args.each do |arg|
       if arg =~ /^(\S+)=(\S+)$/
         feature = $1
-        value = $2[1...-1]
+        value = $2.gsub(/(^")|"$/, '')
         if FEATURES.include?(feature)
-          @features[feature] = value == '1' ? true : value
+          @features[feature] = case value
+          when '1'
+            true
+          when '0'
+            false
+          else
+            value
+          end
           send_command "accepted #{feature}"
         else
           send_command "rejected #{feature}"
@@ -62,10 +76,17 @@ class XBoardEngine < Engine
   end
   
   def on_command_move(move)
-    move = @serializer.deserialize(move, @match.state)
-    if move
-      @match.move(self, move)
+    if @color == @match.state.turn
+      move = @serializer.deserialize(move, @match.state)
+      if move
+        @engine_turn = @match.state.opposite_turn(@match.state.turn)
+        @match.move(self, move)
+      end
     end
+  end
+  
+  def on_command_pong(number)
+    fire :pong => number
   end
   
   def extra_command(text)
@@ -76,5 +97,75 @@ class XBoardEngine < Engine
   
   def on_close(data)
     send_command "quit"
+  end
+  
+  def allow_undo?(player, manager)
+    manager.observe(:complete) do |moves|
+      # Important note: this block may be called when the match state
+      # and the engine internal state are not synchronized. For example,
+      # the engine can make a move while the undo process is happening,
+      # causing a cancellation before the match has a chance to update the
+      # history.
+      case moves
+      when 1
+        send_command "undo"
+      when 2
+        send_command "remove"
+      end
+      if (!@playing) and @color == @engine_turn
+        send_command "go"
+      end
+    end
+    
+    if @features['ping']
+      send_command 'force'
+      @playing = false
+      # wait for the 'force' command to be processed, 
+      # to avoid race conditions
+      sync do
+        
+        moves = if @color == @match.state.turn
+          # engine's turn, just undo the last move
+          1
+        else
+          # player's turn, go back two moves
+          2
+        end
+        manager.undo(self, moves)
+      end
+      true
+    else
+      # When no ping feature is present, sync cannot be used
+      # so there's no way to do an undo without possibly incurring
+      # in race conditions (e.g. a move can be sent by the engine
+      # in the exact moment when the undo command is received).
+      # So in this case, we only allow un undo when it's not the engine
+      # turn.
+      moves = if @color == @match.state.turn
+        warn "Cannot undo on engine's turn because this\n" + 
+             "engine does not support the ping command."
+        nil
+      else
+        2
+      end
+      manager.undo(self, moves)
+    end
+  end
+
+  # Execute block with the guarantee that all preceding commands
+  # have been received and processed by the engine.
+  # Requires the 'ping' feature.
+  # 
+  def sync
+    ping = @ping += 1
+    send_command "ping #{ping}"
+    
+    observe_limited(:pong) do |pong|
+      if pong.to_i == ping
+        @ping -= 1
+        yield
+        true # remove the observer
+      end
+    end
   end
 end

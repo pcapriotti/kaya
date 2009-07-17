@@ -16,7 +16,7 @@ class DummyPlayer
     @color = color
   end
   
-  def allow_undo?(player)
-    true
+  def allow_undo?(player, manager)
+    manager.undo(player, 1, :allow_more => true)
   end
 end

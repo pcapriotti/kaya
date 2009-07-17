@@ -101,7 +101,10 @@ class Engine
   def on_quit
   end
   
-  def allow_undo?(player)
-    false
+  def allow_undo?(player, manager)
+    manager.undo(player, nil)
+  end
+  
+  def extra_command(text)
   end
 end

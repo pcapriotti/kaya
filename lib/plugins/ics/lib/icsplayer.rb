@@ -30,11 +30,11 @@ class ICSPlayer
     @out[text]
   end
   
-  def allow_undo?(player)
+  def allow_undo?(player, manager)
     # request undo
     @out['takeback']
     # disallow for now
-    false
+    manager.undo(self, nil)
   end
 end
 

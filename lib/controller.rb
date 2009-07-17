@@ -148,8 +148,8 @@ class Controller
     fire :active_actions => {
       :forward => index < match.history.size - 1,
       :back => index > 0,
-      :undo => match.history.operations.current >= 0,
-      :redo => match.editable? && match.history.operations.current < match.history.operations.size - 1,
+      :undo => @color && match.history.operations.current >= 0,
+      :redo => @color && match.editable? && match.history.operations.current < match.history.operations.size - 1,
     }
   end
   
@@ -334,6 +334,10 @@ class Controller
   end
   
   def allow_undo?
-    match && match.editable?
+    if match && match.editable?
+      manager.undo(1, :allow_more => true)
+    else
+      manager.undo(nil)
+    end
   end
 end
