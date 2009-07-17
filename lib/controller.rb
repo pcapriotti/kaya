@@ -75,6 +75,7 @@ class Controller
     
     match.history.observe(:current_changed) { refresh }
     match.history.observe(:truncate) { refresh :instant => true }
+    match.history.observe(:force_update) { refresh :warp => true }
     match.history.observe(:new_move) do |data|
       refresh(data[:opts])
       @clocks.each do |player, clock|
@@ -115,13 +116,15 @@ class Controller
   end
   
   # sync displayed state with current history item
+  # opts[:force] => update even if index == @current
+  # opts[:instant] => update without animating
   # 
   def refresh(opts = { })
     return unless match
     index = match.history.current
     fire_active_actions(index)
-    return if index == @current
-    if opts[:instant]
+    return if index == @current && (!opts[:force])
+    if opts[:instant] || (index == @current && opts[:force])
       anim = @animator.warp(match.history.state, opts)
       perform_animation anim
     elsif index > @current

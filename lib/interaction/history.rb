@@ -77,6 +77,11 @@ class History
     @history[current].state
   end
   
+  def state=(value)
+    @history[current].state = value
+    fire :force_update
+  end
+  
   def move
     @history[current].move
   end

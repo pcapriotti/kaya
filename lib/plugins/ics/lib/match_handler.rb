@@ -46,7 +46,7 @@ class MatchHandler
     
     if match.started?
       match.update_time(style12.time)
-      if match.index < style12.move_index
+      if style12.move_index == match.index + 1
         # last_move = icsapi.parse_verbose(style12.last_move, match.state)
         move = match.game.serializer.new(:compact).deserialize(style12.last_move_san, match.state)
         if move
@@ -54,6 +54,9 @@ class MatchHandler
         else
           warn "Received invalid move from ICS: #{style12.last_move_san}"
         end
+      elsif style12.move_index < match.index
+        match.history.remove_items_at(style12.move_index + 1)
+        match.history.state = style12.state.dup
       end
     else
       rel = style12.relation
