@@ -28,7 +28,8 @@ class MatchHandler
   def on_creating_game(data)
     match = Match.new(data[:game], 
         :kind => :ics, 
-        :editable => false)
+        :editable => false,
+        :time_running => true)
     @matches[data[:number]] = [match, data]
   end
   

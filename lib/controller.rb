@@ -78,11 +78,13 @@ class Controller
     match.history.observe(:force_update) { refresh :warp => true }
     match.history.observe(:new_move) do |data|
       refresh(data[:opts])
-      @clocks.each do |player, clock|
-        if data[:state].turn == player
-          clock.start
-        else
-          clock.stop
+      if match.time_running?
+        @clocks.each do |player, clock|
+          if data[:state].turn == player
+            clock.start
+          else
+            clock.stop
+          end
         end
       end
     end

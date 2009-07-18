@@ -32,8 +32,7 @@ class Match
     @players = { } # player => ready
     @history = nil
     @kind = opts[:kind] || :local
-    @editable = opts.fetch(:editable, true)
-    @navigable = opts.fetch(:editable, false)
+    @opts = opts
     @closed = false
     @info = { }
   end
@@ -66,7 +65,7 @@ class Match
   end
 
   def navigate(player, direction)
-    if @navigable
+    if navigable?
       broadcast player, direction
     end
     begin
@@ -74,7 +73,7 @@ class Match
     rescue History::OutOfBound => e
       # if navigable, the history may be missing
       # items, they will be added later
-      raise e unless @navigable
+      raise e unless navigable?
     end    
   end
   
@@ -160,11 +159,15 @@ class Match
   end
   
   def editable?
-    @editable
+    @opts.fetch(:editable, true)
   end
   
   def navigable?
-    @navigable
+    @opts.fetch(:navigable, false)
+  end
+  
+  def time_running?
+    @opts.fetch(:time_running, false)
   end
     
   def player(color)
