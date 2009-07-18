@@ -30,6 +30,14 @@ class ICSPlayer
     @out[text]
   end
   
+  def on_back
+    @out['back']
+  end
+  
+  def on_forward
+    @out['forward']
+  end
+  
   def allow_undo?(player, manager)
     # request undo
     @out['takeback']

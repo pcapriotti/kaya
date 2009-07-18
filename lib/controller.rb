@@ -143,7 +143,7 @@ class Controller
   
   def fire_active_actions(index)
     fire :active_actions => {
-      :forward => index < match.history.size - 1,
+      :forward => match.navigable? || index < match.history.size - 1,
       :back => index > 0,
       :undo => @color && match.history.operations.current >= 0,
       :redo => @color && match.editable? && match.history.operations.current < match.history.operations.size - 1,
@@ -295,9 +295,9 @@ class Controller
   
   def navigate(direction)
     return unless match
-    match.history.send(direction)
+    match.navigate(self, direction)
   rescue History::OutOfBound
-    puts "error: first move"
+    puts "error: out of bound"
   end
   
   def movable?(state, p)

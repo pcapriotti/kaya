@@ -80,6 +80,17 @@ class Style12
   def self.from_match(match, games)
     game_number = match[GAME_NUMBER].to_i
     current_game = games[game_number]
+    if current_game.nil?
+      game = Game.dummy
+      current_game = {
+        :white => { :name => match[2] },
+        :black => { :name => match[3] },
+        :number => game_number,
+        :game => game,
+        :icsapi => ICSApi.new(game)
+      }
+      games[game_number] = current_game
+    end
     icsapi = current_game[:icsapi]
     state = 
       icsapi.new_state(:turn => match[TURN] == 'W' ? :white : :black,

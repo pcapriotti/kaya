@@ -7,6 +7,7 @@
 
 require 'observer_utils'
 require_bundle 'ics', 'style12'
+require_bundle 'ics', 'icsapi'
 
 module ICS
 
@@ -172,7 +173,7 @@ class Protocol
   end
   
   def game_from_type(type)
-    Game.get(GAME_TYPES[type] || :dummy)
+    Game.get(GAME_TYPES[type]) || Game.dummy
   end
 end
 

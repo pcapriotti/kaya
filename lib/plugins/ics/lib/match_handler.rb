@@ -42,7 +42,15 @@ class MatchHandler
   
   def on_style12(style12)
     match, match_info = @matches[style12.game_number]
-    return if match == nil
+    if match == nil
+      # if it is an examined game, start a new match
+      match = Match.new(Game.dummy, :kind => :ics, :editable => true, :navigable => true)
+      match_info = {
+        :white => { :name => style12.white_player },
+        :black => { :name => style12.black_player },
+      }
+      @matches[style12.game_number] = match
+    end
     
     if match.started?
       match.update_time(style12.time)
@@ -55,8 +63,13 @@ class MatchHandler
           warn "Received invalid move from ICS: #{style12.last_move_san}"
         end
       elsif style12.move_index < match.index
-        match.history.remove_items_at(style12.move_index + 1)
-        match.history.state = style12.state.dup
+        if match.navigable?
+          match.history.go_to(style12.move_index)
+          match.history.state = style12.state.dup
+        else
+          match.history.remove_items_at(style12.move_index + 1)
+          match.history.state = style12.state.dup
+        end
       end
     else
       rel = style12.relation
