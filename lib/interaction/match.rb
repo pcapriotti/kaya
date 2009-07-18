@@ -89,7 +89,6 @@ class Match
       player = current_player
     else
       return false unless @players.has_key?(player)
-      return false unless player.color == @history.state.turn
     end
 
     validate = @game.validator.new(@history.state)

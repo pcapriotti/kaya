@@ -133,6 +133,10 @@ class Protocol
     end
   end
 
+  on /^You are no longer examining game (\d+)\.$/ do |match|
+    fire :end_examination => match[1].to_i
+  end
+
   on /^\a$/ do
     fire :beep
   end

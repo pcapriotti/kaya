@@ -30,7 +30,7 @@ class MatchHandler
         :kind => :ics, 
         :editable => false,
         :time_running => true)
-    @matches[data[:number]] = [match, data]
+    @matches[data[:number]] = [match, data.merge(:type => :played)]
   end
   
   def on_end_game(data)
@@ -41,16 +41,23 @@ class MatchHandler
     end
   end
   
+  def on_end_examination(number)
+    on_end_game(:game_number => number,
+                :result => '',
+                :message => '')
+  end
+  
   def on_style12(style12)
     match, match_info = @matches[style12.game_number]
-    if match == nil
+    if match.nil? && style12.relation == Style12::Relation::EXAMINING
       # if it is an examined game, start a new match
       match = Match.new(Game.dummy, :kind => :ics, :editable => true, :navigable => true)
       match_info = {
         :white => { :name => style12.white_player },
         :black => { :name => style12.black_player },
+        :type => :examined
       }
-      @matches[style12.game_number] = match
+      @matches[style12.game_number] = [match, match_info]
     end
     
     if match.started?
@@ -59,7 +66,7 @@ class MatchHandler
         # last_move = icsapi.parse_verbose(style12.last_move, match.state)
         move = match.game.serializer.new(:compact).deserialize(style12.last_move_san, match.state)
         if move
-          match.move(nil, move, :state => style12.state)
+          match.move(match_info[:icsplayer], move, :state => style12.state)
         else
           warn "Received invalid move from ICS: #{style12.last_move_san}"
         end
@@ -87,6 +94,7 @@ class MatchHandler
         opponent_color,
         match.game.serializer.new(:compact),
         match_info[opponent_color][:name])
+      match_info[:icsplayer] = opponent
       @user.name = match_info[@user.color][:name]
       @user.premove = true
       
