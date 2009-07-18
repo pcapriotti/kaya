@@ -38,6 +38,15 @@ class ICSPlayer
     @out['forward']
   end
   
+  def on_go_to(data)
+    delta = data[:index] - data[:old_index]
+    if delta > 0
+      @out["forward #{delta}"]
+    elsif delta < 0
+      @out["back #{-delta}"]
+    end
+  end
+  
   def allow_undo?(player, manager)
     # request undo
     @out['takeback']

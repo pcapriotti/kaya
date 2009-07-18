@@ -64,17 +64,14 @@ class Match
     true
   end
 
-  def navigate(player, direction)
-    if navigable?
-      broadcast player, direction
-    end
-    begin
-      history.send(direction)
-    rescue History::OutOfBound => e
-      # if navigable, the history may be missing
-      # items, they will be added later
-      raise e unless navigable?
-    end    
+  def navigate(player, direction, *args)
+    navigate_internal(player, direction, args, args)
+  end
+  
+  def go_to(player, index)
+    navigate_internal(player, :go_to, [index], 
+          :index => index, 
+          :old_index => history.current)
   end
   
   def move(player, move, opts = {})
@@ -229,5 +226,18 @@ class Match
   def cancel_undo
     @manager.cancel if @manager
     @manager = nil
+  end
+  
+  def navigate_internal(player, method, history_args, event_args)
+    if navigable?
+      broadcast player, method => event_args
+    end
+    begin
+      history.send(method, *history_args)
+    rescue History::OutOfBound => e
+      # if navigable, the history may be missing
+      # items, they will be added later
+      raise e unless navigable?
+    end
   end
 end

@@ -103,7 +103,7 @@ class SimpleMoveList < Qt::ListView
       sig = 'selectionChanged(QItemSelection, QItemSelection)'
       selection_model.on(sig) do |selected, deselected|
         index = selected.indexes.first
-        match.history.go_to(index.row) if index
+        match.go_to(nil, index.row) if index
       end
       # select last item
       select(model.index(model.row_count - 1, 0))
