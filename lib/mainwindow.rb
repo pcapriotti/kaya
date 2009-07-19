@@ -113,13 +113,15 @@ private
     @engine_loader = @loader.get_matching(:engine_loader).new
     @engine_loader.reload
 
-    movelist = @loader.get_matching(:movelist).new(@controller)
+    @movelist = @loader.get_matching(:movelist).new(@controller)
     movelist_dock = Qt::DockWidget.new(self)
-    movelist_dock.widget = movelist
+    movelist_dock.widget = @movelist
     movelist_dock.window_title = KDE.i18n("History")
     movelist_dock.object_name = "movelist"
     add_dock_widget(Qt::LeftDockWidgetArea, movelist_dock, Qt::Vertical)
     movelist_dock.show
+    action_collection.add_action('toggle_history', 
+      movelist_dock.toggle_view_action)
 
     @console = Console.new(nil)
     console_dock = Qt::DockWidget.new(self)                                                      
@@ -130,6 +132,8 @@ private
     add_dock_widget(Qt::BottomDockWidgetArea, console_dock, Qt::Horizontal)                      
     console_dock.window_flags = console_dock.window_flags & ~Qt::WindowStaysOnTopHint            
     console_dock.show
+    action_collection.add_action('toggle_console', 
+      console_dock.toggle_view_action)
     
     self.central_widget = @table
   end

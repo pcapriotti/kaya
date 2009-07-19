@@ -23,8 +23,8 @@
   <Menu name="viewMenu" >
    <text>&amp;View</text>
    <Action name="flip" />
-   <Action name="toggleConsole" />
-   <Action name="toggleMoveList" />
+   <Action name="toggle_console" />
+   <Action name="toggle_history" />
   </Menu>
   <Menu name="settings">
     <Action name="preferences" />
