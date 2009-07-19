@@ -8,18 +8,33 @@
 require 'qtutils'
 require 'plugins/plugin'
 require 'factory'
+require_bundle 'engines', 'find_exe'
 
 class EngineLoader
   include Plugin
   include Enumerable
   
   class Entry < Factory
-    attr_reader :name
-    attr_reader :game
-    attr_reader :protocol
-    attr_reader :workdir
-    attr_reader :path
-    attr_reader :arguments
+    AUTOLOADABLE_ENTRIES = {
+      'gnuchess' => { :name => 'GNU Chess',
+                      :game => :chess,
+                      :protocol => 'XBoard',
+                      :workdir => '/tmp' },
+      'crafty' => { :name => 'Crafty',
+                    :game => :chess,
+                    :protocol => 'XBoard',
+                    :workdir => '/tmp' },
+      'gnushogi' => { :name => 'GNU Shogi',
+                      :game => :shogi,
+                      :protocol => 'GNUShogi',
+                      :workdir => '/tmp' } }
+    
+    attr_accessor :name
+    attr_accessor :game
+    attr_accessor :protocol
+    attr_accessor :workdir
+    attr_accessor :path
+    attr_accessor :arguments
   
     def initialize(data)
       loader = PluginLoader.new
@@ -65,6 +80,7 @@ class EngineLoader
   def reload
     @entries = { }
     config = KDE::Global.config.group("Engines")
+    autoload unless config.exists
     engine_groups = config.group_list
     engine_groups.each do |engine_group|
       entry = Entry.load(engine_group, config.group(engine_group))
@@ -72,11 +88,24 @@ class EngineLoader
     end
   end
   
+  def autoload
+    entries = { }
+    Entry::AUTOLOADABLE_ENTRIES.each do |keyword, data|
+      path = File.which(keyword)
+      if path
+        data = data.merge(:path => path)
+        entries[data[:name]] = Entry.new(data)
+      end
+    end
+    update_entries(entries) unless entries.empty?
+  end
+  
   def update_entries(entries)
     @entries = entries.dup
     
     config = KDE::Global.config.group("Engines")
     config.delete_group
+    puts @entries.inspect
     @entries.each do |name, engine|
       group = config.group(name)
       engine.save(group)
