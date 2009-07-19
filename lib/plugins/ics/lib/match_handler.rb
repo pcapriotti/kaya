@@ -98,6 +98,9 @@ class MatchHandler
       match.start(opponent)
       
       raise "couldn't start match" unless match.started?
+      unless match_info[:icsapi].same_state(match.state, style12.state)
+        match.history.state = style12.state
+      end
       
       @user.reset(match)
       
