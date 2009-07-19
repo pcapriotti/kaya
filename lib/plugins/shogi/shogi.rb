@@ -17,6 +17,7 @@ require_bundle 'shogi', 'piece'
 require_bundle 'shogi', 'psn'
 require_bundle 'shogi', 'policy'
 require 'games/game_actions'
+require 'lazy'
 
 module Shogi
 
@@ -53,9 +54,9 @@ class Game
               
     @serializer = Factory.new(Serializer) {|rep| 
       Serializer.new(rep, validator, move, piece, notation) }
-    @notation = Notation.new(piece, size)
+    @notation = promise { Notation.new(piece, size) }
     
-    @game_writer = PSN.new(serializer.new(:compact), state)
+    @game_writer = promise { PSN.new(serializer.new(:compact), state) }
     @game_extensions = %w(psn)
               
     action :autopromote, 

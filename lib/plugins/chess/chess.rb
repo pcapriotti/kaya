@@ -17,6 +17,7 @@ require_bundle 'chess', 'pgn'
 require_bundle 'chess', 'san'
 require 'plugins/plugin'
 require 'games/game_actions'
+require 'lazy'
 
 module Chess
 
@@ -47,12 +48,12 @@ class Game
     @policy = Factory.new { Policy.new(Move) }
     @players = [:white, :black]
     @types = [:pawn, :knight,:bishop, :rook, :queen, :king]
-    @notation = SAN.new(piece, size)
+    @notation = promise { SAN.new(piece, size) }
     @serializer = Factory.new(Serializer) {|rep| 
       Serializer.new(rep, validator, move, piece, notation) }
     @keywords = %w(chess)
 
-    @game_writer = PGN.new(serializer.new(:compact), state)
+    @game_writer = promise { PGN.new(serializer.new(:compact), state) }
     @game_extensions = %w(pgn)
     
     action :promote_to_queen,
