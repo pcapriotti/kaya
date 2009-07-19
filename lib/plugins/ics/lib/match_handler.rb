@@ -47,12 +47,19 @@ class MatchHandler
                 :message => '')
   end
   
+  def on_examination_revert(data)
+    match, match_info = @matches[data[:game_number]]
+    if match_info
+      match_info[:about_to_revert_to] = data[:index]
+    end
+  end
+  
   def on_style12(style12)
     match, match_info = @matches[style12.game_number]
     if match.nil? && style12.relation == Style12::Relation::EXAMINING
       # if it is an examined game, start a new match
       match = Match.new(Game.dummy, :kind => :ics, :editable => true, :navigable => true)
-      match_info = style12.match_info
+      match_info = style12.match_info.merge(:type => :examined)
       @matches[style12.game_number] = [match, match_info]
     end
     
@@ -75,7 +82,14 @@ class MatchHandler
         match_info)
       match_info[:icsplayer] = opponent
       @user.name = match_info[@user.color][:name]
-      @user.premove = true
+      
+      # in examined games, playing moves for the opponent is allowed
+      if match_info[:type] == :examined
+        @user.add_controlled_player(opponent)
+        @user.premove = false
+      else
+        @user.premove = true
+      end
       
       match.register(@user)
       match.register(opponent)

@@ -132,6 +132,12 @@ class Protocol
       end
     end
   end
+  
+  on /^Game (\d+): (\S+) reverts to main line move (\d+)\.$/ do |match|
+    fire :examination_revert => {
+      :game_number => match[1].to_i,
+      :index => match[3].to_i }
+  end
 
   on /^You are no longer examining game (\d+)\.$/ do |match|
     fire :end_examination => match[1].to_i

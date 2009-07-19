@@ -64,11 +64,18 @@ class ICSPlayer
   def on_style12(style12)
     @match.update_time(style12.time)
     delta = style12.move_index - @match.index
+    revert_to = @match_info[:about_to_revert_to]
+    @match_info.delete(:about_to_revert_to)
+    
+    if revert_to and revert_to != style12.move_index
+      warn "ICS inconsistency: style12 and revert message refer to" +
+       "different indexes (resp. #{style12.move_index} and #{revert_to}"
+    end
     
     # check expected navigations
     exp = @expected_navigations.shift
     if exp
-      if exp != style12.move_index
+      if exp != style12.move_index || revert_to
         # unexpected navigation, clear expected queue
         @expected_navigations = []
       else
@@ -96,7 +103,7 @@ class ICSPlayer
           @match.history[style12.move_index - 1].state)
       end
       state = style12.state.dup
-      if @match.navigable?
+      if @match.navigable? && (!revert_to)
         @match.history.go_to(style12.move_index)
         @match.history.set_item(state, move)
       else

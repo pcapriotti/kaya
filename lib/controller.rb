@@ -322,7 +322,7 @@ class Controller
   
   def perform!(move, opts = {})
     turn = match.history.state.turn
-    match.move(@controlled[turn], move, opts)
+    match.move(self, move, opts)
   end
   
   def cancel_drop(data)
