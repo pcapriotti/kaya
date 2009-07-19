@@ -241,7 +241,9 @@ class Match
       raise e unless navigable?
       awaiting_server = true
     end
-    broadcast player, 
-      method => event_args.merge(:awaiting_server => awaiting_server)
+    if navigable?
+      broadcast player, 
+        method => event_args.merge(:awaiting_server => awaiting_server)
+    end
   end
 end

@@ -72,8 +72,10 @@ class MatchHandler
       @user.color, opponent_color =
         if rel == Style12::Relation::MY_MOVE
           turns
-        else
+        elsif rel == Style12::Relation::NOT_MY_MOVE
           turns.reverse
+        else
+          [nil, turns[1]]
         end
       opponent = ICSPlayer.new(
         lambda {|msg| @protocol.connection.send_text(msg) },
@@ -81,20 +83,25 @@ class MatchHandler
         match,
         match_info)
       match_info[:icsplayer] = opponent
-      @user.name = match_info[@user.color][:name]
+      
+      player = @user
       
       # in examined games, playing moves for the opponent is allowed
-      if match_info[:type] == :examined
+      if @user.color.nil?
+        player = DummyPlayer.new(state.turn)
+        @user.add_controlled_player(player)
         @user.add_controlled_player(opponent)
         @user.premove = false
       else
         @user.premove = true
       end
       
-      match.register(@user)
+      player.name = match_info[player.color][:name]
+      
+      match.register(player)
       match.register(opponent)
       
-      match.start(@user)
+      match.start(player)
       match.start(opponent)
       
       raise "couldn't start match" unless match.started?

@@ -92,7 +92,13 @@ class ICSPlayer
     if delta == 1
       move = @serializer.deserialize(style12.last_move_san, @match.state)
       if move
-        @match.move(self, move, :state => style12.state)
+        @match.move(self, move)
+        unless @match_info[:icsapi].
+                 same_state(style12.state, 
+                            @match.state)
+          @match.history.state = style12.state.dup
+        end
+          
       else
         warn "Received invalid move from ICS: #{style12.last_move_san}"
       end
