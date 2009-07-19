@@ -83,8 +83,8 @@ class Style12
     if current_game.nil?
       game = Game.dummy
       current_game = {
-        :white => { :name => match[2] },
-        :black => { :name => match[3] },
+        :white => { :name => match[WHITE_PLAYER] },
+        :black => { :name => match[BLACK_PLAYER] },
         :number => game_number,
         :game => game,
         :icsapi => ICSApi.new(game)
@@ -116,7 +116,8 @@ class Style12
                   :last_move_san => match[LAST_MOVE],
                   :time => {
                     :white => match[WHITE_TIME].to_i,
-                    :black => match[BLACK_TIME].to_i }
+                    :black => match[BLACK_TIME].to_i },
+                  :match_info => current_game
                   )
   end
 

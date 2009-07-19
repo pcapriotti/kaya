@@ -64,8 +64,8 @@ class Match
     true
   end
 
-  def navigate(player, direction, *args)
-    navigate_internal(player, direction, args, args)
+  def navigate(player, direction)
+    navigate_internal(player, direction, [])
   end
   
   def go_to(player, index)
@@ -202,7 +202,11 @@ class Match
   end
 
   def index
-    @history.size - 1
+    if navigable?
+      @history.current
+    else
+      @history.size - 1
+    end
   end
   
   def history
@@ -227,16 +231,17 @@ class Match
     @manager = nil
   end
   
-  def navigate_internal(player, method, history_args, event_args)
-    if navigable?
-      broadcast player, method => event_args
-    end
+  def navigate_internal(player, method, history_args, event_args = {})
+    awaiting_server = false
     begin
       history.send(method, *history_args)
     rescue History::OutOfBound => e
       # if navigable, the history may be missing
       # items, they will be added later
       raise e unless navigable?
+      awaiting_server = true
     end
+    broadcast player, 
+      method => event_args.merge(:awaiting_server => awaiting_server)
   end
 end

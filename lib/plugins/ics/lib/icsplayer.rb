@@ -18,28 +18,35 @@ class ICSPlayer
   # create a new ICS player playing with
   # the given color and using the given
   # output channel to send moves
-  def initialize(out, color, serializer, name)
+  def initialize(out, color, match, match_info)
     @color = color
     @out = out
-    @serializer = serializer
-    @name = name
+    @match = match
+    @serializer = match.game.serializer.new(:simple)
+    @match_info = match_info
+    @name = match_info[color][:name]
+    @expected_navigations = []
   end
 
   def on_move(data)
-    text = @serializer.serialize(data[:move], data[:old_state])
+    text = @serializer.serialize(data[:move], 
+                                 data[:old_state])
     @out[text]
   end
   
-  def on_back
+  def on_back(opts)
     @out['back']
+    add_expected_navigation(opts)
   end
   
-  def on_forward
+  def on_forward(opts)
     @out['forward']
+    add_expected_navigation(opts)
   end
   
   def on_go_to(data)
     delta = data[:index] - data[:old_index]
+    add_expected_navigation(data) unless delta == 0
     if delta > 0
       @out["forward #{delta}"]
     elsif delta < 0
@@ -52,6 +59,57 @@ class ICSPlayer
     @out['takeback']
     # disallow for now
     manager.undo(self, nil)
+  end
+  
+  def on_style12(style12)
+    @match.update_time(style12.time)
+    delta = style12.move_index - @match.index
+    
+    # check expected navigations
+    exp = @expected_navigations.shift
+    if exp
+      if exp != style12.move_index
+        # unexpected navigation, clear expected queue
+        @expected_navigations = []
+      else
+        if exp == 0 || 
+           @match_info[:icsapi].
+             same_state(style12.state, 
+                        @match.history[exp].state)
+          # we were expecting this, no need to take further action
+          return
+        end
+      end
+    end
+    
+    if delta == 1
+      move = @serializer.deserialize(style12.last_move_san, @match.state)
+      if move
+        @match.move(self, move, :state => style12.state)
+      else
+        warn "Received invalid move from ICS: #{style12.last_move_san}"
+      end
+    elsif delta <= 0
+      move = if style12.move_index > 0
+        @serializer.deserialize(
+          style12.last_move_san, 
+          @match.history[style12.move_index - 1].state)
+      end
+      state = style12.state.dup
+      if @match.navigable?
+        @match.history.go_to(style12.move_index)
+        @match.history.set_item(state, move)
+      else
+        @match.history.remove_items_at(style12.move_index + 1)
+        @match.history.set_item(state, move)
+      end
+    end
+  end
+  
+  private
+  
+  def add_expected_navigation(opts = {})
+    @expected_navigations << @match.index unless opts[:awaiting_server] 
   end
 end
 

@@ -42,6 +42,11 @@ class ICSApi
     type = PIECES[p.downcase]
     @game.piece.new(color, type)
   end
+  
+  def same_state(state1, state2)
+    state1.board == state2.board &&
+    state1.turn == state2.turn
+  end
 end
 
 end

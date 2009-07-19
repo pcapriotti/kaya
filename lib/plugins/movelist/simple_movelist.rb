@@ -54,6 +54,10 @@ class SimpleMoveList < Qt::ListView
       fire :change_current => index(@history.current, 0)
     end
     
+    def on_force_update
+      update_row(@history.current)
+    end
+    
     def move(i)
       if i == 0
         'Mainline'

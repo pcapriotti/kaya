@@ -52,33 +52,12 @@ class MatchHandler
     if match.nil? && style12.relation == Style12::Relation::EXAMINING
       # if it is an examined game, start a new match
       match = Match.new(Game.dummy, :kind => :ics, :editable => true, :navigable => true)
-      match_info = {
-        :white => { :name => style12.white_player },
-        :black => { :name => style12.black_player },
-        :type => :examined
-      }
+      match_info = style12.match_info
       @matches[style12.game_number] = [match, match_info]
     end
     
     if match.started?
-      match.update_time(style12.time)
-      if style12.move_index == match.index + 1
-        # last_move = icsapi.parse_verbose(style12.last_move, match.state)
-        move = match.game.serializer.new(:compact).deserialize(style12.last_move_san, match.state)
-        if move
-          match.move(match_info[:icsplayer], move, :state => style12.state)
-        else
-          warn "Received invalid move from ICS: #{style12.last_move_san}"
-        end
-      elsif style12.move_index < match.index
-        if match.navigable?
-          match.history.go_to(style12.move_index)
-          match.history.state = style12.state.dup
-        else
-          match.history.remove_items_at(style12.move_index + 1)
-          match.history.state = style12.state.dup
-        end
-      end
+      match_info[:icsplayer].on_style12(style12)
     else
       rel = style12.relation
       state = style12.state
@@ -92,8 +71,8 @@ class MatchHandler
       opponent = ICSPlayer.new(
         lambda {|msg| @protocol.connection.send_text(msg) },
         opponent_color,
-        match.game.serializer.new(:compact),
-        match_info[opponent_color][:name])
+        match,
+        match_info)
       match_info[:icsplayer] = opponent
       @user.name = match_info[@user.color][:name]
       @user.premove = true

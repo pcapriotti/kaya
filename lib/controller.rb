@@ -75,7 +75,7 @@ class Controller
     
     match.history.observe(:current_changed) { refresh }
     match.history.observe(:truncate) { refresh :instant => true }
-    match.history.observe(:force_update) { refresh :warp => true }
+    match.history.observe(:force_update) { refresh :force => true }
     match.history.observe(:new_move) do |data|
       refresh(data[:opts])
       if match.time_running?

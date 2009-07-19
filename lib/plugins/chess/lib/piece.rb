@@ -22,7 +22,7 @@ module Chess
     end
     
     def ==(other)
-      @color == other.color and @type == other.type
+      other and @color == other.color and @type == other.type
     end
     
     def name

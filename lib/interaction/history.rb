@@ -82,6 +82,11 @@ class History
     fire :force_update
   end
   
+  def set_item(state, move)
+    @history[current] = Item.new(state, move)
+    fire :force_update
+  end
+  
   def move
     @history[current].move
   end
