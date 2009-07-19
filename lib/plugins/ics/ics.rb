@@ -33,8 +33,12 @@ class ICSPlugin
            :text => KDE.i18n("&Disconnect from ICS"),
            :icon => 'network-disconnect') do |parent|
       if @connection
-        @connection.close
+        @connection.stop
         @connection = nil
+        if @console_obs
+          parent.console.delete_observer(@console_obs)
+          @console_obs = nil
+        end
       end
     end
     action(:configure_ics,
@@ -57,8 +61,10 @@ class ICSPlugin
       parent.console.append(text)
     end
 
-    parent.console.observe :input do |text|
-      @connection.send_text text
+    @console_obs = parent.console.observe :input do |text|
+      if @connection
+        @connection.send_text text
+      end
     end
 
     @handler = ICS::MatchHandler.new(parent.controller, 
