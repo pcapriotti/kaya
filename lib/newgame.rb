@@ -18,6 +18,10 @@ class NewGame < KDE::Dialog
     self.buttons = KDE::Dialog::Ok | KDE::Dialog::Cancel
     
     @widget = Qt::Widget.new(self)
+    @layout = Qt::VBoxLayout.new(@widget)
+    
+    @new_tab = Qt::CheckBox.new(KDE.i18n("Open in new &tab"), self)
+    @layout.add_widget(@new_tab)
     
     @engine_loader = engine_loader
     label = Qt::Label.new(KDE.i18n("&Game:"), @widget)
@@ -29,7 +33,7 @@ class NewGame < KDE::Dialog
     hlayout.add_widget(@games)
     @players = { }
 
-    @layout = Qt::VBoxLayout.new(@widget)
+
     @layout.add_layout(hlayout)
     
     if current_game
@@ -64,7 +68,8 @@ class NewGame < KDE::Dialog
       fire :ok => {
         :game => game,
         :engines => engines,
-        :humans => humans }
+        :humans => humans,
+        :new_tab => @new_tab.checked? }
     end
   end
   

@@ -146,10 +146,6 @@ private
   
   def new_game(match, opts = { })
     setup_single_player(match)
-    if opts[:new_tab]
-      create_view(:activate => true,
-                  :name => match.game.class.plugin_name)
-    end
     controller.reset(match)
   end
   
@@ -179,8 +175,12 @@ private
     diag.observe(:ok) do |data|
       game = data[:game]
       match = Match.new(game, :editable => data[:engines].empty?)
-      create_view(:activate => true,
-                  :name => game.class.plugin_name)
+      if data[:new_tab]
+        create_view(:activate => true,
+                    :name => game.class.plugin_name)
+      else
+        @view.set_tab_text(@view.index, game.class.plugin_name)
+      end
       contr = controller
       
       
