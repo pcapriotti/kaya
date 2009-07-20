@@ -21,32 +21,36 @@ require 'console'
 require 'filewriter'
 require 'newgame'
 require 'engine_prefs'
+require 'view'
+require 'multiview'
 
 class MainWindow < KDE::XmlGuiWindow
   include ActionHandler
   include FileWriter
   
   attr_reader :console
-  attr_reader :controller
 
   def initialize(loader, game)
     super nil
     
     @loader = loader
-    @default_game = game
     
-    startup
+    startup(game)
     setup_actions
     load_action_providers
     setupGUI
-    new_game(Match.new(game))
+    new_game(Match.new(game), :new_tab => false)
   end
   
   def closeEvent(event)
-    if @controller.match
-      @controller.match.close
+    if controller.match
+      controller.match.close
     end
     event.accept
+  end
+
+  def controller
+    @view.current.controller
   end
 
 private
@@ -61,11 +65,11 @@ private
     
     @actions[:back] = regular_action :back, :icon => 'go-previous', 
                           :text => KDE.i18n("B&ack") do
-      @controller.back
+      controller.back
     end
     @actions[:forward] = regular_action :forward, :icon => 'go-next', 
                              :text => KDE.i18n("&Forward") do
-      @controller.forward
+      controller.forward
     end
     
     regular_action :flip, :icon => 'object-rotate-left',
@@ -81,11 +85,11 @@ private
     end
     
     @actions[:undo] = std_action(:undo) do
-      @controller.undo!
+      controller.undo!
     end
 
     @actions[:redo] = std_action(:redo) do
-      @controller.redo!
+      controller.redo!
     end
   end
   
@@ -96,24 +100,24 @@ private
     end
   end
   
-  def startup
+  def create_view(opts = { })
     scene = Scene.new
-    @table = Table.new scene, @loader, self
-    field = AnimationField.new(20)
-    @controller = Controller.new(@table, field)
-    @controller.observe(:active_actions) do |actions|
-      actions.each do |id, enabled|
-        a = @actions[id]
-        a.enabled = enabled if a
-      end
-    end
-    @table.observe(:reset) do |match|
-      update_game_actions(match)
-    end
+    table = Table.new(scene, @loader, @view)
+    contr = Controller.new(table, @field)
+    v = View.new(table, contr)
+    @view.add(v, opts)
+  end
+  
+  def startup(game)
+    @field = AnimationField.new(20)
+    
+    @view = MultiView.new(self)
+    create_view(:name => game.class.plugin_name)
+    
     @engine_loader = @loader.get_matching(:engine_loader).new
     @engine_loader.reload
 
-    @movelist = @loader.get_matching(:movelist).new(@controller)
+    @movelist = @loader.get_matching(:movelist).new(controller)
     movelist_dock = Qt::DockWidget.new(self)
     movelist_dock.widget = @movelist
     movelist_dock.window_title = KDE.i18n("History")
@@ -135,42 +139,52 @@ private
     action_collection.add_action('toggle_console', 
       console_dock.toggle_view_action)
     
-    self.central_widget = @table
+    self.central_widget = @view
   end
   
-  def new_game(match)
+  def new_game(match, opts = { })
     setup_single_player(match)
-    @controller.reset(match)
+    if opts[:new_tab]
+      create_view(:activate => true,
+                  :name => match.game.class.plugin_name)
+    end
+    controller.reset(match)
   end
   
   def setup_single_player(match)
-    @controller.color = match.game.players.first
-    @controller.premove = false
+    controller.color = match.game.players.first
+    controller.premove = false
     opponents = match.game.players[1..-1].map do |color|
       DummyPlayer.new(color)
     end
     opponents.each do |p| 
-      @controller.add_controlled_player(p)
+      controller.add_controlled_player(p)
     end
 
-    @controller.controlled.values.each do |p|
+    controller.controlled.values.each do |p|
       match.register(p)
     end
-    @controller.controlled.values.each do |p|
+    controller.controlled.values.each do |p|
       match.start(p)
     end
   end
 
-  def create_game
-    current_game = if @controller.match 
-      @controller.match.game
+  def create_game(opts = { })
+    current_game = if controller.match 
+      controller.match.game
     end
     diag = NewGame.new(self, @engine_loader, current_game)
     diag.observe(:ok) do |data|
       game = data[:game]
       match = Match.new(game, :editable => data[:engines].empty?)
+      create_view(:activate => true,
+                  :name => game.class.plugin_name)
+      contr = controller
       
-      match.observe(:started) { @controller.reset(match) }
+      
+      match.observe(:started) do
+        contr.reset(match)
+      end
       
       # set up engine players
       players = game.players
@@ -181,19 +195,19 @@ private
       
       # set up human players
       if data[:humans].empty?
-        @controller.color = nil
+        contr.color = nil
       else
-        @controller.color = data[:humans].first
-        @controller.premove = data[:humans].size == 1
-        match.register(@controller)
+        contr.color = data[:humans].first
+        contr.premove = data[:humans].size == 1
+        match.register(contr)
         
         data[:humans][1..-1].each do |player|
           p = DummyPlayer.new(player)
-          @controller.add_controlled_player(p)
+          contr.add_controlled_player(p)
           match.register(p)
         end
       end
-      @controller.controlled.values.each {|p| match.start(p) }
+      contr.controlled.values.each {|p| match.start(p) }
     end
     diag.show
   end
@@ -245,16 +259,18 @@ private
       
       # create game
       match = Match.new(game)
+      create_view(:activate => true,
+                  :name => game.class.plugin_name)
       setup_single_player(match)
       match.history = history
       match.add_info(info)
       match.url = url
-      @controller.reset(match)
+      controller.reset(match)
     end
   end
   
   def save_game_as
-    match = @controller.match
+    match = controller.match
     if match
       pattern = if match.game.respond_to?(:game_extensions)
         match.game.game_extensions.map{|ext| "*.#{ext}"}.join(' ')
@@ -268,7 +284,7 @@ private
   end
   
   def save_game
-    match = @controller.match
+    match = controller.match
     if match
       if match.url
         write_game
@@ -279,7 +295,7 @@ private
   end
   
   def write_game(url = nil)
-    match = @controller.match
+    match = controller.match
     if match
       url ||= match.url
       writer = match.game.game_writer
@@ -296,7 +312,7 @@ private
   def update_game_actions(match)
     unplug_action_list('game_actions')
     actions = if match.game.respond_to?(:actions)
-      match.game.actions(self, action_collection, @controller.policy)
+      match.game.actions(self, action_collection, controller.policy)
     else
       []
     end

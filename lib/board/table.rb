@@ -52,10 +52,12 @@ class Table < Qt::GraphicsView
   end
 
   def resizeEvent(e)
-    @initialized = true
-    r = Qt::RectF.new(0, 0, e.size.width, e.size.height)
-    @scene.scene_rect = r
-    relayout if @elements
+    unless e.size.null?
+      @initialized = true
+      r = Qt::RectF.new(0, 0, e.size.width, e.size.height)
+      @scene.scene_rect = r
+      relayout if @elements
+    end
   end
   
   def relayout

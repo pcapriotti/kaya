@@ -1,0 +1,64 @@
+# Copyright (c) 2009 Paolo Capriotti <p.capriotti@gmail.com>
+# 
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
+require 'observer_utils'
+
+class MultiView < Qt::TabWidget
+  attr_reader :index
+  include Observable
+  include Enumerable
+  
+  def initialize(parent)
+    super(parent)
+    @views = []
+    @index = -1
+    tab_bar.visible = false
+  end
+  
+  def index=(value)
+    if value >= 0 and value < size
+      @index = value
+      self.current_index = value
+    end
+  end
+  
+  def current
+    if @index != -1
+      @views[@index]
+    end
+  end
+  
+  def add(view, opts = { })
+    @views << view
+    i = add_tab(view.main_widget, opts[:name] || "?")
+    raise "[bug] inconsistent MultiView index #{size - 1}, expected #{i}" unless i == size - 1
+    if opts[:activate] || index == -1
+      self.index = i
+    end
+    tab_bar.visible = size > 1
+    i
+  end
+  
+  def delete_at(index)
+    raise "Cannot delete last view" if size <= 1
+    if index >= 0 and index < size
+      self.index -= 1 if index <= @index
+      removeTab(index)
+      v = @views.delete_at(index)
+      tab_bar.visible = size > 1
+      v
+    end
+  end
+  
+  def size
+    @views.size
+  end
+  
+  def each(&blk)
+    @views.each(&blk)
+  end
+end

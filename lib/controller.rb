@@ -34,6 +34,7 @@ class Controller
     @pools = { }
     @clocks = { }
     @field = field
+    @controlled = { }
   end
   
   def each_element
@@ -282,6 +283,8 @@ class Controller
     @color = value
     if @color
       @controlled = { @color => self }
+    else
+      @controlled = { }
     end
   end
     
