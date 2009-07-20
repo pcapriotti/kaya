@@ -104,28 +104,30 @@ private
     scene = Scene.new
     table = Table.new(scene, @loader, @view)
     contr = Controller.new(table, @field)
-    v = View.new(table, contr)
+    movelist = @loader.get_matching(:movelist).new(contr)
+    v = View.new(table, contr, movelist)
     @view.add(v, opts)
   end
   
   def startup(game)
     @field = AnimationField.new(20)
-    
-    @view = MultiView.new(self)
-    create_view(:name => game.class.plugin_name)
-    
-    @engine_loader = @loader.get_matching(:engine_loader).new
-    @engine_loader.reload
 
-    @movelist = @loader.get_matching(:movelist).new(controller)
+
+    movelist_stack = Qt::StackedWidget.new(self)
     movelist_dock = Qt::DockWidget.new(self)
-    movelist_dock.widget = @movelist
+    movelist_dock.widget = movelist_stack
     movelist_dock.window_title = KDE.i18n("History")
     movelist_dock.object_name = "movelist"
     add_dock_widget(Qt::LeftDockWidgetArea, movelist_dock, Qt::Vertical)
     movelist_dock.show
     action_collection.add_action('toggle_history', 
       movelist_dock.toggle_view_action)
+
+    @view = MultiView.new(self, movelist_stack)
+    create_view(:name => game.class.plugin_name)
+    
+    @engine_loader = @loader.get_matching(:engine_loader).new
+    @engine_loader.reload
 
     @console = Console.new(nil)
     console_dock = Qt::DockWidget.new(self)                                                      

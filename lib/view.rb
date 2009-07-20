@@ -6,11 +6,12 @@
 # (at your option) any later version.
 
 class View
-  attr_reader :controller
+  attr_reader :controller, :movelist
   
-  def initialize(table, controller)
+  def initialize(table, controller, movelist)
     @table = table
     @controller = controller
+    @movelist = movelist
   end
   
   def main_widget
