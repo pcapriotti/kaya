@@ -5,6 +5,19 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+class Proc
+  def bind(object)
+    block, time = self, Time.now
+    (class << object; self end).class_eval do
+      method_name = "__bind_#{time.to_i}_#{time.usec}"
+      define_method(method_name, &block)
+      method = instance_method(method_name)
+      remove_method(method_name)
+      method
+    end.bind(object)
+  end
+end
+
 class Factory
   attr_reader :component
 
@@ -15,5 +28,9 @@ class Factory
   
   def new(*args)
     @blk[*args]
+  end
+  
+  def __bind__(object)
+    Factory.new(@component, &@blk.bind(object))
   end
 end

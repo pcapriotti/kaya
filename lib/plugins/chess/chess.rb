@@ -45,7 +45,7 @@ class Game
     @animator = Animator
     @validator = Validator
     @piece = Piece
-    @policy = Factory.new { Policy.new(Move) }
+    @policy = Factory.new(Policy) { Policy.new(move) }
     @players = [:white, :black]
     @types = [:pawn, :knight,:bishop, :rook, :queen, :king]
     @notation = promise { SAN.new(piece, size) }

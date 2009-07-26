@@ -84,6 +84,10 @@ class Promise
       @result
     end
   end
+  
+  def __bind__(object)
+    self.class.new(@computation.bind(object))
+  end
 
   def inspect #:nodoc:
     __synchronize__ do

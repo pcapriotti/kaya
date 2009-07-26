@@ -48,6 +48,22 @@ class Game
   
   private
   
+  class GameProxy
+    def initialize(game, context)
+      @game = game
+      @context = context
+    end
+    
+    def method_missing(m, *args)
+      result = @game.__send__(m, *args)
+      if result.respond_to? :__bind__
+        result.__bind__(@context)
+      else
+        result
+      end
+    end
+  end
+  
   def self.register_game(klasses, klass)
     unless Game.get(klass.data(:id))
       # register dependencies
@@ -55,8 +71,9 @@ class Game
         depklass = klasses[dep] or
           raise "Invalid dependency #{dep} for game #{klass.plugin_name}"
         register_game(klasses, depklass)
+        dep_game = Game.get(dep)
         klass.instance_eval do
-          define_method(dep) { Game.get(dep) }
+          define_method(dep) { GameProxy.new(dep_game, self) }
         end
       end
       # register superclass
