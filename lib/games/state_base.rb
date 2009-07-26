@@ -7,7 +7,7 @@
 
 class StateBase
   attr_accessor :turn
-  attr_reader :board
+  attr_accessor :board
   attr_reader :move_factory, :piece_factory
 
   def initialize(board, move_factory, piece_factory)

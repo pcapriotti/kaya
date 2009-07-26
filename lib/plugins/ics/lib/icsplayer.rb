@@ -108,7 +108,9 @@ class ICSPlayer
           style12.last_move_san, 
           @match.history[style12.move_index - 1].state)
       end
-      state = style12.state.dup
+      state = @match_info[:icsapi].
+        amend_state(@match.history[style12.move_index].state, 
+                    style12.state)
       if @match.navigable? && (!revert_to)
         @match.history.go_to(style12.move_index)
         @match.history.set_item(state, move)

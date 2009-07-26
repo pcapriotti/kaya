@@ -44,8 +44,15 @@ class ICSApi
   end
   
   def same_state(state1, state2)
-    state1.board == state2.board &&
-    state1.turn == state2.turn
+    (state1.board == state2.board).tap{|x| puts "boards differ" unless x } &&
+    (state1.turn == state2.turn).tap{|x| puts "turns differ" unless x }
+  end
+  
+  def amend_state(state1, state2)
+    state1.dup.tap do |result|
+      result.board = state2.board.dup
+      result.turn = state2.turn
+    end
   end
 end
 

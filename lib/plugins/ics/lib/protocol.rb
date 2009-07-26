@@ -19,7 +19,8 @@ class Protocol
   GAME_TYPES = {
     'standard' => :chess,
     'blitz' => :chess,
-    'lightning' => :chess }
+    'lightning' => :chess,
+    'crazyhouse' => :crazyhouse }
     
   attr_reader :connection
 
