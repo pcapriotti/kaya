@@ -8,6 +8,7 @@
 require 'plugins/plugin'
 require_bundle 'crazyhouse', 'state'
 require_bundle 'crazyhouse', 'validator'
+require_bundle 'crazyhouse', 'serializer'
 
 module Crazyhouse
   
@@ -42,7 +43,9 @@ class Game
     @players = [:white, :black]
     @types = [:pawn, :knight, :bishop, :rook, :queen, :king]
               
-    @serializer = chess.serializer
+    @serializer = Factory.new(Serializer) do |rep|
+      Serializer.new(rep, validator, move, piece, notation)
+    end
     @notation = chess.notation
     
     @game_writer = chess.game_writer
