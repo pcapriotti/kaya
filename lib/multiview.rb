@@ -7,7 +7,7 @@
 
 require 'observer_utils'
 
-class MultiView < Qt::TabWidget
+class MultiView < KDE::TabWidget
   attr_reader :index
   include Observable
   include Enumerable
