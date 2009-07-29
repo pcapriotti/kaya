@@ -10,6 +10,7 @@ require 'observer'
 require 'board/point_converter.rb'
 require 'item'
 require 'board/item_bag'
+require 'board/redrawable'
 
 class Board < Qt::GraphicsItemGroup
   include TaggableSquares
@@ -17,6 +18,7 @@ class Board < Qt::GraphicsItemGroup
   include PointConverter
   include ItemBag
   include ItemUtils
+  include Redrawable
   
   PREMOVE_ZVALUE = 3
   SELECTION_ZVALUE = 4
@@ -61,7 +63,7 @@ class Board < Qt::GraphicsItemGroup
     # create pieces
     if board
       board.to_enum(:each_square).map do |p|
-        add_piece(p, board[p]) if board[p]
+        add_piece(p, board[p], :load => false) if board[p]
       end
     end
     
@@ -71,19 +73,6 @@ class Board < Qt::GraphicsItemGroup
              :z => BACKGROUND_ZVALUE
              
     redraw if @unit
-  end
-  
-  def piece_reloader(piece)
-    lambda do |p, item|
-      item.pixmap = @theme.pieces.pixmap(piece, @unit)
-      item.pos = to_real(p)
-    end
-  end
-  
-  def background_reloader
-    lambda do |key, item|
-      item.pixmap = @theme.board.pixmap(@unit)
-    end
   end
   
   def set_geometry(rect)
@@ -102,7 +91,7 @@ class Board < Qt::GraphicsItemGroup
     opts = opts.merge :name => piece,
                       :reloader => piece_reloader(piece)
     item = add_item p, nil, opts
-    item.reload(p) if @unit
+    item.reload(p) if opts.fetch(:load, true)
     item
   end
   

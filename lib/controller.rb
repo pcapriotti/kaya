@@ -26,7 +26,7 @@ class Controller
   attr_reader :policy
   attr_accessor :name
   attr_accessor :premove
-  
+
   def initialize(table, field)
     @table = table
     @scene = @table.scene

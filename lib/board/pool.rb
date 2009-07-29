@@ -6,6 +6,7 @@
 # (at your option) any later version.
 
 require 'item'
+require 'board/redrawable'
 
 class Pool < Qt::GraphicsItemGroup
   BACKGROUND_ZVALUE = -10
@@ -13,6 +14,7 @@ class Pool < Qt::GraphicsItemGroup
   include Observable
   include ItemUtils
   include TaggableSquares
+  include Redrawable
   
   attr_reader :rect, :scene, :items, :theme
   attr_reader :animator, :unit
@@ -54,14 +56,8 @@ class Pool < Qt::GraphicsItemGroup
   end
   
   def redraw
-    pieces = @items.map do |item|
-      destroy_item(item)
-      item.name
-    end
-    @items = []
-    
-    pieces.each_with_index do |piece, index|
-      add_piece(index, piece)
+    @items.each_with_index do |item, index|
+      item.reload(index)
     end
     
     @extra.redraw
@@ -78,10 +74,11 @@ class Pool < Qt::GraphicsItemGroup
   end
   
   def add_piece(index, piece, opts = {})
-    opts = opts.merge :pos => to_real(index),
-                      :name => piece
-    item = create_item index, @theme.pieces.pixmap(piece, @unit), opts
+    opts = opts.merge :name => piece,
+                      :reloader => piece_reloader(piece)
+    item = create_item index, nil, opts
     items.insert(index, item)
+    item.reload(index) if opts.fetch(:load, true)
     item
   end
   
@@ -157,7 +154,7 @@ class Pool < Qt::GraphicsItemGroup
     
     def redraw
       @items.each do |key, item|
-        @pool.set_tag(key, @pool.tag(key))
+        item.reload(key)
       end
     end
     

@@ -18,7 +18,7 @@ module TaggableSquares
         tag_pixmap = lambda { theme.board.send(element, unit) }
         tag_reloader = lambda do |key, item|
           item.pixmap = tag_pixmap[]
-          item.pos = square_tag_container.to_real(val)
+          item.pos = to_real(val)
         end
         
         instance_variable_set("@#{name}", val)
