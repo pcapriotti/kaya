@@ -6,6 +6,7 @@
 # (at your option) any later version.
 
 require 'observer'
+require 'utils'
 
 module Observer
   def update(data)
@@ -93,17 +94,5 @@ class LimitedObserver < SimpleObserver
     remove = super(data)
     @observed.delete_observer(self) if remove
     remove
-  end
-end
-
-class Object
-  def metaclass
-    class << self
-      self
-    end
-  end
-  
-  def metaclass_eval(&blk)
-    metaclass.instance_eval(&blk)
   end
 end

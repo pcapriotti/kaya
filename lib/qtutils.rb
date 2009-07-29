@@ -10,18 +10,6 @@ require 'observer_utils'
 
 ParseException = Class.new(Exception)
 
-class Object
-  def tap
-    yield self
-    self
-  end
-  
-  def alter(property)
-    value = yield(send(property))
-    send("#{property}=", value)
-  end
-end
-
 module Enumerable
   def detect_index
     i = 0
