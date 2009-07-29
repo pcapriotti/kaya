@@ -15,15 +15,17 @@ class Item < Qt::GraphicsPixmapItem
   # to recreate this piece with a different size
   # 
   def initialize(name, pixmap, parent)
-    super pixmap, parent
+    super((pixmap || Qt::Pixmap.new), parent)
     @name = name
     @opacity = 1.0
   end
   
   def paint(p, options, widget)
-    p.saving do |p|
-      p.opacity = @opacity
-      super p, options, widget
+    if pixmap
+      p.saving do |p|
+        p.opacity = @opacity
+        super p, options, widget
+      end
     end
   end
   
@@ -34,6 +36,9 @@ class Item < Qt::GraphicsPixmapItem
   
   def remove
     scene.remove_item self
+  end
+  
+  def reload(key)
   end
 end
 
@@ -47,6 +52,11 @@ module ItemUtils
     item.pos = opts[:pos] || Qt::PointF.new(0, 0)
     item.z_value = opts[:z] || 0
     item.visible = false if opts[:hidden]
+    if opts[:reloader]
+      item.metaclass_eval do
+        define_method(:reload) {|k| opts[:reloader][k, item] }
+      end
+    end
     item
   end
   

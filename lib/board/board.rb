@@ -48,54 +48,41 @@ class Board < Qt::GraphicsItemGroup
     @flipped = value
   end
   
-  def redraw(names = nil)
-    unless names
-      names = @items.inject({}) do |res, data|
-        p, item = data
-        res[p] = item.name if item
-        res
+  def redraw
+    @items.each do |key, item|
+      if item.nil?
+        puts "#{key} is nil"
       end
-    end
-    
-    @items.each {|item| remove_item(item) }
-
-    names.each do |key, name|
-      reload_item(key, name)
+      item.reload(key)
     end
   end
   
   def reset(board = nil)
-    names = if board
-      board.to_enum(:each_square).inject({}) do |res, p|
-        res[p] = board[p] if board[p]
-        res
+    # create pieces
+    if board
+      board.to_enum(:each_square).map do |p|
+        add_piece(p, board[p]) if board[p]
       end
-    else
-      { }
     end
-    names[:background] = nil
     
-    if @unit
-      redraw names
-    else
-      @names = names
+    # create background item
+    add_item :background, nil,
+             :reloader => background_reloader,
+             :z => BACKGROUND_ZVALUE
+             
+    redraw if @unit
+  end
+  
+  def piece_reloader(piece)
+    lambda do |p, item|
+      item.pixmap = @theme.pieces.pixmap(piece, @unit)
+      item.pos = to_real(p)
     end
   end
   
-  def reload_item(key, name)
-    case key
-    when Point # piece
-      add_item key,
-               @theme.pieces.pixmap(name, @unit),
-               :pos => to_real(key),
-               :name => name
-    when :background # background
-      add_item key,
-               @theme.board.pixmap(@unit),
-               :z => BACKGROUND_ZVALUE
-    when Symbol # tag
-      # force redraw by setting tag again
-      set_tag(key, tag(key))
+  def background_reloader
+    lambda do |key, item|
+      item.pixmap = @theme.board.pixmap(@unit)
     end
   end
   
@@ -108,19 +95,23 @@ class Board < Qt::GraphicsItemGroup
 
     self.pos = (base + @rect.top_left).to_f
 
-    redraw @names
-    @names = nil
+    redraw
   end
   
   def add_piece(p, piece, opts = {})
-    opts = opts.merge :pos => to_real(p),
-                      :name => piece
-    add_item p, @theme.pieces.pixmap(piece, @unit), opts
+    opts = opts.merge :name => piece,
+                      :reloader => piece_reloader(piece)
+    item = add_item p, nil, opts
+    item.reload(p) if @unit
+    item
   end
   
   def create_piece(piece, opts = {})
-    opts = opts.merge :name => piece
-    create_item p, @theme.pieces.pixmap(piece, @unit), opts
+    opts = opts.merge :name => piece,
+                      :reloader => piece_reloader(piece)
+    item = create_item p, nil, opts
+    item.reload(Qt::PointF.new(0, 0))
+    item
   end
   
   def on_click(pos)

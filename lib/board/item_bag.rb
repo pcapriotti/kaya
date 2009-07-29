@@ -18,7 +18,7 @@ module ItemBag
     if items[key]
       destroy_item items[key] unless args.include? :keep
       removed = items[key]
-      items[key] = nil
+      items.delete(key)
       removed
     end
   end
@@ -26,7 +26,7 @@ module ItemBag
   def move_item(src, dst)
     remove_item dst
     items[dst] = items[src]
-    items[src] = nil
+    items.delete(src)
     items[dst]
   end
 end

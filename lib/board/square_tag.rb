@@ -15,13 +15,20 @@ module TaggableSquares
       end
       
       define_method("#{name}=") do |val|
+        tag_pixmap = lambda { theme.board.send(element, unit) }
+        tag_reloader = lambda do |key, item|
+          item.pixmap = tag_pixmap[]
+          item.pos = square_tag_container.to_real(val)
+        end
+        
         instance_variable_set("@#{name}", val)
         if val
           options = { :pos => to_real(val),
-                   :z => TAGS_ZVALUE }.merge(opts)
+                      :z => TAGS_ZVALUE,
+                      :reloader => tag_reloader }.merge(opts)
           square_tag_container.add_item(
-            name, 
-            theme.board.send(element, unit), 
+            element,
+            tag_pixmap[], 
             options)
         else
           square_tag_container.remove_item(name)
