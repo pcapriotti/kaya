@@ -27,7 +27,7 @@ module TaggableSquares
                       :z => TAGS_ZVALUE,
                       :reloader => tag_reloader }.merge(opts)
           square_tag_container.add_item(
-            element,
+            name,
             tag_pixmap[], 
             options)
         else

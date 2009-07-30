@@ -52,9 +52,6 @@ class Board < Qt::GraphicsItemGroup
   
   def redraw
     @items.each do |key, item|
-      if item.nil?
-        puts "#{key} is nil"
-      end
       item.reload(key)
     end
   end

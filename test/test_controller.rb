@@ -43,6 +43,10 @@ class TestController < Test::Unit::TestCase
     @controller = Controller.new(@table, field)
   end
   
+  def teardown
+    @table.scene.dispose
+  end
+  
 	def test_initial_state
 		assert_nil @controller.match
   end
