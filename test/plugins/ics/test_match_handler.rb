@@ -44,7 +44,9 @@ class TestMatchHandler < Test::Unit::TestCase
     end
     
     handler = ICS::MatchHandler.new(user, protocol)
-    handler.on_creating_game :game => Game.get(:chess),
+    game = Game.get(:chess)
+    handler.on_creating_game :game => game,
+                             :icsapi => ICS::ICSApi.new(game),
                              :number => 37,
                              :white => { :name => 'hello' },
                              :black => { :name => 'world' }
