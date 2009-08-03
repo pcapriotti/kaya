@@ -23,12 +23,14 @@ class Table < Qt::GraphicsView
     @game = match.game
     # destroy old elements
     if @elements
-      @scene.remove_element(@elements[:board])
-      @elements[:pools].each do |col, pool|
-        @scene.remove_element(pool)
-      end
-      @elements[:clocks].each do |col, clock|
-        @scene.remove_element(clock)
+      @elements.each do |key, element|
+        if element.respond_to?(:each)
+          element.each do |key, value|
+            @scene.remove_element(value)
+          end
+        else
+          @scene.remove_element(element)
+        end
       end
     end
     

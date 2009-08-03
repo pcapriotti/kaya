@@ -15,7 +15,7 @@ class Item < Qt::GraphicsPixmapItem
   # to recreate this piece with a different size
   # 
   def initialize(name, pixmap, parent)
-    super((pixmap || Qt::Pixmap.new), parent)
+    super(pixmap || Qt::Pixmap.new, parent)
     @name = name
     @opacity = 1.0
   end
@@ -57,7 +57,7 @@ class AutoreloadableItem < Item
   end
   
   def set_geometry(rect)
-    self.pos = rect.top_left
+    self.pos = rect.top_left.to_f
     self.pixmap = @pix_loader[rect.size]
   end
 end
@@ -75,7 +75,7 @@ module ItemUtils
       [Item, opts[:pixmap]]
     end
     
-    item = item_factory.new(opts[:name], arg, item_parent)
+    item = item_factory.new(opts[:name], arg, opts.fetch(:parent, item_parent))
     item.pos = opts[:pos] || Qt::PointF.new(0, 0)
     item.z_value = opts[:z] || 0
     item.visible = false if opts[:hidden]

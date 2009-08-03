@@ -76,11 +76,7 @@ class Board < Qt::GraphicsItemGroup
     @rect = rect
     side = [@rect.width / @game.size.x, @rect.height / @game.size.y].min.floor
     @unit = Qt::Point.new(side, side)
-    base = Qt::Point.new(((@rect.width - side * @game.size.x) / 2.0).to_i,
-                        ((@rect.height - side * @game.size.y) / 2.0).to_i)
-
-    self.pos = (base + @rect.top_left).to_f
-
+    self.pos = @rect.top_left.to_f
     redraw
   end
   
