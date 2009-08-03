@@ -25,11 +25,9 @@ module TaggableSquares
         if val
           options = { :pos => to_real(val),
                       :z => TAGS_ZVALUE,
-                      :reloader => tag_reloader }.merge(opts)
-          square_tag_container.add_item(
-            name,
-            tag_pixmap[], 
-            options)
+                      :reloader => tag_reloader}.merge(opts)
+          item = square_tag_container.add_item(name, options)
+          item.reload(name)
         else
           square_tag_container.remove_item(name)
         end

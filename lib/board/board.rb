@@ -65,7 +65,7 @@ class Board < Qt::GraphicsItemGroup
     end
     
     # create background item
-    add_item :background, nil,
+    add_item :background,
              :reloader => background_reloader,
              :z => BACKGROUND_ZVALUE
              
@@ -87,7 +87,7 @@ class Board < Qt::GraphicsItemGroup
   def add_piece(p, piece, opts = {})
     opts = opts.merge :name => piece,
                       :reloader => piece_reloader(piece)
-    item = add_item p, nil, opts
+    item = add_item(p, opts)
     item.reload(p) if opts.fetch(:load, true)
     item
   end
@@ -95,7 +95,7 @@ class Board < Qt::GraphicsItemGroup
   def create_piece(piece, opts = {})
     opts = opts.merge :name => piece,
                       :reloader => piece_reloader(piece)
-    item = create_item p, nil, opts
+    item = create_item(opts)
     item.reload(Qt::PointF.new(0, 0))
     item
   end

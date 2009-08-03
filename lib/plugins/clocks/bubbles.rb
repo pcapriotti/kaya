@@ -37,7 +37,9 @@ class BubblesClock < Qt::GraphicsItemGroup
   
   def redraw
     if @rect
-      add_item :skin, skin, :z => BACKGROUND_ZVALUE
+      add_item :skin, 
+               :pixmap => skin, 
+               :z => BACKGROUND_ZVALUE
       @items[:time].constraint = Qt::RectF.new(
         @rect.width * 0.4, @rect.height * 0.1, 
         @rect.width * 0.6, @rect.height * 0.62)

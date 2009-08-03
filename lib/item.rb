@@ -37,8 +37,28 @@ class Item < Qt::GraphicsPixmapItem
   def remove
     scene.remove_item self
   end
+end
+
+class ReloadableItem < Item
+  def initialize(name, reloader, parent)
+    super(name, nil, parent)
+    @reloader = reloader
+  end
   
   def reload(key)
+    @reloader[key, self]
+  end
+end
+
+class AutoreloadableItem < Item
+  def initialize(name, pix_loader, parent)
+    super(name, nil, parent)
+    @pix_loader = pix_loader
+  end
+  
+  def set_geometry(rect)
+    self.pos = rect.top_left
+    self.pixmap = @pix_loader[rect.size]
   end
 end
 
@@ -46,17 +66,19 @@ module ItemUtils
   BACKGROUND_ZVALUE = -10
   TEMP_ZVALUE = 10
   
-  def create_item(key, pix, opts = {})
-    name = opts[:name] || key.to_s
-    item = Item.new(name, pix, item_parent)
+  def create_item(opts)
+    item_factory, arg = if opts[:reloader]
+      [ReloadableItem, opts[:reloader]]
+    elsif opts[:pix_loader]
+      [AutoreloadableItem, opts[:pix_loader]]
+    else
+      [Item, opts[:pixmap]]
+    end
+    
+    item = item_factory.new(opts[:name], arg, item_parent)
     item.pos = opts[:pos] || Qt::PointF.new(0, 0)
     item.z_value = opts[:z] || 0
     item.visible = false if opts[:hidden]
-    if opts[:reloader]
-      item.metaclass_eval do
-        define_method(:reload) {|k| opts[:reloader][k, item] }
-      end
-    end
     item
   end
   

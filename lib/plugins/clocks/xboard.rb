@@ -33,7 +33,9 @@ class XBoardClock < Qt::GraphicsItemGroup
     
   def redraw
     if @rect
-      add_item :skin, skin, :z => BACKGROUND_ZVALUE
+      add_item :skin, 
+               :pixmap => skin, 
+               :z => BACKGROUND_ZVALUE
       text_color = Qt::Color.new(@active ? Qt::white : Qt::black)
       @items[:time].constraint = Qt::RectF.new(
         @rect.width * 0.4, @rect.height * 0.05, 

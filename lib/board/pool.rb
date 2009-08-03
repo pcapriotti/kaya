@@ -76,7 +76,7 @@ class Pool < Qt::GraphicsItemGroup
   def add_piece(index, piece, opts = {})
     opts = opts.merge :name => piece,
                       :reloader => piece_reloader(piece)
-    item = create_item index, nil, opts
+    item = create_item(opts)
     items.insert(index, item)
     item.reload(index) if opts.fetch(:load, true)
     item

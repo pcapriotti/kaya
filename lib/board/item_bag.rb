@@ -8,9 +8,9 @@
 require 'item'
 
 module ItemBag
-  def add_item(key, *args)
+  def add_item(key, opts)
     remove_item key
-    item = create_item(key, *args)
+    item = create_item({:name => key}.merge(opts))
     items[key] = item
   end
   
