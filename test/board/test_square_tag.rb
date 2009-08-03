@@ -39,6 +39,11 @@ end
 class TestSquareTag < Test::Unit::TestCase
   def setup
     @board = FakeTaggableBoard.new
+    @stubbed_item = Object.new
+    class << @stubbed_item
+      def reload(key)
+      end
+    end
   end
   
   def test_tag_methods
@@ -51,17 +56,17 @@ class TestSquareTag < Test::Unit::TestCase
   end
   
   def test_set_retrieve_tag
-    @board.expects(:add_item).with do |name, pix, args|
+    @board.expects(:add_item).with do |name, args|
       name == :selection and args[:pos] == Point.new(30.0, 20.0)
-    end
+    end.returns(@stubbed_item)
     @board.selection = Point.new(3, 2)
     assert_equal Point.new(3, 2), @board.selection
   end
   
   def test_set_cancel_tag
-    @board.expects(:add_item).with do |name, pix, args|
+    @board.expects(:add_item).with do |name, args|
       name == :selection and args[:pos] == Point.new(50.0, 30.0)
-    end
+    end.returns(@stubbed_item)
     @board.expects(:remove_item).with(:selection)
     
     @board.selection = Point.new(5, 3)

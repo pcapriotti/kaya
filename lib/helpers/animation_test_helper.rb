@@ -38,11 +38,11 @@ class FakeBoard
   end
   
   def add_piece(p, piece, opts = {})
-    add_item p, piece
+    add_item p, :pixmap => piece
   end
   
-  def create_item(key, piece)
-    piece
+  def create_item(opts)
+    opts[:pixmap]
   end
   
   def destroy_item(piece)

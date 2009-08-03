@@ -24,6 +24,7 @@ module ElementManager
         res[player] = theme.clock.new(scene)
         res
       end
+      theme.layout.setup(elements)
     end
   end
 end

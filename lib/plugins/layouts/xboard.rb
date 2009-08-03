@@ -23,7 +23,10 @@ class XBoardLayout
     @size = @game.size
     @flipped = false
   end
-        
+  
+  def setup(elements)
+  end
+  
   def layout(rect, elements)
     has_pools = ! elements[:pools].empty?
     xrel = @size.x + MARGIN * 2 + (has_pools ? POOL_WIDTH + MARGIN : 0)
