@@ -34,19 +34,21 @@ class State < Chess::State
     if move.dropped
       pool(turn).remove(move.dropped)
       board[move.dst] = move.dropped
+      switch_turn!
     else
-      captured = basic_move(move)
-      if move.promote?
-        board[move.dst] = promoted(board[move.dst])
-      end
-      
+      super(move)
+    end
+  end
+  
+  def capture_on!(p)
+    @board[p].tap do |captured|
       if captured
         piece = piece_factory.new(turn, 
           Promoted.demote(captured.type))
         pool(turn).add(piece)
       end
     end
-    switch_turn!
+    super(p)
   end
 end
 
