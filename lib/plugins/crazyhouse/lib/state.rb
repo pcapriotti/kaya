@@ -43,12 +43,18 @@ class State < Chess::State
   def capture_on!(p)
     @board[p].tap do |captured|
       if captured
-        piece = piece_factory.new(turn, 
-          Promoted.demote(captured.type))
+        piece = piece_factory.new(turn, captured.actual_type)
         pool(turn).add(piece)
       end
     end
     super(p)
+  end
+  
+  def promote_on!(p, type)
+    super(p, type)
+    if @board[p]
+      @board[p].promoted = true
+    end
   end
 end
 

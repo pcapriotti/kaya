@@ -6,6 +6,7 @@
 # (at your option) any later version.
 
 require 'plugins/plugin'
+require_bundle 'crazyhouse', 'piece'
 require_bundle 'crazyhouse', 'state'
 require_bundle 'crazyhouse', 'validator'
 require_bundle 'crazyhouse', 'serializer'
@@ -34,7 +35,7 @@ class Game
     end
     @board = chess.board
     @pool = shogi.pool
-    @piece = chess.piece
+    @piece = Piece
     @move = shogi.move
     @validator = Validator
     @animator = chess.animator
