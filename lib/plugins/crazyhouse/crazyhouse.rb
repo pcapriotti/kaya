@@ -38,7 +38,7 @@ class Game
     @move = shogi.move
     @validator = Validator
     @animator = chess.animator
-    @policy = chess.policy.__bind__(self)
+    @policy = chess.policy
     
     @players = [:white, :black]
     @types = [:pawn, :knight, :bishop, :rook, :queen, :king]
