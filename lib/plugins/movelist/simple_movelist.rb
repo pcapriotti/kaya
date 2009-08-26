@@ -78,7 +78,7 @@ class SimpleMoveList < Qt::ListView
     end
     
     def update_row(i)
-      set_data(index(i, 0), move(i), Qt::DisplayRole)
+      set_data(index(i, 0), Qt::Variant.new(move(i)), Qt::DisplayRole)
     end
     
     def flags(index)
