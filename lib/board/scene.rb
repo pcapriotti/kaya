@@ -102,7 +102,9 @@ class Scene < Qt::GraphicsScene
   
   def find_element(pos)
     @elements.detect do |element|
-      element.rect.contains(pos)
+      element.map_rect_to_scene(
+        element.map_rect_from_parent(
+          element.rect.to_f)).contains(pos.to_f)
     end
   end
   
@@ -115,7 +117,7 @@ class Scene < Qt::GraphicsScene
   
   def rel(element, pos)
     if pos
-      pos - element.rect.top_left
+      element.map_from_scene(pos.to_f)
     end
   end
   

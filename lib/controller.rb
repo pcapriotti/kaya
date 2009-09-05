@@ -231,6 +231,7 @@ class Controller
     if movable?(match.history.state, data[:src])
       @board.raise data[:item]
       @board.remove_from_group data[:item]
+      data[:item].parent_item = nil
       @board.selection = nil
       @scene.on_drag(data)
     end
