@@ -27,6 +27,10 @@ class Controller
   attr_accessor :name
   attr_accessor :premove
 
+  def premove=(value)
+    @premove = true
+  end
+  
   def initialize(table, field)
     @table = table
     @scene = @table.scene
@@ -141,7 +145,11 @@ class Controller
     end
     @current = index
     @board.highlight(match.history[@current].move)
-    @premover.execute
+    if @premover.index and @current == @premover.index + 1
+      @premover.execute
+    else
+      @premover.cancel
+    end
   end
   
   def fire_active_actions(index)
@@ -182,7 +190,7 @@ class Controller
         execute_move(@board.selection, p)
       when :premovable
         # schedule a premove on the board
-        @premover.move(@board.selection, p)
+        @premover.move(@current, @board.selection, p)
       end
       @board.selection = nil
     elsif movable?(state, p)
@@ -208,7 +216,7 @@ class Controller
         when :movable
           move = execute_move(data[:src], data[:dst], :adjust => true)
         when :premovable
-          @premover.move(data[:src], data[:dst])
+          @premover.move(@current, data[:src], data[:dst])
         end
       end
     elsif data[:index] and data[:dst]
@@ -219,7 +227,7 @@ class Controller
       when :droppable
         move = execute_drop(data[:item], data[:dst])
       when :predroppable
-        @premover.drop(data[:pool_color], data[:index], data[:dst])
+        @premover.drop(@current, data[:pool_color], data[:index], data[:dst])
       end
     end
     

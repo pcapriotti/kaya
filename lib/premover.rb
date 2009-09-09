@@ -6,6 +6,8 @@
 # (at your option) any later version.
 
 class Premover
+  attr_reader :index
+  
   # Create a premover object
   # executor: an object with execute_move and execute_direct_drop methods
   # board: a graphical board
@@ -33,15 +35,17 @@ class Premover
     cancel
   end
 
-  def move(src, dst)
+  def move(move_index, src, dst)
     cancel
+    @index = move_index
     if src != dst
       @board.premove(src, dst)
     end
   end
   
-  def drop(color, index, dst)
+  def drop(move_index, color, index, dst)
     cancel
+    @index = move_index
     @board.premove_dst = dst
     @pools[color].premove_src = index
   end
@@ -51,5 +55,6 @@ class Premover
     @pools.each do |color, pool|
       pool.premove_src = nil
     end
+    @index = nil
   end
 end
