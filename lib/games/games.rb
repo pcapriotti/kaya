@@ -41,7 +41,7 @@ class Game
       GAMES.map do |id, g|
         [g.class.data(:name), id.to_s]
       end.sort.each do |name, id|
-        add_item(name, id)
+        add_item(name, Qt::Variant.new(id))
       end
     end
   end
