@@ -57,12 +57,14 @@ class EngineLoader
     end
     
     def self.load(name, group)
+      entries = group.entry_map
+      entries['game'] ||= ''
       new :name => name,
-          :game => group.read_entry('game').to_sym,
-          :path => group.read_entry('path'),
-          :protocol => group.read_entry('protocol'),
-          :arguments => group.read_entry('arguments'),
-          :workdir => group.read_entry('workdir')
+          :game => entries['game'].to_sym,
+          :path => entries['path'],
+          :protocol => entries['protocol'],
+          :arguments => entries['arguments'],
+          :workdir => entries['workdir']
     end
     
     def save(group)

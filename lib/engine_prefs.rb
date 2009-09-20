@@ -172,7 +172,7 @@ class EnginePrefs < KDE::Dialog
       index = @list.model.row_count
       @list.model.insert_rows(index, 1)
       @list.model.set_data(@list.model.index(index, 0), 
-                           engine.name,
+                           Qt::Variant.new(engine.name),
                            Qt::DisplayRole)
     end
     dialog.exec
