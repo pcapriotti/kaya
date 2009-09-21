@@ -160,7 +160,9 @@ class EnginePrefs < KDE::Dialog
   def delete_engine
     index = current
     if index
+      name = @list.model.data(index, Qt::DisplayRole).toString
       @list.model.remove_rows(index.row, 1)
+      @engines.delete(name)
     end
   end
   

@@ -107,7 +107,7 @@ class EngineLoader
     
     config = KDE::Global.config.group("Engines")
     config.delete_group
-    puts @entries.inspect
+
     @entries.each do |name, engine|
       group = config.group(name)
       engine.save(group)
