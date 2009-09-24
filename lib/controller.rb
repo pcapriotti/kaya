@@ -248,6 +248,7 @@ class Controller
       item = @board.create_piece(data[:item].name)
       @board.raise item
       @board.remove_from_group item
+      item.parent_item = nil
       anim = @pools[c].animator.remove_piece(data[:index])
       data[:item] = item
       data[:size] = @board.unit
