@@ -26,10 +26,6 @@ class Controller
   attr_reader :policy
   attr_accessor :name
   attr_accessor :premove
-
-  def premove=(value)
-    @premove = true
-  end
   
   def initialize(table, field)
     @table = table
