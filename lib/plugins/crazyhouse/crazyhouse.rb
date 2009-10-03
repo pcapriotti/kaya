@@ -19,7 +19,7 @@ class Game
   plugin :name => 'Crazyhouse',
          :interface => :game,
          :id => :crazyhouse,
-         :keywords => %w(chess),
+         :category => 'Chess',
          :depends => [:chess, :shogi],
          :bundle => 'crazyhouse'
 

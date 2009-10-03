@@ -28,7 +28,7 @@ class Game
   plugin :name => 'Shogi',
          :id => :shogi,
          :interface => :game,
-         :keywords => %w(shogi),
+         :category => 'Shogi',
          :depends => [:chess],
          :bundle => 'shogi'
   
@@ -79,7 +79,7 @@ class Game < Shogi::Game
   plugin :name => 'MiniShogi',
          :id => :minishogi,
          :interface => :game,
-         :keywords => %w(shogi)
+         :category => 'Shogi'
 
   def initialize
     super

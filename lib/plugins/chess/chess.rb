@@ -28,7 +28,7 @@ class Game
   plugin :name => 'Chess',
          :id => :chess,
          :interface => :game,
-         :keywords => %w(chess),
+         :category => 'Chess',
          :bundle => 'chess'
          
   attr_reader :size, :policy, :state, :board, :move,
@@ -99,7 +99,7 @@ class Game < Chess::Game
   plugin :name => 'Chess 5x5',
          :id => :chess5x5,
          :interface => :game,
-         :keywords => %w(chess)
+         :category => 'Chess'
   
   def initialize
     super

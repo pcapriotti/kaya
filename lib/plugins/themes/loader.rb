@@ -16,11 +16,11 @@ class ThemeLoader
   
   def initialize
     @themes = {
-      'chess' => { :pieces => CelticPieces,
+      'Chess' => { :pieces => CelticPieces,
                    :board => XBoardBackground,
                    :clock => XBoardClock,
                    :layout => XBoardLayout },
-      'shogi' => { :pieces => ShogiPieces,
+      'Shogi' => { :pieces => ShogiPieces,
                    :board => ShogibanBackground,
                    :clock => BubblesClock,
                    :layout => CoolLayout }
@@ -29,8 +29,8 @@ class ThemeLoader
   
   def load(game, opts = { })
     # TODO: load theme from the configuration file
-    _, spec = @themes.find do |keyword, theme|
-      game.class.data(:keywords).include?(keyword)
+    _, spec = @themes.find do |category, theme|
+      game.class.data(:category) == category
     end
     spec ||= @themes['chess']
     Theme.new(
