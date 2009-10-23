@@ -15,29 +15,47 @@ class ThemeLoader
          :interface => :theme_loader
   
   def initialize
-    @themes = {
-      'Chess' => { :pieces => CelticPieces,
-                   :board => XBoardBackground,
-                   :clock => XBoardClock,
-                   :layout => XBoardLayout },
-      'Shogi' => { :pieces => ShogiPieces,
-                   :board => ShogibanBackground,
-                   :clock => BubblesClock,
-                   :layout => CoolLayout }
-    }
+    config = KDE::Global.config.group('Themes')
+    if config.exists
+      @themes_cat = { }
+      config.group("Categories").each_group do |cat|
+        @themes_cat[cat.name] = cat.entry_map.with_symbol_keys
+      end
+      @themes = { }
+      config.group("Games").each_group do |game|
+        @themes[game.name] = game.entry_map.with_symbol_keys
+      end
+    else
+      @themes_cat = {
+        'Chess' => { :pieces => CelticPieces,
+                    :board => XBoardBackground,
+                    :clock => XBoardClock,
+                    :layout => XBoardLayout },
+        'Shogi' => { :pieces => ShogiPieces,
+                    :board => ShogibanBackground,
+                    :clock => BubblesClock,
+                    :layout => CoolLayout }
+      }
+      @themes = { }
+    end
   end
   
   def load(game, opts = { })
-    # TODO: load theme from the configuration file
-    _, spec = @themes.find do |category, theme|
-      game.class.data(:category) == category
+    spec = @themes[game.class.data(:id)]
+    unless spec
+      _, spec = @themes_cat.find do |category, theme|
+        game.class.data(:category) == category
+      end
+      spec ||= @themes_cat['Chess']
     end
-    spec ||= @themes['chess']
     Theme.new(
       :pieces => spec[:pieces].new(:shadow => true),
       :board => spec[:board].new(:game => game),
       :clock => spec[:clock],
       :layout => spec[:layout].new(game)
     )
+  end
+  
+  def save
   end
 end

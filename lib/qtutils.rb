@@ -22,6 +22,15 @@ module Enumerable
   end
 end
 
+class Hash
+  def with_symbol_keys
+    result = { }
+    each do |key, value|
+      result[key.to_sym] = value
+    end
+  end
+end
+
 class Qt::Painter
   def paint
     yield self
@@ -275,5 +284,13 @@ module ActionHandler
   
   def action_parent
     self
+  end
+end
+
+class KDE::Config
+  def each_group
+    group_list.each do |g|
+      yield group(g)
+    end
   end
 end
