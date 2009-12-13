@@ -20,8 +20,8 @@ class Board < Qt::GraphicsItemGroup
   include ItemUtils
   include Redrawable
   
-  PREMOVE_ZVALUE = 3
-  SELECTION_ZVALUE = 4
+  PREMOVE_ZVALUE = -2
+  SELECTION_ZVALUE = -1
 
   attr_reader :scene, :items, :unit, :rect, :theme
   square_tag :selection, :selection, :z => SELECTION_ZVALUE
