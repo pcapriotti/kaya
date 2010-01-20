@@ -46,6 +46,11 @@ class Game
     end
   end
   
+  def self.categories
+    @@categories ||= to_enum(:each).map {|name, game| game.class.data(:category) }.uniq.sort
+    @@categories
+  end
+  
   private
   
   class GameProxy

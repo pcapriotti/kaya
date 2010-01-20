@@ -31,6 +31,9 @@ class ThemePrefs < KDE::Dialog
     info_layout.add_stretch
     
     self.main_widget = widget
+    
+    fill_games
+    fill_categories
   end
   
   def new_labelled(widget_factory, label, parent, layout)
@@ -40,5 +43,19 @@ class ThemePrefs < KDE::Dialog
     label.buddy = widget
     layout.add_widget(widget)
     widget
+  end
+  
+  private
+  
+  def fill_games
+    Game.each do |name, game|
+      @games.add_item(game.class.data(:name))
+    end
+  end
+
+  def fill_categories
+    Game.categories.each do |category|
+      @categories.add_item(category)
+    end
   end
 end
