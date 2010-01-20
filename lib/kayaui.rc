@@ -29,6 +29,7 @@
   <Menu name="settings">
     <Action name="preferences" />
     <Action name="configure_engines" />
+    <Action name="configure_themes" />
   </Menu>
  </MenuBar>
  <ToolBar name="mainToolBar" >

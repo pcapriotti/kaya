@@ -8,9 +8,10 @@
 require 'qtutils'
 
 class ThemePrefs < KDE::Dialog
-  def initialize(parent)
+  def initialize(loader, parent)
     super(parent)
-    
+
+    @loader = loader
     widget = Qt::Frame.new(self)
     layout = Qt::HBoxLayout.new(widget)
     @tabs = Qt::TabWidget.new(widget)

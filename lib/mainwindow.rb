@@ -21,6 +21,7 @@ require 'console'
 require 'filewriter'
 require 'newgame'
 require 'engine_prefs'
+require 'theme_prefs'
 require 'view'
 require 'multiview'
 
@@ -81,6 +82,13 @@ private
                    :icon => 'help-hint',
                    :text => KDE.i18n("Configure &Engines...") do
       dialog = EnginePrefs.new(@engine_loader, self)
+      dialog.show
+    end
+    
+    regular_action :configure_themes,
+                   :icon => 'game-config-theme',
+                   :text => KDE.i18n("Configure &Themes...") do
+      dialog = ThemePrefs.new(@loader, self)
       dialog.show
     end
     
