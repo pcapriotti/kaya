@@ -210,8 +210,13 @@ module ListLike
       extract_data ||= lambda {|data| data }
       item_factory = create_item_factory(extract_data)
       new(parent).tap do |list|
-        array.each do |text, data|
-          item_factory.new(text, list, data || text)
+        array.each do |values|
+          text, data = if values.is_a?(String)
+            [values, values]
+          else
+            values
+          end
+          item_factory.new(text, list, data)
         end
         list.extract_data = extract_data
       end

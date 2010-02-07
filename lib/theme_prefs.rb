@@ -29,10 +29,13 @@ class ThemePrefs < KDE::Dialog
     info_layout = Qt::VBoxLayout.new
     layout.add_layout(info_layout)
 
-    @pieces = new_labelled(combo_factory(:pieces), '&Pieces:', widget, info_layout)
-    @board = new_labelled(combo_factory(:board), '&Board:', widget, info_layout)
-    @layout = new_labelled(combo_factory(:layout), '&Layout:', widget, info_layout)
-    @clock = new_labelled(combo_factory(:clock), '&Clock:', widget, info_layout)
+    @combos = {
+      :pieces => new_labelled(combo_factory(:pieces), '&Pieces:', widget, info_layout),
+      :board => new_labelled(combo_factory(:board), '&Board:', widget, info_layout),
+      :layout => new_labelled(combo_factory(:layout), '&Layout:', widget, info_layout),
+      :clock => new_labelled(combo_factory(:clock), '&Clock:', widget, info_layout)
+    }
+    
     info_layout.add_stretch
     
     self.main_widget = widget
@@ -71,7 +74,8 @@ class ThemePrefs < KDE::Dialog
       themes = @loader.get_all_matching(name).map do |plugin|
         [plugin.plugin_name, plugin.name]
       end
-      KDE::ComboBox.from_a(parent, themes, method(:eval)).tap do |combo|
+      themes = [['', nil]] + themes
+      KDE::ComboBox.from_a(parent, themes, lambda{|x| eval(x) if x }).tap do |combo|
         combo.on('currentIndexChanged(int)') do
           type = current_type
           item = @lists[type].current_item
@@ -86,12 +90,10 @@ class ThemePrefs < KDE::Dialog
     if @lists[type].current_item
       item = @lists[type].current_item.get
       theme = @theme_loader.load_spec(type => item)
-      theme.each do |component, klass|
-        combo = instance_variable_get("@#{component}")
-        if combo
-          combo.select_item do |data|
-            data == klass
-          end
+      @combos.each do |component, combo|
+        klass = theme[component]
+        combo.select_item do |data|
+          data == klass
         end
       end
     end
