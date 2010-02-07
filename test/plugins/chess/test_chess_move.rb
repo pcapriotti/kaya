@@ -6,6 +6,7 @@
 # (at your option) any later version.
 
 require 'test/unit'
+require 'require_bundle'
 require_bundle 'chess', 'move'
 
 class TestChessMove < Test::Unit::TestCase

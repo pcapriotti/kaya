@@ -14,12 +14,11 @@ class ThemeLoader
   plugin :name => 'Default Theme Loader',
          :interface => :theme_loader
   
-  FALLBACK_SPEC = { :pieces => CelticPieces,
-                    :board => XBoardBackground,
-                    :clock => XBoardClock,
-                    :layout => XBoardLayout }
-  
   def initialize
+    @fallback_spec = { :pieces => CelticPieces,
+                       :board => XBoardBackground,
+                       :clock => XBoardClock,
+                       :layout => XBoardLayout }
     config = KDE::Global.config.group('Themes')
     if config.exists
       @themes_cat = { }
@@ -71,7 +70,7 @@ class ThemeLoader
       spec[:fallback] = load_spec(:category => opts[:game].class.data(:category))
     else
       spec = @themes_cat[opts[:category]] || { }
-      spec[:fallback] = FALLBACK_SPEC
+      spec[:fallback] = @fallback_spec
     end
     spec
   end

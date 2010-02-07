@@ -7,6 +7,7 @@
 
 require 'test/unit'
 require 'games/all'
+require 'require_bundle'
 require_bundle 'shogi', 'type'
 
 class TestShogiNotation < Test::Unit::TestCase

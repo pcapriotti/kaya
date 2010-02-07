@@ -6,6 +6,7 @@
 # (at your option) any later version.
 
 require 'test/unit'
+require 'require_bundle'
 require_bundle 'chess', 'state'
 require_bundle 'chess', 'board'
 require_bundle 'chess', 'move'

@@ -6,6 +6,7 @@
 # (at your option) any later version.
 
 require 'test/unit'
+require 'require_bundle'
 require_bundle 'shogi', 'piece'
 require_bundle 'shogi', 'type'
 

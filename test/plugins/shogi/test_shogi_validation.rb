@@ -8,6 +8,7 @@
 require 'test/unit'
 require 'games/all'
 require 'helpers/validation_helper'
+require 'require_bundle'
 require_bundle 'shogi', 'type'
 
 class TestShogiValidation < Test::Unit::TestCase
