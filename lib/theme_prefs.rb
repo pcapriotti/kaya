@@ -8,32 +8,53 @@
 require 'qtutils'
 
 class ThemePrefs < KDE::Dialog
-  def initialize(loader, parent)
+  def initialize(loader, theme_loader, parent)
     super(parent)
 
     @loader = loader
+    @theme_loader = theme_loader
     widget = Qt::Frame.new(self)
     layout = Qt::HBoxLayout.new(widget)
     @tabs = Qt::TabWidget.new(widget)
     layout.add_widget(@tabs)
-    @games = Qt::ListWidget.new(nil)
-    @categories = Qt::ListWidget.new(nil)
-    @tabs.add_tab(@games, KDE::i18n('&Games'))
-    @tabs.add_tab(@categories, KDE::i18n('&Categories'))
+    @lists = {
+      :game => Game.new_list(nil),
+      :category => Qt::ListWidget.from_a(nil, Game.categories)
+    }
+    @tabs.add_tab(@lists[:game], KDE::i18n('&Games'))
+    @tabs.add_tab(@lists[:category], KDE::i18n('&Categories'))
+    @tabs.current_index = 0
+    @lists[:game].current_index = 0
     
     info_layout = Qt::VBoxLayout.new
     layout.add_layout(info_layout)
 
-    @pieces = new_labelled(KDE::ComboBox, '&Pieces:', widget, info_layout)
-    @board = new_labelled(KDE::ComboBox, '&Board:', widget, info_layout)
-    @layout = new_labelled(KDE::ComboBox, '&Layout:', widget, info_layout)
-    @clock = new_labelled(KDE::ComboBox, '&Clock:', widget, info_layout)
+    @pieces = new_labelled(combo_factory(:pieces), '&Pieces:', widget, info_layout)
+    @board = new_labelled(combo_factory(:board), '&Board:', widget, info_layout)
+    @layout = new_labelled(combo_factory(:layout), '&Layout:', widget, info_layout)
+    @clock = new_labelled(combo_factory(:clock), '&Clock:', widget, info_layout)
     info_layout.add_stretch
     
     self.main_widget = widget
-    
-    fill_games
-    fill_categories
+
+    update
+    @tabs.on('currentChanged(int)') { update }
+    @lists.each {|type, list| list.on(:itemSelectionChanged) { update(type) } }
+    on(:okClicked) { @theme_loader.save }
+  end
+  
+  private
+  
+  def current_type
+    if @tabs.current_widget == @lists[:game]
+      :game
+    else
+      :category
+    end
+  end
+  
+  def item_name(type, data)
+    type == :game ? data.class.data(:id) : data
   end
   
   def new_labelled(widget_factory, label, parent, layout)
@@ -45,17 +66,34 @@ class ThemePrefs < KDE::Dialog
     widget
   end
   
-  private
-  
-  def fill_games
-    Game.each do |name, game|
-      @games.add_item(game.class.data(:name))
+  def combo_factory(name)
+    Factory.new do |parent|
+      themes = @loader.get_all_matching(name).map do |plugin|
+        [plugin.plugin_name, plugin.name]
+      end
+      KDE::ComboBox.from_a(parent, themes, method(:eval)).tap do |combo|
+        combo.on('currentIndexChanged(int)') do
+          type = current_type
+          item = @lists[type].current_item
+          @theme_loader.set(type, item_name(type, item.get), name, combo.current_item.get) if item
+        end
+      end
     end
   end
 
-  def fill_categories
-    Game.categories.each do |category|
-      @categories.add_item(category)
+  def update(type = nil)
+    type ||= current_type
+    if @lists[type].current_item
+      item = @lists[type].current_item.get
+      theme = @theme_loader.load_spec(type => item)
+      theme.each do |component, klass|
+        combo = instance_variable_get("@#{component}")
+        if combo
+          combo.select_item do |data|
+            data == klass
+          end
+        end
+      end
     end
   end
 end

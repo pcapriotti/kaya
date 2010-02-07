@@ -35,6 +35,7 @@ class MainWindow < KDE::XmlGuiWindow
     super nil
     
     @loader = loader
+    @theme_loader = @loader.get_matching(:theme_loader).new
     
     startup(game)
     setup_actions
@@ -88,7 +89,7 @@ private
     regular_action :configure_themes,
                    :icon => 'game-config-theme',
                    :text => KDE.i18n("Configure &Themes...") do
-      dialog = ThemePrefs.new(@loader, self)
+      dialog = ThemePrefs.new(@loader, @theme_loader, self)
       dialog.show
     end
     
@@ -110,7 +111,7 @@ private
   
   def create_view(opts = { })
     scene = Scene.new
-    table = Table.new(scene, @loader, @view)
+    table = Table.new(scene, @loader, @theme_loader, @view)
     contr = Controller.new(table, @field)
     movelist = @loader.get_matching(:movelist).new(contr)
     v = View.new(table, contr, movelist)
@@ -136,7 +137,7 @@ private
     
     @engine_loader = @loader.get_matching(:engine_loader).new
     @engine_loader.reload
-
+    
     @console = Console.new(nil)
     console_dock = Qt::DockWidget.new(self)                                                      
     console_dock.widget = @console                                                             

@@ -23,10 +23,12 @@ module Enumerable
 end
 
 class Hash
-  def with_symbol_keys
-    result = { }
-    each do |key, value|
-      result[key.to_sym] = value
+  def maph
+    { }.tap do |result|
+      each do |key, value|
+        key, value = yield key, value
+        result[key] = value
+      end
     end
   end
 end
@@ -192,6 +194,97 @@ class Qt::Timer
   end
 end
 
+module ListLike
+  module ClassMethods
+    #
+    # Create a list from an array of pairs (text, data)
+    # The data for each item can be retrieved using the
+    # item's get method.
+    # Note that if an array element is not a pair, its
+    # value will be used both for the text and for the
+    # data.
+    # 
+    # For example: <tt>list.current_item.get</tt>
+    # 
+    def from_a(parent, array, extract_data = nil)
+      extract_data ||= lambda {|data| data }
+      item_factory = create_item_factory(extract_data)
+      new(parent).tap do |list|
+        array.each do |text, data|
+          item_factory.new(text, list, data || text)
+        end
+        list.extract_data = extract_data
+      end
+    end
+  end
+  
+  attr_accessor :extract_data
+  
+  def select_item(&blk)
+    (0...count).each do |i|
+      if blk[item(i).get]
+        self.current_index = i
+        break i
+      end
+    end
+    nil
+  end
+  
+  def self.included(base)
+    base.extend ClassMethods
+  end
+end
+
+class Qt::ListWidget
+  FROM_A_DATA_ROLE = Qt::UserRole
+  include ListLike
+  
+  def self.create_item_factory(extract_data)
+    Class.new(Qt::ListWidgetItem) do
+      define_method(:initialize) do |text, list, data|
+        super(text, list)
+        set_data(FROM_A_DATA_ROLE, Qt::Variant.new(data))
+      end
+      
+      define_method(:get) do
+        extract_data[data(FROM_A_DATA_ROLE).value]
+      end
+    end
+  end
+  
+  def current_index=(i)
+    self.current_row = i
+  end
+end
+
+class KDE::ComboBox
+  include ListLike
+  
+  class Item
+    def initialize(data)
+      @data = data
+    end
+    
+    def get
+      @data
+    end
+  end
+  
+  def self.create_item_factory(extract_data)
+    Factory.new do |text, list, data|
+      list.add_item(text, Qt::Variant.new(data))
+    end
+  end
+
+  def current_item
+    item(current_index)
+  end
+  
+  def item(i)
+    Item.new(extract_data[item_data(i).value])
+  end
+end
+
 module ModelUtils
   def removing_rows(parent, first, last)
     if first > last
@@ -287,7 +380,7 @@ module ActionHandler
   end
 end
 
-class KDE::Config
+class KDE::ConfigGroup
   def each_group
     group_list.each do |g|
       yield group(g)

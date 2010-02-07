@@ -6,13 +6,15 @@
 # (at your option) any later version.
 
 class Theme
-  attr_reader :pieces, :board,
-              :clock, :layout
+  def self.components
+    [ :pieces, :board, :clock, :layout ]
+  end
+  
+  attr_reader *components
   
   def initialize(opts = { })
-    @pieces = opts[:pieces]
-    @board = opts[:board]
-    @clock = opts[:clock]
-    @layout = opts[:layout]
+    self.class.components.each do |component|
+      instance_variable_set("@#{component}", opts[component])
+    end
   end
 end

@@ -19,7 +19,7 @@ class BubblesClock < Qt::GraphicsItemGroup
   include ClockDisplay
   
   plugin :name => 'Bubbles Clock Skin',
-         :interface => :clock2
+         :interface => :clock
 
   attr_reader :items, :rect, :clock
   

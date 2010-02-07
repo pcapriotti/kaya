@@ -14,9 +14,10 @@ class Table < Qt::GraphicsView
   attr_reader :elements, :scene, :theme, :game
   private :game, :scene, :theme
 
-  def initialize(scene, loader, parent)
+  def initialize(scene, loader, theme_loader, parent)
     super(@scene = scene, parent)
     @loader = loader
+    @theme_loader = theme_loader
   end
   
   def reset(match)
@@ -34,8 +35,7 @@ class Table < Qt::GraphicsView
       end
     end
     
-    theme_loader = @loader.get_matching(:theme_loader).new
-    @theme = theme_loader.load(@game)
+    @theme = @theme_loader.load(@game)
     @elements = create_elements
     
     relayout

@@ -45,6 +45,13 @@ class Game
       end
     end
   end
+
+  def self.new_list(parent)
+    games = GAMES.map do |id, g|
+      [g.class.data(:name), id.to_s]
+    end.sort
+    Qt::ListWidget.from_a(parent, games, lambda{|id| get(id.to_sym) })
+  end
   
   def self.categories
     @@categories ||= to_enum(:each).map {|name, game| game.class.data(:category) }.uniq.sort
@@ -53,6 +60,20 @@ class Game
   
   private
   
+  class GameListWidgetItem < Qt::ListWidgetItem
+    GAME_ID_ROLE = Qt::UserRole
+
+    def initialize(name, id, list)
+      super(name, list)
+      set_data(GAME_ID_ROLE, Qt::Variant.new(id))
+    end
+
+    def game
+      id = data(GAME_ID_ROLE).toString.to_sym
+      Game.get(id)
+    end
+  end
+
   class GameProxy
     def initialize(game, context)
       @game = game
