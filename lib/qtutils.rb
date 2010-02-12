@@ -132,7 +132,7 @@ class Qt::Rect
   include PrintableRect
   
   def to_f
-    Qt::RectF.new(x, y, width, height)
+    Qt::RectF.new(self.x, self.y, self.width, self.height)
   end
 end
 

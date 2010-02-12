@@ -55,7 +55,7 @@ class Point
   end
   
   def to_coord(ysize)
-    "#{(x + ?a).chr if x}#{(ysize - y) if y}"
+    "#{(self.x + ?a).chr if x}#{(ysize - self.y) if self.y}"
   end
   
   def self.from_coord(s, ysize)
