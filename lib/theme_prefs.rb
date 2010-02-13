@@ -88,9 +88,14 @@ class ThemePrefs < KDE::Dialog
 
   def update(type = nil)
     type ||= current_type
-    if @lists[type].current_item
-      item = @lists[type].current_item.get
-      theme = @theme_loader.load_spec(type => item)
+    item = @lists[type].current_item
+    
+    @combos.each do |component, combo|
+      combo.enabled = !!item
+    end
+    
+    if item
+      theme = @theme_loader.load_spec(type => item.get)
       @combos.each do |component, combo|
         klass = theme[component]
         combo.select_item do |data|
