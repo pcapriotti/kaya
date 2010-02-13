@@ -6,7 +6,7 @@
 # (at your option) any later version.
 
 class View
-  attr_reader :controller, :movelist
+  attr_reader :controller, :movelist, :table
   
   def initialize(table, controller, movelist)
     @table = table

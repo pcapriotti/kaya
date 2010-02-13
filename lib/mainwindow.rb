@@ -76,7 +76,8 @@ private
     
     regular_action :flip, :icon => 'object-rotate-left',
                           :text => KDE.i18n("F&lip") do
-      @table.flip(! @table.flipped?)
+      table = @view.current.table
+      table.flip(!table.flipped?)
     end
     
     regular_action :configure_engines,
