@@ -9,7 +9,7 @@
     <Action name="configure_ics" />
   </Menu>
  </MenuBar>
- <ToolBar name="mainToolBar" >
+ <ToolBar name="ICS Toolbar" >
   <Action name="connect" />
   <Action name="disconnect" />
  </ToolBar>

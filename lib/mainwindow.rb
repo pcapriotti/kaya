@@ -87,7 +87,7 @@ private
     end
     
     regular_action :configure_themes,
-                   :icon => 'game-config-theme',
+                   :icon => 'games-config-theme',
                    :text => KDE.i18n("Configure &Themes...") do
       dialog = ThemePrefs.new(@loader, @theme_loader, self)
       dialog.show

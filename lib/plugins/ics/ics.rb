@@ -42,7 +42,8 @@ class ICSPlugin
       end
     end
     action(:configure_ics,
-           :text => KDE.i18n("&Configure ICS")) do |parent|
+           :icon => 'network-workgroup',
+           :text => KDE.i18n("Configure &ICS...")) do |parent|
       dialog = ICS::Preferences.new(parent)
       dialog.show
     end
