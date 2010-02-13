@@ -207,24 +207,18 @@ module ListLike
     # For example: <tt>list.current_item.get</tt>
     # 
     def from_a(parent, array, extract_data = nil)
-      extract_data ||= lambda {|data| data }
-      item_factory = create_item_factory(extract_data)
       new(parent).tap do |list|
-        array.each do |values|
-          text, data = if values.is_a?(String)
-            [values, values]
-          else
-            values
-          end
-          item_factory.new(text, list, data)
-        end
-        list.extract_data = extract_data
+        list.reset_from_a(array, extract_data)
       end
     end
   end
   
   attr_accessor :extract_data
   
+  #
+  # Select the item for which the given block
+  # evaluates to true
+  #
   def select_item(&blk)
     (0...count).each do |i|
       if blk[item(i).get]
@@ -235,6 +229,25 @@ module ListLike
     nil
   end
   
+  # 
+  # Populate the list with values from an array.
+  # See also from_a
+  #
+  def reset_from_a(array, extract_data = nil)
+    clear
+    extract_data ||= lambda {|data| data }
+    item_factory = self.class.create_item_factory(extract_data)
+    array.each do |values|
+      text, data = if values.is_a?(String)
+        [values, values]
+      else
+        values
+      end
+      item_factory.new(text, self, data)
+    end
+    self.extract_data = extract_data
+  end
+
   def self.included(base)
     base.extend ClassMethods
   end
