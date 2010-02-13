@@ -2,6 +2,7 @@
 
 - Premove support.
 - New game: Minishogi (thanks to Yann Dirson).
+- New game: Crazyhouse.
 - Undo/redo support.
 - ICS "Examine" mode.
 - Autoload most common engines.
