@@ -19,4 +19,4 @@
   [shogi]: http://en.wikipedia.org/wiki/Shogi
   [thumb1]: http://pcapriotti.github.com/kaya/images/thumbs/kaya005.png
   [shot1]: http://pcapriotti.github.com/kaya/images/kaya005.png
-  
+
