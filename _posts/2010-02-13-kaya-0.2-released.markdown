@@ -1,0 +1,6 @@
+---
+title: Kaya 0.2 released
+---
+Kaya 0.2 has been [released](download.html)!
+
+New features include: two new games (Crazyhouse and Minishogi), undo/redo support and premove.
