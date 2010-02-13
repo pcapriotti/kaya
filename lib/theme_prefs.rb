@@ -39,6 +39,7 @@ class ThemePrefs < KDE::Dialog
     info_layout.add_stretch
     
     self.main_widget = widget
+    self.caption = "Configure themes"
 
     update
     @tabs.on('currentChanged(int)') { update }

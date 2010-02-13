@@ -35,6 +35,7 @@ class Preferences < KDE::Dialog
     layout.add_layout(tmp)
     
     self.main_widget = widget
+    self.caption = "Configure ICS"
 
     data = Config.load
     username.text = data[:username]
