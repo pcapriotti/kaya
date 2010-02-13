@@ -133,13 +133,13 @@ class EnginePrefs < KDE::Dialog
     
     buttons = Qt::VBoxLayout.new
     @add_engine = KDE::PushButton.new(
-      KDE::Icon.new('list-add'), KDE.i18n("&New..."), widget)
+      KDE::Icon.new('list-add'), KDE.i18nc("engine", "&New..."), widget)
     buttons.add_widget(@add_engine)
     @edit_engine = KDE::PushButton.new(
-      KDE::Icon.new('configure'), KDE.i18n("&Edit..."), widget)
+      KDE::Icon.new('configure'), KDE.i18nc("engine", "&Edit..."), widget)
     buttons.add_widget(@edit_engine)
     @delete_engine = KDE::PushButton.new(
-      KDE::Icon.new('list-remove'), KDE.i18n("&Delete"), widget)
+      KDE::Icon.new('list-remove'), KDE.i18nc("engine", "&Delete"), widget)
     buttons.add_widget(@delete_engine)
     
     buttons.add_stretch
