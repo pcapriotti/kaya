@@ -1,0 +1,187 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.3\n"
+"Report-Msgid-Bugs-To: http://github.com/pcapriotti/kaya/issues\n"
+"POT-Creation-Date: 2010-02-13 23:23+0000\n"
+"PO-Revision-Date: 2010-02-13 23:10+0000\n"
+"Last-Translator: Paolo Capriotti <p.capriotti@gmail.com>\n"
+"Language-Team: Italian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: lib/engine_prefs.rb:23
+msgid "&Name:"
+msgstr "&Nome:"
+
+#: lib/engine_prefs.rb:31
+msgid "&Type:"
+msgstr "&Tipo:"
+
+#: lib/engine_prefs.rb:47 lib/newgame.rb:27
+msgid "&Game:"
+msgstr "&Gioco:"
+
+#: lib/engine_prefs.rb:56
+msgid "&Path:"
+msgstr "&Percorso:"
+
+#: lib/engine_prefs.rb:64
+msgid "&Arguments: "
+msgstr "&Argomenti:"
+
+#: lib/engine_prefs.rb:72
+msgid "&Work directory:"
+msgstr "&Directory di lavoro:"
+
+#: lib/engine_prefs.rb:116
+msgid "Configure Engines"
+msgstr "Configura engine"
+
+#: lib/engine_prefs.rb:136
+msgctxt "engine"
+msgid "&New..."
+msgstr "&Nuova..."
+
+#: lib/engine_prefs.rb:139
+msgctxt "engine"
+msgid "&Edit..."
+msgstr "&Modifica..."
+
+#: lib/engine_prefs.rb:142
+msgctxt "engine"
+msgid "&Delete"
+msgstr "&Elimina"
+
+#: lib/engine_prefs.rb:170
+msgid "New Engine"
+msgstr "Nuova engine"
+
+#: lib/engine_prefs.rb:188
+msgid "Edit Engine"
+msgstr "Modifica engine"
+
+#: lib/kaya.rb:25
+msgid "Kaya"
+msgstr "Kaya"
+
+#: lib/kaya.rb:26
+msgid "KDE Board Game Suite"
+msgstr "Collezione di giochi da tavolo per KDE"
+
+#: lib/kaya.rb:27
+msgid "(C) 2009 Paolo Capriotti"
+msgstr "(C) 2009 Paolo Capriotti"
+
+#: lib/kaya.rb:28
+msgid "Paolo Capriotti"
+msgstr "Paolo Capriotti"
+
+#: lib/kaya.rb:29
+msgid "Jani Huhtanen"
+msgstr "Jani Huhtanen"
+
+#: lib/kaya.rb:29
+msgid "Gaussian blur code"
+msgstr "Codice per il blur gaussiano"
+
+#: lib/kaya.rb:30
+msgid "Yann Dirson"
+msgstr "Yann Dirson"
+
+#: lib/kaya.rb:30
+msgid "Minishogi"
+msgstr "Minishogi"
+
+#: lib/kaya.rb:32
+msgid "Initial game"
+msgstr "Gioco iniziale"
+
+#: lib/mainwindow.rb:69
+msgid "B&ack"
+msgstr "&Indietro"
+
+#: lib/mainwindow.rb:73
+msgid "&Forward"
+msgstr "&Avanti"
+
+#: lib/mainwindow.rb:78
+msgid "F&lip"
+msgstr "&Rovescia"
+
+#: lib/mainwindow.rb:85
+msgid "Configure &Engines..."
+msgstr "Configura &engine..."
+
+#: lib/mainwindow.rb:92
+msgid "Configure &Themes..."
+msgstr "Configura &temi..."
+
+#: lib/mainwindow.rb:129
+msgid "History"
+msgstr "Storia"
+
+#: lib/mainwindow.rb:146
+msgid "Console"
+msgstr "Console"
+
+#: lib/mainwindow.rb:229
+msgid "Open game"
+msgstr "Apri partita"
+
+#: lib/mainwindow.rb:293
+msgid "Save game"
+msgstr "Salva partita"
+
+#: lib/newgame.rb:17
+msgid "New game"
+msgstr "Nuova partita"
+
+#: lib/newgame.rb:23
+msgid "Open in new &tab"
+msgstr "Apri in una nuova &scheda"
+
+#: lib/newgame.rb:90
+msgid "Human"
+msgstr "Umano"
+
+#: lib/plugins/ics/ics.rb:28
+msgid "&Connect to ICS"
+msgstr "&Connetti a ICS"
+
+#: lib/plugins/ics/ics.rb:33
+msgid "&Disconnect from ICS"
+msgstr "&Disconnetti da ICS"
+
+#: lib/plugins/ics/ics.rb:46
+msgid "Configure &ICS..."
+msgstr "Configura &ICS..."
+
+#: lib/theme_prefs.rb:24
+msgid "&Games"
+msgstr "&Giochi"
+
+#: lib/theme_prefs.rb:25
+msgid "&Categories"
+msgstr "&Categorie"
+
+#: lib/theme_prefs.rb:42
+msgid "Configure themes"
+msgstr "Configura temi"
+
+#: rc.cpp:3
+msgid "&Game"
+msgstr "&Gioco"
+
+#: rc.cpp:6
+msgid "&View"
+msgstr "&Vista"
+
+#: rc.cpp:9
+msgid "Game Toolbar"
+msgstr "Toolbar di gioco"
