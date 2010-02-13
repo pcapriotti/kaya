@@ -216,14 +216,12 @@ module ListLike
     # 
     # For example: <tt>list.current_item.get</tt>
     # 
-    def from_a(parent, array, extract_data = nil)
+    def from_a(parent, array)
       new(parent).tap do |list|
-        list.reset_from_a(array, extract_data)
+        list.reset_from_a(array)
       end
     end
   end
-  
-  attr_accessor :extract_data
   
   #
   # Select the item for which the given block
@@ -243,19 +241,16 @@ module ListLike
   # Populate the list with values from an array.
   # See also from_a
   #
-  def reset_from_a(array, extract_data = nil)
+  def reset_from_a(array)
     clear
-    extract_data ||= lambda {|data| data }
-    item_factory = self.class.create_item_factory(extract_data)
     array.each do |values|
       text, data = if values.is_a?(String)
         [values, values]
       else
         values
       end
-      item_factory.new(text, self, data)
+      create_item(text, data)
     end
-    self.extract_data = extract_data
   end
 
   def self.included(base)
@@ -267,41 +262,33 @@ class Qt::ListWidget
   FROM_A_DATA_ROLE = Qt::UserRole
   include ListLike
   
-  def self.create_item_factory(extract_data)
-    Class.new(Qt::ListWidgetItem) do
-      define_method(:initialize) do |text, list, data|
-        super(text, list)
-        set_data(FROM_A_DATA_ROLE, Qt::Variant.new(data))
-      end
-      
-      define_method(:get) do
-        extract_data[data(FROM_A_DATA_ROLE).value]
-      end
+  class Item < Qt::ListWidgetItem
+    def initialize(text, list, data)
+      super(text, list)
+      set_data(FROM_A_DATA_ROLE, Qt::Variant.from_ruby(data))
+    end
+
+    def get
+      data(FROM_A_DATA_ROLE).to_ruby
     end
   end
   
   def current_index=(i)
     self.current_row = i
   end
+
+  def create_item(text, data)
+    Item.new(text, self, data)
+  end
 end
 
 class KDE::ComboBox
   include ListLike
   
-  class Item
-    def initialize(data)
-      @data = data
-    end
-    
-    def get
-      @data
-    end
-  end
+  Item = Struct.new(:get)
   
-  def self.create_item_factory(extract_data)
-    Factory.new do |text, list, data|
-      list.add_item(text, Qt::Variant.new(data))
-    end
+  def create_item(text, data)
+    add_item(text, Qt::Variant.from_ruby(data))
   end
 
   def current_item
@@ -309,7 +296,7 @@ class KDE::ComboBox
   end
   
   def item(i)
-    Item.new(extract_data[item_data(i).value])
+    Item.new(item_data(i).to_ruby)
   end
 end
 

@@ -72,14 +72,15 @@ class ThemePrefs < KDE::Dialog
   def combo_factory(name)
     Factory.new do |parent|
       themes = @loader.get_all_matching(name).map do |plugin|
-        [plugin.plugin_name, plugin.name]
+        [plugin.plugin_name, plugin]
       end
       themes = [['', nil]] + themes
-      KDE::ComboBox.from_a(parent, themes, lambda{|x| eval(x) if x }).tap do |combo|
+      KDE::ComboBox.from_a(parent, themes).tap do |combo|
         combo.on('currentIndexChanged(int)') do
           type = current_type
           item = @lists[type].current_item
-          @theme_loader.set(type, item_name(type, item.get), name, combo.current_item.get) if item
+          @theme_loader.set(type, item_name(type, item.get), 
+                            name, combo.current_item.get) if item
         end
       end
     end

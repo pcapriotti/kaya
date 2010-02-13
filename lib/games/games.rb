@@ -48,9 +48,9 @@ class Game
 
   def self.new_list(parent)
     games = GAMES.map do |id, g|
-      [g.class.data(:name), id.to_s]
+      [g.class.data(:name), g]
     end.sort
-    Qt::ListWidget.from_a(parent, games, lambda{|id| get(id.to_sym) })
+    Qt::ListWidget.from_a(parent, games)
   end
   
   def self.categories
@@ -90,6 +90,26 @@ class Game
     end
   end
   
+  module GameExtras
+    module ClassMethods
+      def _load(source)
+        instance
+      end
+      
+      def instance
+        Game.get(data(:id))
+      end
+    end
+    
+    def _dump(limit = -1)
+      self.class.data(:id).to_s
+    end
+    
+    def self.included(base)
+      base.extend ClassMethods
+    end
+  end
+  
   def self.register_game(klasses, klass)
     unless Game.get(klass.data(:id))
       # register dependencies
@@ -106,6 +126,10 @@ class Game
       if klasses.values.include?(klass.superclass)
         register_game(klasses, klass.superclass)
       end
+      
+      # add extra methods
+      klass.instance_eval { include GameExtras }
+      
       GAMES[klass.data(:id)] = klass.new
     end
   end
