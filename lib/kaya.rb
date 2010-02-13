@@ -13,7 +13,7 @@ require 'plugins/loader'
 require 'games/all'
 
 def version
-  "0.2"
+  "0.3"
 end
 
 def start_kaya
