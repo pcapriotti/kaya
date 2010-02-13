@@ -33,6 +33,16 @@ class Hash
   end
 end
 
+class Qt::Variant
+  def self.from_ruby(x)
+    new(Marshal.dump(x))
+  end
+
+  def to_ruby
+    Marshal.load(toString)
+  end
+end
+
 class Qt::Painter
   def paint
     yield self
