@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://github.com/pcapriotti/kaya/issues\n"
-"POT-Creation-Date: 2010-02-13 23:23+0000\n"
+"POT-Creation-Date: 2010-02-14 10:32+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -67,39 +67,39 @@ msgstr ""
 msgid "Edit Engine"
 msgstr ""
 
-#: lib/kaya.rb:25
+#: lib/kaya.rb:23
 msgid "Kaya"
 msgstr ""
 
-#: lib/kaya.rb:26
+#: lib/kaya.rb:24
 msgid "KDE Board Game Suite"
 msgstr ""
 
-#: lib/kaya.rb:27
+#: lib/kaya.rb:25
 msgid "(C) 2009 Paolo Capriotti"
 msgstr ""
 
-#: lib/kaya.rb:28
+#: lib/kaya.rb:26
 msgid "Paolo Capriotti"
 msgstr ""
 
-#: lib/kaya.rb:29
+#: lib/kaya.rb:27
 msgid "Jani Huhtanen"
 msgstr ""
 
-#: lib/kaya.rb:29
+#: lib/kaya.rb:27
 msgid "Gaussian blur code"
 msgstr ""
 
-#: lib/kaya.rb:30
+#: lib/kaya.rb:28
 msgid "Yann Dirson"
 msgstr ""
 
-#: lib/kaya.rb:30
+#: lib/kaya.rb:28
 msgid "Minishogi"
 msgstr ""
 
-#: lib/kaya.rb:32
+#: lib/kaya.rb:30
 msgid "Initial game"
 msgstr ""
 
@@ -151,6 +151,38 @@ msgstr ""
 msgid "Human"
 msgstr ""
 
+#: lib/plugins/chess/chess.rb:28
+msgid "Chess"
+msgstr ""
+
+#: lib/plugins/chess/chess.rb:60
+msgid "Promote to &Queen"
+msgstr ""
+
+#: lib/plugins/chess/chess.rb:64
+msgid "Promote to &Rook"
+msgstr ""
+
+#: lib/plugins/chess/chess.rb:68
+msgid "Promote to &Bishop"
+msgstr ""
+
+#: lib/plugins/chess/chess.rb:72
+msgid "Promote to &Knight"
+msgstr ""
+
+#: lib/plugins/chess/chess.rb:99
+msgid "Chess 5x5"
+msgstr ""
+
+#: lib/plugins/clocks/lib/clock_display.rb:48
+msgid "(unknown)"
+msgstr ""
+
+#: lib/plugins/crazyhouse/crazyhouse.rb:19
+msgid "Crazyhouse"
+msgstr ""
+
 #: lib/plugins/ics/ics.rb:28
 msgid "&Connect to ICS"
 msgstr ""
@@ -161,6 +193,30 @@ msgstr ""
 
 #: lib/plugins/ics/ics.rb:46
 msgid "Configure &ICS..."
+msgstr ""
+
+#: lib/plugins/ics/lib/preferences.rb:21
+msgid "&Username:"
+msgstr ""
+
+#: lib/plugins/ics/lib/preferences.rb:29
+msgid "&Password:"
+msgstr ""
+
+#: lib/plugins/ics/lib/preferences.rb:38
+msgid "Configure ICS"
+msgstr ""
+
+#: lib/plugins/movelist/simple_movelist.rb:63
+msgid "Mainline"
+msgstr ""
+
+#: lib/plugins/shogi/shogi.rb:28
+msgid "Shogi"
+msgstr ""
+
+#: lib/plugins/shogi/shogi.rb:79
+msgid "MiniShogi"
 msgstr ""
 
 #: lib/theme_prefs.rb:24

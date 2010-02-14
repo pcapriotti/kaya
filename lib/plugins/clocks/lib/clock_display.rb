@@ -45,7 +45,7 @@ module ClockDisplay
   
   def data=(d)
     @caption = d[:color].to_s.capitalize
-    @player = d[:player] || '(unknown)'
+    @player = d[:player] || i18n('(unknown)')
     
     items[:caption].text = @caption
     items[:player].text = @player

@@ -25,7 +25,7 @@ class Game
   include Plugin
   include GameActions
   
-  plugin :name => 'Chess',
+  plugin :name => KDE::i18n('Chess'),
          :id => :chess,
          :interface => :game,
          :category => 'Chess',
@@ -57,19 +57,19 @@ class Game
     @game_extensions = %w(pgn)
     
     action :promote_to_queen,
-           :text => 'Promote to &Queen' do |policy| 
+           :text => KDE::i18n('Promote to &Queen') do |policy| 
       policy.promotion = :queen
     end
     action :promote_to_rook, 
-           :text => 'Promote to &Rook' do |policy| 
+           :text => KDE::i18n('Promote to &Rook') do |policy| 
       policy.promotion = :rook
     end
     action :promote_to_bishop, 
-           :text => 'Promote to &Bishop' do |policy| 
+           :text => KDE::i18n('Promote to &Bishop') do |policy| 
       policy.promotion = :bishop
     end
     action :promote_to_knight, 
-           :text => 'Promote to &Knight' do |policy| 
+           :text => KDE::i18n('Promote to &Knight') do |policy| 
       policy.promotion = :knight
     end
   end
@@ -96,7 +96,7 @@ end
 module Chess5x5
 
 class Game < Chess::Game
-  plugin :name => 'Chess 5x5',
+  plugin :name => KDE::i18n('Chess 5x5'),
          :id => :chess5x5,
          :interface => :game,
          :category => 'Chess'

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.3\n"
 "Report-Msgid-Bugs-To: http://github.com/pcapriotti/kaya/issues\n"
-"POT-Creation-Date: 2010-02-13 23:23+0000\n"
+"POT-Creation-Date: 2010-02-14 10:32+0000\n"
 "PO-Revision-Date: 2010-02-13 23:10+0000\n"
 "Last-Translator: Paolo Capriotti <p.capriotti@gmail.com>\n"
 "Language-Team: Italian\n"
@@ -66,39 +66,39 @@ msgstr "Nuova engine"
 msgid "Edit Engine"
 msgstr "Modifica engine"
 
-#: lib/kaya.rb:25
+#: lib/kaya.rb:23
 msgid "Kaya"
 msgstr "Kaya"
 
-#: lib/kaya.rb:26
+#: lib/kaya.rb:24
 msgid "KDE Board Game Suite"
 msgstr "Collezione di giochi da tavolo per KDE"
 
-#: lib/kaya.rb:27
+#: lib/kaya.rb:25
 msgid "(C) 2009 Paolo Capriotti"
 msgstr "(C) 2009 Paolo Capriotti"
 
-#: lib/kaya.rb:28
+#: lib/kaya.rb:26
 msgid "Paolo Capriotti"
 msgstr "Paolo Capriotti"
 
-#: lib/kaya.rb:29
+#: lib/kaya.rb:27
 msgid "Jani Huhtanen"
 msgstr "Jani Huhtanen"
 
-#: lib/kaya.rb:29
+#: lib/kaya.rb:27
 msgid "Gaussian blur code"
 msgstr "Codice per il blur gaussiano"
 
-#: lib/kaya.rb:30
+#: lib/kaya.rb:28
 msgid "Yann Dirson"
 msgstr "Yann Dirson"
 
-#: lib/kaya.rb:30
+#: lib/kaya.rb:28
 msgid "Minishogi"
 msgstr "Minishogi"
 
-#: lib/kaya.rb:32
+#: lib/kaya.rb:30
 msgid "Initial game"
 msgstr "Gioco iniziale"
 
@@ -124,7 +124,7 @@ msgstr "Configura &temi..."
 
 #: lib/mainwindow.rb:129
 msgid "History"
-msgstr "Storia"
+msgstr "Cronologia"
 
 #: lib/mainwindow.rb:146
 msgid "Console"
@@ -150,6 +150,38 @@ msgstr "Apri in una nuova &scheda"
 msgid "Human"
 msgstr "Umano"
 
+#: lib/plugins/chess/chess.rb:28
+msgid "Chess"
+msgstr "Scacchi"
+
+#: lib/plugins/chess/chess.rb:60
+msgid "Promote to &Queen"
+msgstr "Promuovi a &Donna"
+
+#: lib/plugins/chess/chess.rb:64
+msgid "Promote to &Rook"
+msgstr "Promuovi a &Torre"
+
+#: lib/plugins/chess/chess.rb:68
+msgid "Promote to &Bishop"
+msgstr "Promuovi ad &Alfiere"
+
+#: lib/plugins/chess/chess.rb:72
+msgid "Promote to &Knight"
+msgstr "Promuovi a &Cavallo"
+
+#: lib/plugins/chess/chess.rb:99
+msgid "Chess 5x5"
+msgstr "Scacchi 5x5"
+
+#: lib/plugins/clocks/lib/clock_display.rb:48
+msgid "(unknown)"
+msgstr "(sconosciuto)"
+
+#: lib/plugins/crazyhouse/crazyhouse.rb:19
+msgid "Crazyhouse"
+msgstr "Crazyhouse"
+
 #: lib/plugins/ics/ics.rb:28
 msgid "&Connect to ICS"
 msgstr "&Connetti a ICS"
@@ -161,6 +193,30 @@ msgstr "&Disconnetti da ICS"
 #: lib/plugins/ics/ics.rb:46
 msgid "Configure &ICS..."
 msgstr "Configura &ICS..."
+
+#: lib/plugins/ics/lib/preferences.rb:21
+msgid "&Username:"
+msgstr "&Nome utente:"
+
+#: lib/plugins/ics/lib/preferences.rb:29
+msgid "&Password:"
+msgstr "&Password"
+
+#: lib/plugins/ics/lib/preferences.rb:38
+msgid "Configure ICS"
+msgstr "Configura ICS"
+
+#: lib/plugins/movelist/simple_movelist.rb:63
+msgid "Mainline"
+msgstr "Linea principale"
+
+#: lib/plugins/shogi/shogi.rb:28
+msgid "Shogi"
+msgstr "Shogi"
+
+#: lib/plugins/shogi/shogi.rb:79
+msgid "MiniShogi"
+msgstr "Minishogi"
 
 #: lib/theme_prefs.rb:24
 msgid "&Games"

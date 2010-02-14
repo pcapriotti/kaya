@@ -9,8 +9,6 @@
 $:.unshift(File.dirname(__FILE__))
 require 'qtutils'
 require 'mainwindow'
-require 'plugins/loader'
-require 'games/all'
 
 def version
   "0.3"
@@ -31,6 +29,8 @@ def start_kaya
     :bug_tracker => 'http://github.com/pcapriotti/kaya/issues',
     :options => [['+[game]', KDE.ki18n('Initial game')]])
     
+  require 'plugins/loader'
+  require 'games/all'
   require 'ext/loader'
     
   args = KDE::CmdLineArgs.parsed_args
@@ -47,7 +47,10 @@ def start_kaya
   game ||= Game.get(default_game)
 
   plugin_loader = PluginLoader.new
+  
   main = MainWindow.new(plugin_loader, game)
+  
+  
   
   main.show
   app.exec

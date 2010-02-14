@@ -18,7 +18,7 @@ class Preferences < KDE::Dialog
     layout = Qt::VBoxLayout.new(widget)
     
     tmp = Qt::HBoxLayout.new
-    label = Qt::Label.new("&Username:", widget)
+    label = Qt::Label.new(KDE::i18n("&Username:"), widget)
     tmp.add_widget(label)
     username = Qt::LineEdit.new(widget)
     tmp.add_widget(username)
@@ -26,7 +26,7 @@ class Preferences < KDE::Dialog
     layout.add_layout(tmp)
     
     tmp = Qt::HBoxLayout.new
-    label = Qt::Label.new("&Password:", widget)
+    label = Qt::Label.new(KDE::i18n("&Password:"), widget)
     tmp.add_widget(label)
     password = Qt::LineEdit.new(widget)
     password.echo_mode = Qt::LineEdit::Password
@@ -35,7 +35,7 @@ class Preferences < KDE::Dialog
     layout.add_layout(tmp)
     
     self.main_widget = widget
-    self.caption = "Configure ICS"
+    self.caption = KDE::i18n("Configure ICS")
 
     data = Config.load
     username.text = data[:username]

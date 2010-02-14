@@ -16,7 +16,7 @@ module Crazyhouse
 class Game
   include Plugin
   
-  plugin :name => 'Crazyhouse',
+  plugin :name => KDE::i18n('Crazyhouse'),
          :interface => :game,
          :id => :crazyhouse,
          :category => 'Chess',

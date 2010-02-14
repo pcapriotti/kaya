@@ -39,7 +39,7 @@ class Game
     KDE::ComboBox.new(parent) do
       self.editable = false
       GAMES.map do |id, g|
-        [g.class.data(:name), id.to_s]
+        [g.class.plugin_name, id.to_s]
       end.sort.each do |name, id|
         add_item(name, Qt::Variant.new(id))
       end
@@ -48,7 +48,7 @@ class Game
 
   def self.new_list(parent)
     games = GAMES.map do |id, g|
-      [g.class.data(:name), g]
+      [g.class.plugin_name, g]
     end.sort
     Qt::ListWidget.from_a(parent, games)
   end

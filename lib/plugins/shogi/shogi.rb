@@ -25,7 +25,7 @@ class Game
   include Plugin
   include GameActions
   
-  plugin :name => 'Shogi',
+  plugin :name => KDE::i18n('Shogi'),
          :id => :shogi,
          :interface => :game,
          :category => 'Shogi',
@@ -76,7 +76,7 @@ end
 module MiniShogi
 
 class Game < Shogi::Game
-  plugin :name => 'MiniShogi',
+  plugin :name => KDE::i18n('MiniShogi'),
          :id => :minishogi,
          :interface => :game,
          :category => 'Shogi'
