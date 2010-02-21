@@ -28,7 +28,7 @@ class TestController < Test::Unit::TestCase
     
     def reset(match)
       @theme = @loader.get_matching(:theme_loader).new.load(@game)
-      @elements = create_elements
+      @elements = create_elements(@game)
     end
     
     def flip(value)

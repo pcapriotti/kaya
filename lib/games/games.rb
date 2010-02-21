@@ -12,6 +12,10 @@ require 'qtutils'
 class Game
   GAMES = { }
   LOADER = PluginLoader.new
+  # common translatable strings
+  STRINGS = {
+	  :white => KDE::i18n('White'),
+	  :black => KDE::i18n('Black') }
 
   def self.load_all(directory = nil)
     klasses = { }
@@ -108,6 +112,12 @@ class Game
     def self.included(base)
       base.extend ClassMethods
     end
+	
+	def translate(word)
+      (@strings || {})[word] ||
+          Game::STRINGS[word] ||
+          word.to_s.capitalize
+	end
   end
   
   def self.register_game(klasses, klass)

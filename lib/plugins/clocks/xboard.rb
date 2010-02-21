@@ -21,12 +21,13 @@ class XBoardClock < Qt::GraphicsItemGroup
   plugin :name => 'XBoard Clock Skin',
          :interface => :clock
 
-  attr_reader :items, :rect, :clock
+  attr_reader :items, :rect, :clock, :translate
   
   OFF_TEXT = '-'
           
-  def initialize(scene)
+  def initialize(scene, translate)
     super(nil, @scene = scene)
+    @translate = translate
     @items = create_display_items
     @active = false
   end

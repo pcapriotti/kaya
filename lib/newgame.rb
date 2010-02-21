@@ -84,11 +84,12 @@ class NewGame < KDE::Dialog
     g = game(index)
     engines = @engine_loader.find_by_game(g)
     g.players.each do |player|
-      label = Qt::Label.new(player.to_s.capitalize + ':', @player_widget)
+      label = Qt::Label.new("&#{g.translate(player)}:", @player_widget)
       combo = KDE::ComboBox.new(@player_widget) do
         self.editable = false
         add_item(KDE.i18n('Human'), Qt::Variant.new(['human']))
       end
+      label.buddy = combo
       engines.each do |id, engine|
         combo.add_item(engine.name, Qt::Variant.new(['engine', engine.name]))
       end

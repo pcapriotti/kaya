@@ -9,7 +9,8 @@ require 'board/board'
 require 'board/pool'
 
 module ElementManager
-  def create_elements
+  def create_elements(game)
+    translate = lambda {|word| game.translate(word) }
     Hash.new.tap do |elements|
       elements[:board] = Board.new(scene, theme, game)
       elements[:pools] = if game.respond_to? :pool
@@ -21,7 +22,7 @@ module ElementManager
         {}
       end
       elements[:clocks] = game.players.inject({}) do |res, player|
-        res[player] = theme.clock.new(scene)
+        res[player] = theme.clock.new(scene, translate)
         res
       end
       theme.layout.setup(elements)

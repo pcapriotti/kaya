@@ -36,7 +36,7 @@ class Table < Qt::GraphicsView
     end
     
     @theme = @theme_loader.load(@game)
-    @elements = create_elements
+    @elements = create_elements(@game)
     
     relayout
     fire :reset => match

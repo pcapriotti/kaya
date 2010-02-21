@@ -21,7 +21,7 @@ class BubblesClock < Qt::GraphicsItemGroup
   plugin :name => 'Bubbles Clock Skin',
          :interface => :clock
 
-  attr_reader :items, :rect, :clock
+  attr_reader :items, :rect, :clock, :translate
   
   BASE_DIR = File.dirname(__FILE__)
   ACTIVE_SKIN_RENDERER = Qt::SvgRenderer.new(
@@ -29,8 +29,9 @@ class BubblesClock < Qt::GraphicsItemGroup
   INACTIVE_SKIN_RENDERER = Qt::SvgRenderer.new(
       File.join(BASE_DIR, 'inactive_clock.svg'))
           
-  def initialize(scene)
+  def initialize(scene, translate)
     super(nil, @scene = scene)
+    @translate = translate
     @items = create_display_items
     @active = false
   end

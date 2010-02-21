@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.3\n"
 "Report-Msgid-Bugs-To: http://github.com/pcapriotti/kaya/issues\n"
-"POT-Creation-Date: 2010-02-14 10:32+0000\n"
+"POT-Creation-Date: 2010-02-21 12:24+0000\n"
 "PO-Revision-Date: 2010-02-13 23:10+0000\n"
 "Last-Translator: Paolo Capriotti <p.capriotti@gmail.com>\n"
 "Language-Team: Italian\n"
@@ -65,6 +65,14 @@ msgstr "Nuova engine"
 #: lib/engine_prefs.rb:188
 msgid "Edit Engine"
 msgstr "Modifica engine"
+
+#: lib/games/games.rb:17
+msgid "White"
+msgstr "Bianco"
+
+#: lib/games/games.rb:18
+msgid "Black"
+msgstr "Nero"
 
 #: lib/kaya.rb:23
 msgid "Kaya"
