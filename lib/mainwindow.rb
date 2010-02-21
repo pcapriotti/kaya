@@ -91,6 +91,7 @@ private
                    :icon => 'games-config-theme',
                    :text => KDE.i18n("Configure &Themes...") do
       dialog = ThemePrefs.new(@loader, @theme_loader, self)
+      dialog.observe(:ok) { controller.reset }
       dialog.show
     end
     

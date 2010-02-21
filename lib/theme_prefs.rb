@@ -8,6 +8,8 @@
 require 'qtutils'
 
 class ThemePrefs < KDE::Dialog
+  include Observable
+  
   def initialize(loader, theme_loader, parent)
     super(parent)
 
@@ -44,7 +46,10 @@ class ThemePrefs < KDE::Dialog
     update
     @tabs.on('currentChanged(int)') { update }
     @lists.each {|type, list| list.on(:itemSelectionChanged) { update(type) } }
-    on(:okClicked) { @theme_loader.save }
+    on(:okClicked) do
+      @theme_loader.save
+      fire :ok
+    end
   end
   
   private
