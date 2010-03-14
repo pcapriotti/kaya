@@ -5,7 +5,6 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-require 'require_bundle'
 require 'plugins/plugin'
 require_bundle 'shogi', 'state'
 require_bundle 'shogi', 'pool'

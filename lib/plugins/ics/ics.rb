@@ -7,7 +7,6 @@
 
 require 'qtutils'
 require 'plugins/plugin'
-require 'require_bundle'
 require 'action_provider'
 require_bundle 'ics', 'protocol'
 require_bundle 'ics', 'connection'

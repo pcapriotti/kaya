@@ -19,7 +19,7 @@ class TestLoadable < Test::Unit::TestCase
     Dir[File.join(plugins, '*')].each do |f|
       if File.directory?(f)
         Dir[File.join(f, '*.rb')].each do |rb_file|
-          `#{RUBY_EXE} -I#{lib} #{rb_file}`
+          `#{RUBY_EXE} -I#{lib} -rlib/require_bundle #{rb_file}`
           assert_equal 0, $?
         end
       end

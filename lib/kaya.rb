@@ -9,6 +9,7 @@
 $:.unshift(File.dirname(__FILE__))
 require 'qtutils'
 require 'mainwindow'
+require 'require_bundle'
 
 def version
   "0.3"
