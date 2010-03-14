@@ -130,6 +130,10 @@ class Controller
     index = match.history.current
     return if index == @current && (!opts[:force])
     set_active_actions(index)
+    
+    @clocks.each do |color, clock|
+      clock.active = match.history.state.turn == color
+    end
     if opts[:instant] || (index == @current && opts[:force])
       anim = @animator.warp(match.history.state, opts)
       perform_animation anim
