@@ -26,6 +26,7 @@ class Controller
   attr_reader :policy
   attr_accessor :name
   attr_accessor :premove
+  attr_reader :active_actions
   
   def initialize(table, field)
     @table = table
@@ -35,6 +36,7 @@ class Controller
     @clocks = { }
     @field = field
     @controlled = { }
+    @active_actions = Hash.new(false)
   end
   
   def each_element
@@ -97,7 +99,7 @@ class Controller
     if match.history.move
       @board.highlight(match.history.move)
     end
-    fire_active_actions(@current)
+    set_active_actions(@current)
   end
   
   def back
@@ -126,8 +128,8 @@ class Controller
   def refresh(opts = { })
     return unless match
     index = match.history.current
-    fire_active_actions(index)
     return if index == @current && (!opts[:force])
+    set_active_actions(index)
     if opts[:instant] || (index == @current && opts[:force])
       anim = @animator.warp(match.history.state, opts)
       perform_animation anim
@@ -149,13 +151,15 @@ class Controller
     end
   end
   
-  def fire_active_actions(index)
-    fire :active_actions => {
+  def set_active_actions(index)
+    @active_actions = {
       :forward => match.navigable? || index < match.history.size - 1,
       :back => index > 0,
       :undo => @color && match.history.operations.current >= 0,
-      :redo => @color && match.editable? && match.history.operations.current < match.history.operations.size - 1,
+      :redo => @color && match.editable? && 
+	       match.history.operations.current < match.history.operations.size - 1,
     }
+    fire :changed_active_actions
   end
   
   def go_to(index)

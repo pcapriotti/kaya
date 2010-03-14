@@ -118,6 +118,9 @@ private
     movelist = @loader.get_matching(:movelist).new(contr)
     v = View.new(table, contr, movelist)
     @view.add(v, opts)
+    contr.observe(:changed_active_actions) do
+      update_active_actions(contr)
+    end
   end
   
   def startup(game)
@@ -136,6 +139,7 @@ private
 
     @view = MultiView.new(self, movelist_stack)
     create_view(:name => game.class.plugin_name)
+    @view.observe(:changed) { update_active_actions(controller) }
     
     @engine_loader = @loader.get_matching(:engine_loader).new
     @engine_loader.reload
@@ -330,5 +334,16 @@ private
       []
     end
     plug_action_list('game_actions', actions)
+  end
+  
+  def update_active_actions(contr)
+    if contr == controller
+      contr.active_actions.each do |id, enabled|
+	action = @actions[id]
+	if action
+	  action.enabled = enabled
+	end
+      end
+    end
   end
 end

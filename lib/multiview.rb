@@ -22,7 +22,7 @@ class MultiView < KDE::TabWidget
     @index = -1
     tab_bar.visible = false
     tab_bar.tabs_closable = true
-    on(CHANGED_SIG) {|i| self.index = i }
+    on(CHANGED_SIG) {|i| self.index = i; fire :changed }
     tab_bar.on(CLOSED_SIG) {|i| delete_at(i) }
   end
   
@@ -43,7 +43,9 @@ class MultiView < KDE::TabWidget
   def add(view, opts = { })
     @views << view
     i = add_tab(view.main_widget, opts[:name] || "?")
-    raise "[bug] inconsistent MultiView index #{size - 1}, expected #{i}" unless i == size - 1
+    unless i == size - 1
+      raise "[bug] inconsistent MultiView index #{size - 1}, expected #{i}"
+    end
     @movelist_stack.insert_widget(i, view.movelist)
     if opts[:activate] || index == -1
       self.index = i
