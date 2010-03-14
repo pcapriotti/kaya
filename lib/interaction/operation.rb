@@ -43,6 +43,11 @@ class TruncateOperation
     @index = index
   end
   
+  def undo
+    undo_op.execute(:undoable => false,
+                    :extra => { :go_to_end => false })
+  end
+  
   def execute(opts = { })
     items = @history.remove_items_at(@index)
     if opts.fetch(:undoable, true)

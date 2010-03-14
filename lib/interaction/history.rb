@@ -122,7 +122,7 @@ class History
     @history += items
     old_current = @current
     old_state = state
-    @current = @history.size - 1
+    @current = @history.size - 1  if opts.fetch(:go_to_end, true)
     fire :new_move => {
       :old_current => old_current,
       :old_state => old_state,

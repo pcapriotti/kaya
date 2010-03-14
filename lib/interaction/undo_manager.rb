@@ -38,7 +38,6 @@ class UndoManager
   end
   
   def cancel
-    puts "cancelling undo"
     @cancelled = true
     fire :complete => nil
   end
