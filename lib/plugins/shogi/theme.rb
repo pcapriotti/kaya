@@ -90,14 +90,19 @@ class ShogiPieces
         kanji.render(p)
       end
     end
-    if opts.has_key? :shadow
-      @loader = with_shadow(@loader)
+    @effects = []
+    if opts.fetch(:shadow, true)
+      @effects << lambda {|size| shadow_effect(size) }
     end
     @flipped = false
   end
 
   def pixmap(piece, size)
-    @loader[piece, size].to_pix
+    @loader[piece, size].to_pix.tap do |pix|
+	  @effects.each do |effect|
+        pix.add_effect(effect[size])
+      end
+	end
   end
   
   def filename(piece)

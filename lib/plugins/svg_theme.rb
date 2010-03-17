@@ -16,13 +16,18 @@ class SvgTheme
     @loader = lambda do |piece, size|
       Qt::Image.from_renderer(size, renderer, piece_id(piece))
     end
+    @effects = []
     if opts.fetch(:shadow, true)
-      @loader = with_shadow(@loader)
+      @effects << lambda {|size| shadow_effect(size) }
     end
   end
 
   def pixmap(piece, size)
-    @loader[piece, size].to_pix
+    @loader[piece, size].to_pix.tap do |pix|
+      @effects.each do |effect|
+        pix.add_effect(effect[size])
+      end
+    end
   end
   
   def renderer

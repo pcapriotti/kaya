@@ -32,7 +32,6 @@ def start_kaya
     
   require 'plugins/loader'
   require 'games/all'
-  require 'ext/loader'
     
   args = KDE::CmdLineArgs.parsed_args
   game = if args.count > 0
