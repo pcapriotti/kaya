@@ -30,3 +30,28 @@ class Object
     yield self unless nil?
   end
 end
+
+
+module Enumerable
+  def detect_index
+    i = 0
+    each do |item|
+      return i if yield item
+      i += 1
+    end
+    
+    nil
+  end
+end
+
+class Hash
+  def maph
+    { }.tap do |result|
+      each do |key, value|
+        key, value = yield key, value
+        result[key] = value
+      end
+    end
+  end
+end
+

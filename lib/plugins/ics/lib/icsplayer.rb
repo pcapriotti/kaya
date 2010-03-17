@@ -124,6 +124,7 @@ class ICSPlayer
   private
   
   def add_expected_navigation(opts = {})
+	puts "add #{@match.index} to expected, opts = #{opts.inspect}"
     @expected_navigations << @match.index unless opts[:awaiting_server] 
   end
 end

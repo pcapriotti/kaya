@@ -7,49 +7,40 @@
 
 require 'korundum4'
 require 'observer_utils'
+require 'utils'
 
 ParseException = Class.new(Exception)
 
-module Enumerable
-  def detect_index
-    i = 0
-    each do |item|
-      return i if yield item
-      i += 1
-    end
-    
-    nil
-  end
-end
-
-class Hash
-  def maph
-    { }.tap do |result|
-      each do |key, value|
-        key, value = yield key, value
-        result[key] = value
-      end
-    end
-  end
-end
-
 class Qt::Variant
+  # 
+  # Convert any marshallable ruby object into a QVariant.
+  # 
   def self.from_ruby(x)
     new(Marshal.dump(x))
   end
 
+  # 
+  # Extract the ruby object contained in a QVariant.
+  # 
   def to_ruby
     Marshal.load(toString)
   end
 end
 
 class Qt::Painter
+  # 
+  # Ensure this painter is closed after the block is executed.
+  # 
   def paint
     yield self
   ensure
     self.end
   end
   
+  # 
+  # Execute a block, then restore the painter state to what it
+  # was before execution.
+  # 
   def saving
     save
     yield self
@@ -59,10 +50,17 @@ class Qt::Painter
 end
 
 class Qt::Image
+  # 
+  # Convert this image to a pixmap.
+  # 
   def to_pix
     Qt::Pixmap.from_image self
   end
   
+  # 
+  # Paint on an image using the given block. The block is passed
+  # a painter to use for drawing.
+  # 
   def self.painted(size, &blk)
     Qt::Image.new(size.x, size.y, Qt::Image::Format_ARGB32_Premultiplied).tap do |img|
       img.fill(0)
@@ -70,6 +68,10 @@ class Qt::Image
     end
   end
 
+  # 
+  # Render an svg object onto a new image of the specified size. If id is not
+  # specified, the whole svg file is rendered.
+  # 
   def self.from_renderer(size, renderer, id = nil)
     img = Qt::Image.painted(size) do |p| 
       if id
@@ -151,10 +153,16 @@ class Qt::RectF
 end
 
 class Qt::Pixmap
+  # 
+  # Render a pixmap from an svg file. See also Qt::Image#renderer.
+  # 
   def self.from_svg(size, file, id = nil)
     from_renderer(size, Qt::SvgRenderer.new(file), id)
   end
   
+  # 
+  # Render a pixmap using an svg renderer. See also Qt::Image#renderer.
+  # 
   def self.from_renderer(size, renderer, id = nil)
     Qt::Image.from_renderer(size, renderer, id).to_pix
   end
@@ -184,6 +192,13 @@ class Qt::Base
 end
 
 class Qt::Timer
+  # 
+  # Execute the given block every interval milliseconds and return a timer
+  # object. Note that if the timer is garbage collected, the block will not
+  # be executed anymore, so the caller should keep a reference to it for as
+  # long as needed.
+  # To prevent further invocations of the block, use QTimer#stop.
+  # 
   def self.every(interval, &blk)
     time = Qt::Time.new
     time.restart
@@ -197,6 +212,10 @@ class Qt::Timer
     timer
   end
 
+  # 
+  # Execute the given block after interval milliseconds. If target is
+  # specified, the block is invoked in the context of target.
+  # 
   def self.in(interval, target = nil, &blk)
     single_shot(interval,
                 Qt::BlockInvocation.new(target, blk, 'invoke()'),
@@ -225,7 +244,7 @@ module ListLike
   
   #
   # Select the item for which the given block
-  # evaluates to true
+  # evaluates to true.
   #
   def select_item(&blk)
     (0...count).each do |i|
@@ -239,7 +258,7 @@ module ListLike
   
   # 
   # Populate the list with values from an array.
-  # See also from_a
+  # See also from_a.
   #
   def reset_from_a(array)
     clear
@@ -301,6 +320,10 @@ class KDE::ComboBox
 end
 
 module ModelUtils
+  # 
+  # Helper method to delete model rows from within a block. This method
+  # ensures that the appropriate begin/end functions are called.
+  # 
   def removing_rows(parent, first, last)
     if first > last
       yield
@@ -314,6 +337,10 @@ module ModelUtils
     end
   end
   
+  # 
+  # Helper method to insert model rows from within a block. This method
+  # ensures that the appropriate begin/end functions are called.
+  # 
   def inserting_rows(parent, first, last)
     if first > last
       yield
@@ -329,6 +356,9 @@ module ModelUtils
 end
 
 class KDE::Application
+  # 
+  # Initialize an application.
+  # 
   def self.init(data)
     about = KDE::AboutData.new(
       data[:id],
