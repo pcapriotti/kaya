@@ -105,8 +105,8 @@ class TestHistory < Test::Unit::TestCase
     @history.back
     @history.add_move("new_state2", "first_move2")
     @history.undo!
-    assert_equal 2, @history.current
-    assert_equal "new_new_state1", @history.state
-    assert_equal "second_move1", @history.move
+    assert_equal 0, @history.current
+    assert_equal "initial_state", @history.state
+    assert_nil @history.move
   end
 end
