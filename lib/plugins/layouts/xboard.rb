@@ -54,7 +54,7 @@ class XBoardLayout
     if has_pools
       pool_height = (board_rect.height - margin * (@game.players.size - 1)) / 
                     @game.players.size
-      offy = base.y
+      offy = board_rect.y
       players = @game.players
       players = players.reverse unless @flipped
       flip = false
