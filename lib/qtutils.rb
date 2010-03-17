@@ -5,9 +5,11 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+require 'rubygems' rescue nil
 require 'korundum4'
 require 'observer_utils'
 require 'utils'
+require 'builder'
 
 ParseException = Class.new(Exception)
 
@@ -429,6 +431,46 @@ class KDE::ConfigGroup
   def each_group
     group_list.each do |g|
       yield group(g)
+    end
+  end
+end
+
+module KDE
+  def self.gui(name, &blk)
+    "<!DOCTYPE kpartgui SYSTEM \"kpartgui.dtd\">\n" + 
+    GuiBuilder.new.gui({ :version => 2, :name => name }, &blk)
+  end
+  
+  class GuiBuilder < Builder::XmlMarkup
+    def menu_bar(&blk)
+      MenuBar(&blk)
+    end
+    
+    def menu(name, &blk)
+      Menu({ :name => name }, &blk)
+    end
+    
+    def action(name)
+      Action(:name => name)
+    end
+    
+    def separator
+      self.Separator
+    end
+    
+    def tool_bar(name, text = nil, &blk)
+      ToolBar(:name => name) do |tb|
+        tb.text(text) if text
+        blk[tb] if block_given?
+      end
+    end
+    
+    def action_list(name)
+      ActionList(:name => name)
+    end
+    
+    def group(name)
+      DefineGroup(:name => name)
     end
   end
 end
