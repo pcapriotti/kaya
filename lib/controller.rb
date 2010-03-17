@@ -352,6 +352,8 @@ class Controller
         data[:index],
         data[:item].name)
     elsif data[:src]
+	  @board.add_to_group data[:item]
+	  @board.lower data[:item]
       @animator.movement(data[:item], nil, data[:src], Path::Linear)
     end
     
