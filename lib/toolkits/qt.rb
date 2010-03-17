@@ -161,6 +161,28 @@ end
 
 class Qt::Pixmap
   # 
+  # Qt > 4.6 provides effects to be applied to Qt::GraphicsItem's.
+  # Since kaya effects work at a lower level of abstraction (i.e. at
+  # pixmap/image level), we embed effects directly in a pixmap.
+  # 
+  # When a pixmap is assigned to a Qt::GraphicsItem, its effects are
+  # transferred to the item.
+  # 
+  def effects
+    @effects ||= []
+  end
+  
+  private :effects
+  
+  # 
+  # Add an effect to this pixmap. If later this pixmap is assigned to an
+  # Item, all its effects will be transferred to it.
+  # 
+  def add_effect(effect)
+    effects << effect
+  end
+  
+  #
   # Render a pixmap from an svg file. See also Qt::Image#renderer.
   # 
   def self.from_svg(size, file, id = nil)
@@ -172,6 +194,10 @@ class Qt::Pixmap
   # 
   def self.from_renderer(size, renderer, id = nil)
     Qt::Image.from_renderer(size, renderer, id).to_pix
+  end
+
+  def to_pix
+    self
   end
 end
 

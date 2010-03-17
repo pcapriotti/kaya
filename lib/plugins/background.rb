@@ -20,8 +20,9 @@ module Background
         p.draw_line Qt::LineF.new(src, dst)
       end
     end
-    img.exp_blur(size.x * HALO_DELTA)
-    img.to_pix
+    pix = img.to_pix
+    pix.add_effect(Qt::GraphicsBlurEffect.new)
+    pix
   end
   
   def selection(size)

@@ -37,6 +37,15 @@ class Item < Qt::GraphicsPixmapItem
   def remove
     scene.remove_item self
   end
+  
+  def pixmap=(pixmap)
+    super(pixmap)
+    # Qt::Pixmap#effects is private, use __send__ to override
+    pixmap.__send__(:effects).each do |effect|
+      set_graphics_effect(effect)
+    end
+    pixmap.instance_variable_set("@effects", [])
+  end
 end
 
 class ReloadableItem < Item

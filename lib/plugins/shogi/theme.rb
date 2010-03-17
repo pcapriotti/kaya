@@ -91,7 +91,7 @@ class ShogiPieces
         kanji.render(p)
       end
     end
-    if opts.has_key? :shadow
+    if opts.fetch(:shadow, true)
       @loader = with_shadow(@loader)
     end
     @flipped = false
