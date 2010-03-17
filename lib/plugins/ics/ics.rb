@@ -5,7 +5,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-require 'qtutils'
+require 'toolkit'
 require 'plugins/plugin'
 require 'action_provider'
 require_bundle 'ics', 'protocol'

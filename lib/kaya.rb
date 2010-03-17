@@ -7,7 +7,7 @@
 
 #!/usr/bin/env ruby
 $:.unshift(File.dirname(__FILE__))
-require 'qtutils'
+require 'toolkit'
 require 'mainwindow'
 require 'require_bundle'
 

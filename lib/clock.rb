@@ -6,7 +6,7 @@
 # (at your option) any later version.
 
 require 'observer_utils'
-require 'qtutils'
+require 'toolkit'
 
 class Clock
   include Observable

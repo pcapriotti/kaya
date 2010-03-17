@@ -5,7 +5,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-require 'qtutils'
+require 'toolkit'
 
 # A NinePatchItem is rectangular item composed of 9 subitems, 
 # 4 at the sides, 4 at the corners, and one in the center.

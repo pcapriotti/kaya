@@ -7,7 +7,7 @@
 
 require 'test/unit'
 require 'animation_field'
-require 'qtutils'
+require 'toolkits/qt'
 require 'rubygems'
 require 'mocha'
 

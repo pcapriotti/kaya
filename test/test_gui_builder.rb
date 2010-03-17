@@ -6,7 +6,7 @@
 # (at your option) any later version.
 
 require 'test/unit'
-require 'qtutils'
+require 'toolkits/kde'
 require 'rexml/document'
 
 class TestGuiBuilder < Test::Unit::TestCase

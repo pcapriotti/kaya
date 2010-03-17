@@ -12,7 +12,7 @@ require 'helpers/stubs.rb'
 require "games/all"
 require 'dummy_player'
 require 'board/scene'
-require 'qtutils'
+require 'toolkits/qt'
 require 'board/element_manager'
 
 class TestController < Test::Unit::TestCase

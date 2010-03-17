@@ -7,7 +7,7 @@
 
 require 'strscan'
 require 'interaction/history'
-require 'qtutils'
+require 'toolkit'
 
 module Chess
 

@@ -6,7 +6,7 @@
 # (at your option) any later version.
 
 require 'point'
-require 'qtutils'
+require 'toolkit'
 
 module PointConverter
   def to_logical(p)

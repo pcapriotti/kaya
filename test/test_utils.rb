@@ -8,7 +8,7 @@
 require 'test/unit'
 require 'rubygems'
 require 'mocha'
-require 'qtutils'
+require 'toolkits/qt'
 
 class TestQtUtils < Test::Unit::TestCase
   class Foo

@@ -7,7 +7,7 @@
 
 require 'factory'
 require 'plugins/loader'
-require 'qtutils'
+require 'toolkit'
 
 class Game
   GAMES = { }
