@@ -36,7 +36,7 @@ def start_kaya
     
   args = KDE::CmdLineArgs.parsed_args
   game = if args.count > 0
-    name = args.arg(0)
+    name = args[0]
     g = Game.get(name.to_sym)
     unless g
       warn "No such game #{name}. Defaulting to #{default_game}"

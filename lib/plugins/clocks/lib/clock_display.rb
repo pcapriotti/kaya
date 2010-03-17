@@ -45,7 +45,7 @@ module ClockDisplay
   
   def data=(d)
     @caption = translate[d[:color]]
-    @player = d[:player] || i18n('(unknown)')
+    @player = d[:player] || KDE::i18n('(unknown)')
     
     items[:caption].text = @caption
     items[:player].text = @player

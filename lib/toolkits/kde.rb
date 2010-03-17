@@ -42,13 +42,24 @@ class KDE::Application
     
     KDE::CmdLineArgs.init(ARGV, about)
     KDE::CmdLineOptions.new.tap do |opts|
-      data[:options].each do |opt, desc|
-        opts.add(opt, desc)
+      data[:options].each do |args|
+        case args.size
+        when 2
+          opts.add(args[0], args[1])
+        when 3
+          opts.add(args[0], args[1], args[2])
+        end
       end
       KDE::CmdLineArgs.add_cmd_line_options opts
     end
 
     KDE::Application.new
+  end
+end
+
+class KDE::CmdLineArgs
+  def [](i)
+    arg(i)
   end
 end
 

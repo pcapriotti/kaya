@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+$toolkit = :qt
+require 'lib/kaya.rb'
+
+start_kaya if __FILE__ == $0

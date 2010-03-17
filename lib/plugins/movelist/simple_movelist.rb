@@ -60,7 +60,7 @@ class SimpleMoveList < Qt::ListView
     
     def move(i)
       if i == 0
-        i18n('Mainline')
+        KDE::i18n('Mainline')
       else
         state = @history[i - 1].state
         move = @history[i].move
