@@ -13,10 +13,6 @@ module ActionProvider
     @action_data << Action.new(id, opts, action)
   end
   
-  def xml_file
-    rel('ui.rc')
-  end
-  
   def each_action(&blk)
     @action_data.each(&blk)
   end
@@ -28,8 +24,10 @@ class ActionProviderClient < KDE::XMLGUIClient
   def initialize(parent, provider)
     super(parent)
     @parent = parent
-    
-    setXMLFile(provider.xml_file)
+
+    KDE::with_xml_gui(provider.gui) do |file|
+      setXMLFile(file)
+    end
     provider.each_action do |action|
       regular_action(action.id, action.opts) do
         action.action[@parent]

@@ -21,8 +21,26 @@ class ICSPlugin
   plugin :name => 'ICS Plugin',
          :interface => :action_provider,
          :bundle => 'ics'
-         
+    
+  attr_reader :gui
+  
   def initialize
+    @gui = KDE::gui(:icsplugin) do |g|
+      g.menu_bar do |mb|
+        mb.menu(:file) do |m|
+          m.action :connect, :group => "file_extensions"
+          m.action :disconnect, :group => "file_extensions"
+        end
+        mb.menu(:settings) do |m|
+          m.action :configure_ics
+        end
+      end
+      g.tool_bar(:ics_toolbar, KDE::i18n("&ICS Toolbar")) do |tb|
+        tb.action :connect
+        tb.action :disconnect
+      end
+    end
+    
     action(:connect,
            :text => KDE.i18n("&Connect to ICS"),
            :icon => 'network-connect') do |parent|

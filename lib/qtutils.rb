@@ -441,16 +441,17 @@ module KDE
     GuiBuilder.new.gui({ :version => 2, :name => name }, &blk)
   end
   
-  def self.temp_gui_file(xml)
+  def self.with_xml_gui(xml, &blk)
     tmp = TemporaryFile.new
     tmp.open
     
     ::File.open(tmp.file_name, 'w') do |f|
       f.write(xml)
     end
-    tmp.file_name
+    blk[tmp.file_name]
   ensure
     tmp.close
+    ::File.unlink(tmp.file_name)
   end
   
   class GuiBuilder < Builder::XmlMarkup
@@ -465,8 +466,8 @@ module KDE
       end
     end
     
-    def action(name)
-      Action(:name => name)
+    def action(name, opts = {})
+      Action(opts.merge(:name => name))
     end
     
     def separator

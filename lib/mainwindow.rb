@@ -43,9 +43,9 @@ class MainWindow < KDE::XmlGuiWindow
     setup_actions
     load_action_providers
     
-    xml_gui_file = KDE::temp_gui_file(Kaya::GUI)
-    setupGUI(KDE::XmlGuiWindow::Default, xml_gui_file)
-    File.unlink(xml_gui_file)
+    xml_gui_file = KDE::with_xml_gui(Kaya::GUI) do |file|
+      setupGUI(KDE::XmlGuiWindow::Default, file)
+    end
     
     new_game(Match.new(game), :new_tab => false)
   end
