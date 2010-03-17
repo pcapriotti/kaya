@@ -25,6 +25,8 @@ require 'theme_prefs'
 require 'view'
 require 'multiview'
 
+require 'kaya_ui'
+
 class MainWindow < KDE::XmlGuiWindow
   include ActionHandler
   include FileWriter
@@ -40,7 +42,11 @@ class MainWindow < KDE::XmlGuiWindow
     startup(game)
     setup_actions
     load_action_providers
-    setupGUI
+    
+    xml_gui_file = KDE::temp_gui_file(Kaya::GUI)
+    setupGUI(KDE::XmlGuiWindow::Default, xml_gui_file)
+    File.unlink(xml_gui_file)
+    
     new_game(Match.new(game), :new_tab => false)
   end
   

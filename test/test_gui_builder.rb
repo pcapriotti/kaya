@@ -48,7 +48,7 @@ class TestGuiBuilder < Test::Unit::TestCase
           m.action :save
           m.action :exit
         end
-        mb.menu(:edit) do |m|
+        mb.menu(:edit, "Edit") do |m|
           m.action :cut
           m.action :copy
           m.action :paste
@@ -66,6 +66,7 @@ class TestGuiBuilder < Test::Unit::TestCase
     
     edit_menu = xml.elements["gui/MenuBar/Menu[2]"]
     assert edit_menu
+    assert_equal "Edit", edit_menu.elements["text"].text
     assert_equal "edit", edit_menu.attributes["name"]
     assert_equal ["cut", "copy", "paste"], 
                  edit_menu.to_enum(:each_element, "Action").

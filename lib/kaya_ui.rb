@@ -9,7 +9,7 @@ require 'qtutils'
 
 module Kaya
   GUI = KDE::gui(:kaya) do |g|
-    menu_bar do |mb|
+    g.menu_bar do |mb|
       mb.menu(:file) do |m|
         m.group(:file_extensions)
       end
@@ -19,7 +19,7 @@ module Kaya
         m.action :redo
       end
       
-      mb.menu(:gameMenu) do |m|
+      mb.menu(:gameMenu, KDE::i18n("&Game")) do |m|
         m.action :begin
         m.action :back
         m.action :pause
@@ -31,7 +31,7 @@ module Kaya
         m.action_list :game_actions
       end
       
-      mb.menu(:viewMenu, KDE::i18n("View")) do |m|
+      mb.menu(:viewMenu, KDE::i18n("&View")) do |m|
         m.action :flip
         m.action :toggle_console
         m.action :toggle_history
@@ -44,12 +44,12 @@ module Kaya
       end
     end
     
-    tool_bar(:mainToolBar) do |tb|
+    g.tool_bar(:mainToolBar) do |tb|
       tb.action(:connect)
       tb.action(:disconnect)
     end
     
-    tool_bar(:gameToolbar, KDE::i18n("Game Toolbar")) do |tb|
+    g.tool_bar(:gameToolbar, KDE::i18n("Game Toolbar")) do |tb|
       tb.action :begin
       tb.action :back
       tb.action :pause

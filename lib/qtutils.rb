@@ -441,13 +441,28 @@ module KDE
     GuiBuilder.new.gui({ :version => 2, :name => name }, &blk)
   end
   
+  def self.temp_gui_file(xml)
+    tmp = TemporaryFile.new
+    tmp.open
+    
+    ::File.open(tmp.file_name, 'w') do |f|
+      f.write(xml)
+    end
+    tmp.file_name
+  ensure
+    tmp.close
+  end
+  
   class GuiBuilder < Builder::XmlMarkup
     def menu_bar(&blk)
       MenuBar(&blk)
     end
     
-    def menu(name, &blk)
-      Menu({ :name => name }, &blk)
+    def menu(name, text = nil, &blk)
+      Menu(:name => name) do |m|
+        m.text(text) if text
+        blk[m] if block_given?
+      end
     end
     
     def action(name)
