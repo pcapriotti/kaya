@@ -48,6 +48,10 @@ class Qt::MainWindow
         end
         mb.merge_point
         mb.menu(:settings, :text => KDE::i18n("&Settings"))
+        mb.menu(:help, :text => KDE::i18n("&Help")) do |m|
+          m.action :about
+          m.action :about_qt
+        end
       end
       g.tool_bar(:mainToolBar, :text => KDE::i18n("&Main toolbar")) do |tb|
         tb.action :open_new
@@ -58,6 +62,9 @@ class Qt::MainWindow
   end
   
   def setGUI(gui)
+    regular_action(:about, :text => KDE::i18n("&About")) { }
+    regular_action(:about_qt, :text => KDE::i18n("About &Qt")) { $qApp.about_qt }
+    
     @gui.merge!(gui)
     Qt::GuiBuilder.build(self, @gui)
     
