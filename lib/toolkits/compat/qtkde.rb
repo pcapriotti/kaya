@@ -27,6 +27,8 @@ class Qt::MainWindow
   def initialize(parent)
     super(parent)
     
+    setToolButtonStyle(Qt::ToolButtonFollowStyle)
+    
     # create basic GUI
     @gui = Qt::gui(:qt_base) do |g|
       g.menu_bar do |mb|
