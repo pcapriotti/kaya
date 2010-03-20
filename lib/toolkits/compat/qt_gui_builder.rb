@@ -6,7 +6,7 @@
 # (at your option) any later version.
 
 module Qt
-  module GuiBuilder
+  module GuiBuilder    
     def self.build(window, gui)
       Gui.new.build(window, nil, gui)
     end
@@ -43,7 +43,7 @@ module Qt
       include GuiBuilder
       
       def create_element(window, parent, desc)
-        Qt::Menu.new(desc.opts[:name].to_s, window).tap do |menu|
+        Qt::Menu.new(desc.opts[:text].to_s, window).tap do |menu|
           parent.add_menu(menu)
         end
       end
@@ -89,7 +89,9 @@ module Qt
       include GuiBuilder
       
       def create_element(window, parent, desc)
-        Qt::ToolBar.new(desc.opts[:name].to_s, parent)
+        Qt::ToolBar.new(desc.opts[:text].to_s, parent).tap do |tb|
+          parent.add_tool_bar(Qt::TopToolBarArea, tb)
+        end
       end
     end
   end

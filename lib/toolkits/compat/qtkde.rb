@@ -7,13 +7,41 @@
 
 KDE = Qt # wait... what?
 
+module Qt
+  def self.ki18n(str)
+    str
+  end
+
+  def self.i18n(str)
+    str
+  end
+end
+
 require 'toolkits/compat/qt_gui_builder'
 
 Qt::XmlGuiWindow = Qt::MainWindow
 
 class Qt::MainWindow  
   def setGUI(gui)
-    Qt::GuiBuilder.build(self, gui)
+    # create basic GUI
+    basic = Qt::gui(gui.name) do |g|
+      g.menu_bar do |mb|
+        mb.menu(:file, :text => KDE::i18n("&File")) do |m|
+          m.action :open_new
+          m.action :open
+          m.action :save
+          m.action :save_as
+          m.separator
+          m.action :quit
+        end
+        mb.menu(:edit, :text => KDE::i18n("&Edit")) do |m|
+          m.action :undo
+          m.action :redo
+        end
+      end
+    end
+    basic.merge!(gui)
+    Qt::GuiBuilder.build(self, basic)
   end
 end
 
@@ -81,7 +109,9 @@ module Qt
     :open => lambda {|w| Qt::Action.new(KDE::i18n("&Open..."), w) },
     :quit => lambda {|w| Qt::Action.new(KDE::i18n("&Quit"), w) },
     :save => lambda {|w| Qt::Action.new(KDE::i18n("&Save"), w) },
-    :save_as => lambda {|w| Qt::Action.new(KDE::i18n("S&ave as.."), w) }
+    :save_as => lambda {|w| Qt::Action.new(KDE::i18n("S&ave as..."), w) },
+    :undo => lambda {|w| Qt::Action.new(KDE::i18n("&Undo"), w) },
+    :redo => lambda {|w| Qt::Action.new(KDE::i18n("&Redo"), w) },
   }
   
   class Descriptor
@@ -144,17 +174,9 @@ module Qt
   end
   
   def self.gui(name, &blk)
-    Descriptor.new(:gui, :name => name).tap do |desc|
+    Descriptor.new(:gui, :gui_name => name).tap do |desc|
       blk[Descriptor::Builder.new(desc)] if block_given?
     end
-  end
-
-  def self.ki18n(str)
-    str
-  end
-
-  def self.i18n(str)
-    str
   end
 end
 

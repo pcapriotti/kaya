@@ -65,7 +65,7 @@ private
     std_action(:open) { load_game }
     std_action(:quit) { close }
     std_action(:save) { save_game }
-    std_action(:saveAs) { save_game_as }
+    std_action(:save_as) { save_game_as }
     
     @actions[:back] = regular_action :back, :icon => 'go-previous', 
                           :text => KDE.i18n("B&ack") do
