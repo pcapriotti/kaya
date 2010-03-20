@@ -32,12 +32,16 @@ class Qt::MainWindow
           m.action :save
           m.action :save_as
           m.separator
+          m.merge_point
+          m.separator
           m.action :quit
         end
         mb.menu(:edit, :text => KDE::i18n("&Edit")) do |m|
           m.action :undo
           m.action :redo
         end
+        mb.merge_point
+        mb.menu(:settings, :text => KDE::i18n("&Settings"))
       end
     end
     basic.merge!(gui)
@@ -161,6 +165,15 @@ module Qt
       @children << desc
     end
     
+    def merge_child(desc)
+      if @opts[:merge_point]
+        @children.insert(@opts[:merge_point], desc)
+        @opts[:merge_point] += 1
+      else
+        add_child(desc)
+      end
+    end
+    
     def to_sexp
       "(#{@name} #{@opts.inspect}#{@children.map{|c| ' ' + c.to_sexp}.join})"
     end
@@ -176,7 +189,7 @@ module Qt
               break
             end
           end
-          add_child(child2.dup) unless merged
+          merge_child(child2.dup) unless merged
         end
         true
       else
@@ -203,6 +216,10 @@ module Qt
         child = Descriptor.new(name, opts)
         blk[self.class.new(child)] if block_given?
         __desc__.add_child(child)
+      end
+      
+      def merge_point
+        @__desc__.opts[:merge_point] = @__desc__.children.size
       end
     end
   end
