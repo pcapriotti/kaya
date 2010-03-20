@@ -21,7 +21,7 @@ class Engine
   include Player
 
   attr_reader :name, :color
-         
+
   def initialize(path, name, color, match, opts = {})
     @name = name
     @color = color

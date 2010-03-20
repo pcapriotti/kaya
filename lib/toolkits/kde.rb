@@ -1,4 +1,12 @@
+# Copyright (c) 2009 Paolo Capriotti <p.capriotti@gmail.com>
+# 
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
 require 'korundum4'
+require 'builder'
 require 'toolkits/qt'
 begin 
   require 'kio' 
@@ -148,28 +156,33 @@ module KDE
   end
   
   class GuiBuilder < Builder::XmlMarkup
+    def initialize
+      super
+      @action_opts = { }
+    end
+
     def menu_bar(&blk)
       MenuBar(&blk)
     end
     
-    def menu(name, text = nil, &blk)
+    def menu(name, opts = {}, &blk)
       Menu(:name => name) do |m|
-        m.text(text) if text
+        m.text(opts[:text]) if opts[:text]
         blk[m] if block_given?
       end
     end
     
     def action(name, opts = {})
-      Action(opts.merge(:name => name))
+      Action(opts.merge(@action_opts).merge(:name => name))
     end
     
     def separator
       self.Separator
     end
     
-    def tool_bar(name, text = nil, &blk)
+    def tool_bar(name, opts = { }, &blk)
       ToolBar(:name => name) do |tb|
-        tb.text(text) if text
+        tb.text(opts[:text]) if opts[:text]
         blk[tb] if block_given?
       end
     end
@@ -178,8 +191,14 @@ module KDE
       ActionList(:name => name)
     end
     
-    def group(name)
-      DefineGroup(:name => name)
+    def group(name, &blk)
+      if block_given?
+        @action_opts = { :group => name }
+        blk[self]
+        @action_opts = { }
+      else
+        DefineGroup(:name => name)
+      end
     end
   end
 end

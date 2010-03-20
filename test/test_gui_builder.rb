@@ -48,7 +48,7 @@ class TestGuiBuilder < Test::Unit::TestCase
           m.action :save
           m.action :exit
         end
-        mb.menu(:edit, "Edit") do |m|
+        mb.menu(:edit, :text => "Edit") do |m|
           m.action :cut
           m.action :copy
           m.action :paste
@@ -94,7 +94,7 @@ class TestGuiBuilder < Test::Unit::TestCase
   
   def test_toolbar
     gui = KDE::gui(:gui_test) do |g|
-      g.tool_bar(:file, "File") do |tb|
+      g.tool_bar(:file, :text => "File") do |tb|
         tb.action :open
         tb.action :save
         tb.action :exit
@@ -147,5 +147,27 @@ class TestGuiBuilder < Test::Unit::TestCase
     menu = xml.elements["gui/MenuBar/Menu"]
     assert menu
     assert "extension", menu.elements["DefineGroup"].attributes["name"]    
+  end
+  
+  def test_group_actions
+    gui = KDE::gui(:gui_test) do |g|
+      g.menu_bar do |mb|
+        mb.menu(:file) do |m|
+          m.action :open
+          m.group(:extension) do |g|
+            g.action :connect
+            g.action :disconnect
+          end
+          m.action :quit
+        end
+      end
+    end
+    xml = REXML::Document.new(gui)
+    
+    menu = xml.elements["gui/MenuBar/Menu"]
+    assert menu
+    assert_nil menu.elements["DefineGroup"]
+    assert_equal "extension", menu.elements["Action[@name='connect']"].
+                              attributes["group"]
   end
 end

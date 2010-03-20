@@ -35,7 +35,7 @@ class ICSPlugin
           m.action :configure_ics
         end
       end
-      g.tool_bar(:ics_toolbar, KDE::i18n("&ICS Toolbar")) do |tb|
+      g.tool_bar(:ics_toolbar, :text => KDE::i18n("&ICS Toolbar")) do |tb|
         tb.action :connect
         tb.action :disconnect
       end
