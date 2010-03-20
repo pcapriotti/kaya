@@ -97,6 +97,22 @@ class KDE::ActionCollection
   end
 end
 
+class KDE::XmlGuiWindow
+  def setGUI(gui)
+    KDE::with_xml_gui(gui) do |file|
+      setupGUI(KDE::XmlGuiWindow::Default, file)
+    end
+  end
+end
+
+class KDE::XMLGUIClient
+  def setGUI(gui)
+    KDE::with_xml_gui(gui) do |file|
+      setXMLFile(file)
+    end
+  end
+end
+
 module ActionHandler
   def std_action(action, opts = {}, &blk)
     target, slot = get_slot(opts[:slot], &blk)

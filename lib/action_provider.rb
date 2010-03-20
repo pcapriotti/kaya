@@ -25,9 +25,7 @@ class ActionProviderClient < KDE::XMLGUIClient
     super(parent)
     @parent = parent
 
-    KDE::with_xml_gui(provider.gui) do |file|
-      setXMLFile(file)
-    end
+    setGUI(provider.gui)
     provider.each_action do |action|
       regular_action(action.id, action.opts) do
         action.action[@parent]

@@ -61,4 +61,8 @@ class String
          gsub(/([a-z\d])([A-Z])/,'\1_\2').
          downcase
   end
+  
+  def camelize
+    gsub(/_(.)/) {|m| $1.upcase }
+  end
 end

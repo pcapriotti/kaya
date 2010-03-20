@@ -42,11 +42,7 @@ class MainWindow < KDE::XmlGuiWindow
     startup(game)
     setup_actions
     load_action_providers
-    
-    xml_gui_file = KDE::with_xml_gui(Kaya::GUI) do |file|
-      setupGUI(KDE::XmlGuiWindow::Default, file)
-    end
-    
+    setGUI(Kaya::GUI)
     new_game(Match.new(game), :new_tab => false)
   end
   
@@ -131,7 +127,6 @@ private
   
   def startup(game)
     @field = AnimationField.new(20)
-
 
     movelist_stack = Qt::StackedWidget.new(self)
     movelist_dock = Qt::DockWidget.new(self)

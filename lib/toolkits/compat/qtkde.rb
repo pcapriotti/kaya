@@ -5,16 +5,15 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-KDE = Qt
+KDE = Qt # wait... what?
+
+require 'toolkits/compat/qt_gui_builder'
 
 Qt::XmlGuiWindow = Qt::MainWindow
-class Qt::MainWindow
-  attr_reader :tmp_menu
-  
-  def initialize(parent)
-    super(parent)
-    @tmp_menu = Qt::Menu.new("Temp")
-    menu_bar.add_menu(@tmp_menu)
+
+class Qt::MainWindow  
+  def setGUI(gui)
+    Qt::GuiBuilder.build(self, gui)
   end
 end
 
@@ -24,7 +23,10 @@ class Qt::Dialog
   end
 end
 
-Qt::XMLGUIClient = Qt::Object
+class Qt::XMLGUIClient < Qt::Object
+  def setGUI(gui)
+  end
+end
 
 class KDE::ComboBox
   def self.create_signal_map(obj)
@@ -145,9 +147,6 @@ module Qt
     Descriptor.new(:gui, :name => name).tap do |desc|
       blk[Descriptor::Builder.new(desc)] if block_given?
     end
-  end
-  
-  def self.with_xml_gui(*args, &blk)
   end
 
   def self.ki18n(str)
