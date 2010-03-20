@@ -44,11 +44,6 @@ module Kaya
       end
     end
     
-    g.tool_bar(:mainToolBar) do |tb|
-      tb.action(:connect)
-      tb.action(:disconnect)
-    end
-    
     g.tool_bar(:gameToolbar, :text => KDE::i18n("Game Toolbar")) do |tb|
       tb.action :begin
       tb.action :back

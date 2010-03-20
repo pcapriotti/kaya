@@ -21,10 +21,14 @@ require 'toolkits/compat/qt_gui_builder'
 
 Qt::XmlGuiWindow = Qt::MainWindow
 
-class Qt::MainWindow  
-  def setGUI(gui)
+class Qt::MainWindow
+  attr_reader :gui
+  
+  def initialize(parent)
+    super(parent)
+    
     # create basic GUI
-    basic = Qt::gui(gui.name) do |g|
+    @gui = Qt::gui(:qt_base) do |g|
       g.menu_bar do |mb|
         mb.menu(:file, :text => KDE::i18n("&File")) do |m|
           m.action :open_new
@@ -44,8 +48,11 @@ class Qt::MainWindow
         mb.menu(:settings, :text => KDE::i18n("&Settings"))
       end
     end
-    basic.merge!(gui)
-    Qt::GuiBuilder.build(self, basic)
+  end
+  
+  def setGUI(gui)
+    @gui.merge!(gui)
+    Qt::GuiBuilder.build(self, @gui)
     
     # restore state
     settings = Qt::Settings.new
@@ -91,6 +98,7 @@ end
 
 class Qt::XMLGUIClient < Qt::Object
   def setGUI(gui)
+    parent.gui.merge!(gui)
   end
 end
 
