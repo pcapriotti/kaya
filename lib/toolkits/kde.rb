@@ -23,6 +23,14 @@ class KDE::ComboBox
   end
 end
 
+class KDE::ComboBox
+  def self.create_signal_map(obj)
+    super(obj).tap do |m|
+      m[:current_index_changed] = [['currentIndexChanged(int)', 1]]
+    end
+  end
+end
+
 class KDE::TabWidget
   def self.create_signal_map(obj)
     super(obj).tap do |m|

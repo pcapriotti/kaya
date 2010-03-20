@@ -67,7 +67,7 @@ private
     @actions = { }
     std_action(:open_new) { create_game }
     std_action(:open) { load_game }
-    std_action :quit, :slot => :close
+    std_action(:quit) { close }
     std_action(:save) { save_game }
     std_action(:saveAs) { save_game_as }
     

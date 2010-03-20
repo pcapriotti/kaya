@@ -167,14 +167,6 @@ class Qt::Pixmap
   end
 end
 
-class KDE::ComboBox
-  def self.create_signal_map(obj)
-    super(obj).tap do |m|
-      m[:current_index_changed] = [['currentIndexChanged(int)', 1]]
-    end
-  end
-end
-
 class Qt::MetaObject
   def create_signal_map
     map = {}
