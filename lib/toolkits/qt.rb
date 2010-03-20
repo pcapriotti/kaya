@@ -26,6 +26,12 @@ class Qt::Variant
   end
 end
 
+class Qt::ByteArray
+  def self.from_hex(str)
+    new([str.gsub(/\W+/, '')].pack('H*'))
+  end
+end
+
 class Qt::Painter
   # 
   # Ensure this painter is closed after the block is executed.

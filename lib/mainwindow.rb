@@ -47,6 +47,7 @@ class MainWindow < KDE::XmlGuiWindow
   end
   
   def closeEvent(event)
+    saveGUI
     if controller.match
       controller.match.close
     end

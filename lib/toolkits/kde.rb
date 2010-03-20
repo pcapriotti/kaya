@@ -103,6 +103,9 @@ class KDE::XmlGuiWindow
       setupGUI(KDE::XmlGuiWindow::Default, file)
     end
   end
+  
+  def saveGUI
+  end
 end
 
 class KDE::XMLGUIClient

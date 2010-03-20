@@ -42,6 +42,40 @@ class Qt::MainWindow
     end
     basic.merge!(gui)
     Qt::GuiBuilder.build(self, basic)
+    
+    # restore state
+    settings = Qt::Settings.new
+    state = nil
+    geometry = nil
+    if settings.contains("mainwindow/state")
+      state = settings.value("mainwindow/state").toByteArray
+      geometry = settings.value("mainwindow/geometry").toByteArray
+    else
+      # reasonable default values
+      state = Qt::ByteArray.from_hex(%{
+        000000ff00000000fd0000000100000000000000b2000002e4fc0200000001fc000000
+        33000002e4000000a60100001efa000000010100000002fb0000000e0063006f006e00
+        73006f006c00650100000000ffffffff0000005101000005fb00000010006d006f0076
+        0065006c0069007300740100000000000000510000004e01000005000002d8000002e4
+        00000004000000040000000800000008fc000000010000000200000002000000160067
+        0061006d00650054006f006f006c0062006100720100000000ffffffff000000000000
+        000000000016006d00610069006e0054006f006f006c004200610072010000007b0000
+        03120000000000000000})
+      geometry = Qt::ByteArray.from_hex(%{
+        01d9d0cb0001000000000000000000000000039400000335000000040000001b000003
+        9000000331000000000000})
+    end
+    restore_geometry(geometry)
+    restore_state(state)
+  end
+  
+  def saveGUI
+    settings = Qt::Settings.new
+    settings.begin_group("mainwindow")
+    settings.set_value("geometry", Qt::Variant.new(save_geometry))
+    settings.set_value("state", Qt::Variant.new(save_state))
+    settings.end_group
+    settings.sync
   end
 end
 
@@ -182,7 +216,10 @@ end
 
 class Qt::Application
   def self.init(data)
-    new(ARGV)
+    new(ARGV).tap do |app|
+      app.application_name = data[:id]
+      app.organization_name = data[:id]
+    end
   end
 end
 

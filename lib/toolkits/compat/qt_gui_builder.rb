@@ -90,6 +90,7 @@ module Qt
       
       def create_element(window, parent, desc)
         Qt::ToolBar.new(desc.opts[:text].to_s, parent).tap do |tb|
+          tb.object_name = desc.opts[:name].to_s
           parent.add_tool_bar(Qt::TopToolBarArea, tb)
         end
       end
