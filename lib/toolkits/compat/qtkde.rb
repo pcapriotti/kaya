@@ -16,10 +16,6 @@ class Qt::MainWindow
     @tmp_menu = Qt::Menu.new("Temp")
     menu_bar.add_menu(@tmp_menu)
   end
-  
-  def action_collection
-    self
-  end
 end
 
 class Qt::Dialog
@@ -47,9 +43,12 @@ class KDE::TabWidget
 end
 
 module ActionHandler
+  def action_collection
+    @action_collection ||= { }
+  end
+  
   def add_action(name, a)
-    # fixme
-    action_parent.tmp_menu.add_action(a)
+    action_parent.action_collection[name] = a
   end
   
   def std_action(name, &blk)

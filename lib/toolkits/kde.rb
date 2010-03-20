@@ -91,6 +91,12 @@ class KDE::CmdLineArgs
   end
 end
 
+class KDE::ActionCollection
+  def []=(name, action)
+    add_action(name.to_s, action)
+  end
+end
+
 module ActionHandler
   def std_action(action, opts = {}, &blk)
     target, slot = get_slot(opts[:slot], &blk)

@@ -140,8 +140,7 @@ private
     movelist_dock.object_name = "movelist"
     add_dock_widget(Qt::LeftDockWidgetArea, movelist_dock, Qt::Vertical)
     movelist_dock.show
-    action_collection.add_action('toggle_history', 
-      movelist_dock.toggle_view_action)
+    action_collection[:toggle_history] = movelist_dock.toggle_view_action
 
     @view = MultiView.new(self, movelist_stack)
     create_view(:name => game.class.plugin_name)
@@ -159,8 +158,7 @@ private
     add_dock_widget(Qt::BottomDockWidgetArea, console_dock, Qt::Horizontal)                      
     console_dock.window_flags = console_dock.window_flags & ~Qt::WindowStaysOnTopHint            
     console_dock.show
-    action_collection.add_action('toggle_console', 
-      console_dock.toggle_view_action)
+    action_collection[:toggle_console] = console_dock.toggle_view_action
     
     self.central_widget = @view
   end
