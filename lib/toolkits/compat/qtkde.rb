@@ -47,6 +47,11 @@ class Qt::MainWindow
         mb.merge_point
         mb.menu(:settings, :text => KDE::i18n("&Settings"))
       end
+      g.tool_bar(:mainToolBar, :text => KDE::i18n("&Main toolbar")) do |tb|
+        tb.action :open_new
+        tb.action :open
+        tb.action :save
+      end
     end
   end
   
@@ -128,9 +133,10 @@ module ActionHandler
   end
   
   def std_action(name, &blk)
-    action_factory = Qt::STD_ACTIONS[name]
-    if action_factory
-      a = action_factory[action_parent]
+    text, icon_name = Qt::STD_ACTIONS[name]
+    if text
+      icon = Qt::Icon.from_theme(icon_name)
+      a = Qt::Action.new(icon, text, action_parent)
       add_action(name, a)
       a.on(:triggered, &blk)
       a
@@ -141,6 +147,9 @@ module ActionHandler
     a = Qt::Action.new(opts[:text], action_parent)
     add_action(name, a)
     a.on(:triggered, &blk)
+    if (opts[:icon])
+      a.icon = Qt::Icon.from_theme(opts[:icon])
+    end
     a
   end
   
@@ -151,13 +160,13 @@ end
 
 module Qt
   STD_ACTIONS = {
-    :open_new => lambda {|w| Qt::Action.new(KDE::i18n("&New..."), w) },
-    :open => lambda {|w| Qt::Action.new(KDE::i18n("&Open..."), w) },
-    :quit => lambda {|w| Qt::Action.new(KDE::i18n("&Quit"), w) },
-    :save => lambda {|w| Qt::Action.new(KDE::i18n("&Save"), w) },
-    :save_as => lambda {|w| Qt::Action.new(KDE::i18n("S&ave as..."), w) },
-    :undo => lambda {|w| Qt::Action.new(KDE::i18n("&Undo"), w) },
-    :redo => lambda {|w| Qt::Action.new(KDE::i18n("&Redo"), w) },
+    :open_new => [KDE::i18n("&New..."), 'document-new'],
+    :open => [KDE::i18n("&Open..."), 'document-open'],
+    :quit => [KDE::i18n("&Quit"), 'application-exit'],
+    :save => [KDE::i18n("&Save"), 'document-save'],
+    :save_as => [KDE::i18n("S&ave as..."), 'document-save-as'],
+    :undo => [KDE::i18n("&Undo"), 'edit-undo'],
+    :redo => [KDE::i18n("&Redo"), 'edit-redo']
   }
   
   class Descriptor
