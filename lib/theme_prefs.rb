@@ -44,9 +44,9 @@ class ThemePrefs < KDE::Dialog
     self.caption = KDE::i18n("Configure themes")
 
     update
-    @tabs.on('currentChanged(int)') { update }
-    @lists.each {|type, list| list.on(:itemSelectionChanged) { update(type) } }
-    on(:okClicked) do
+    @tabs.on(:current_changed) { update }
+    @lists.each {|type, list| list.on(:item_selection_changed) { update(type) } }
+    on(:ok_clicked) do
       @theme_loader.save
       fire :ok
     end
@@ -82,7 +82,7 @@ class ThemePrefs < KDE::Dialog
       end
       themes = [['', nil]] + themes
       KDE::ComboBox.from_a(parent, themes).tap do |combo|
-        combo.on('currentIndexChanged(int)') do
+        combo.on(:current_index_changed) do |i|
           type = current_type
           item = @lists[type].current_item
           @theme_loader.set(type, item_name(type, item.get), 

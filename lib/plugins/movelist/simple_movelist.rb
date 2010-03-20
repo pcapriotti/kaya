@@ -101,11 +101,10 @@ class SimpleMoveList < Qt::ListView
   def on_reset(match)
     if match.game.respond_to?(:serializer)
       self.model = LinearHistoryModel.new(match)
-      model.observe(:change_current) do |current|
+      model.on(:change_current) do |current|
         select(current)
       end
-      sig = 'selectionChanged(QItemSelection, QItemSelection)'
-      selection_model.on(sig) do |selected, deselected|
+      selection_model.on(:selection_changed) do |selected, deselected|
         index = selected.indexes.first
         match.go_to(nil, index.row) if index
       end

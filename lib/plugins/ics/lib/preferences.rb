@@ -41,7 +41,7 @@ class Preferences < KDE::Dialog
     username.text = data[:username]
     password.text = data[:password]
     
-    on(:okClicked) do
+    on(:ok_clicked) do
       Config.save :username => username.text,
                   :password => password.text
     end

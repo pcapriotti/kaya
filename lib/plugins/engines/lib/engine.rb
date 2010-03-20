@@ -34,7 +34,7 @@ class Engine
     @engine = KDE::Process.new
     @engine.on(:readyReadStandardOutput) { process_input }
     @engine.on(:started) { on_started }
-    @engine.on('finished(int, QProcess::ExitStatus)') { on_quit }
+    @engine.on(:finished) { on_quit }
     
     @command_queue = []
   end
@@ -56,7 +56,7 @@ class Engine
   end
   
   def setup
-    @match.observe(:started) do
+    @match.on(:started) do
       on_engine_start
     end
   end

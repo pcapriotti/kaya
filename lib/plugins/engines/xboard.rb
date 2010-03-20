@@ -129,7 +129,7 @@ class XBoardEngine < Engine
   end
   
   def allow_undo?(player, manager)
-    manager.observe(:complete) do |moves|
+    manager.on(:complete) do |moves|
       # Important note: this block may be called when the match state
       # and the engine internal state are not synchronized. For example,
       # the engine can make a move while the undo process is happening,

@@ -97,7 +97,7 @@ private
                    :icon => 'games-config-theme',
                    :text => KDE.i18n("Configure &Themes...") do
       dialog = ThemePrefs.new(@loader, @theme_loader, self)
-      dialog.observe(:ok) { controller.reset }
+      dialog.on(:ok) { controller.reset }
       dialog.show
     end
     
@@ -124,7 +124,7 @@ private
     movelist = @loader.get_matching(:movelist).new(contr)
     v = View.new(table, contr, movelist)
     @view.add(v, opts)
-    contr.observe(:changed_active_actions) do
+    contr.on(:changed_active_actions) do
       update_active_actions(contr)
     end
   end
@@ -145,7 +145,7 @@ private
 
     @view = MultiView.new(self, movelist_stack)
     create_view(:name => game.class.plugin_name)
-    @view.observe(:changed) { update_active_actions(controller) }
+    @view.on(:changed) { update_active_actions(controller) }
     
     @engine_loader = @loader.get_matching(:engine_loader).new
     @engine_loader.reload
@@ -193,7 +193,7 @@ private
       controller.match.game
     end
     diag = NewGame.new(self, @engine_loader, current_game)
-    diag.observe(:ok) do |data|
+    diag.on(:ok) do |data|
       game = data[:game]
       match = Match.new(game, :editable => data[:engines].empty?)
       if data[:new_tab]
@@ -205,7 +205,7 @@ private
       contr = controller
       
       
-      match.observe(:started) do
+      match.on(:started) do
         contr.reset(match)
       end
       

@@ -6,6 +6,7 @@
 # (at your option) any later version.
 
 require 'Qt4'
+require 'observer_utils'
 
 ParseException = Class.new(Exception)
 
@@ -166,19 +167,62 @@ class Qt::Pixmap
   end
 end
 
+class KDE::ComboBox
+  def self.create_signal_map(obj)
+    super(obj).tap do |m|
+      m[:current_index_changed] = [['currentIndexChanged(int)', 1]]
+    end
+  end
+end
+
+class Qt::MetaObject
+  def create_signal_map
+    map = {}
+    (0...methodCount).map do |i|
+      m = method(i)
+      if m.methodType == Qt::MetaMethod::Signal
+        sign = m.signature 
+        sign =~ /^(.*)\(.*\)$/
+        sig = $1.underscore.to_sym
+        val = [sign, m.parameterTypes.size]
+        map[sig] ||= []
+        map[sig] << val
+      end
+    end
+    map
+  end
+end
+
 class Qt::Base
-  def self.signal_map(sigmap)
-    @signal_map = sigmap
-    signals *sigmap.map{|k, v| v || k }
+  include Observable
+  
+  def on(sig, opts = {}, &blk)
+    raise "Only symbols are supported as signals" unless sig.is_a?(Symbol)
+    candidates = if is_a? Qt::Object
+      self.signal_map[sig]
+    end
+    if candidates
+      if candidates.size > 1
+        # find candidate with the correct arity
+        arity = blk.arity
+        if blk.arity == -1
+          # take first
+          candidates = [candidates.first]
+        else
+          candidates = candidates.find_all{|s| s[1] == arity }
+        end
+      end
+      if candidates.size > 1
+        raise "Ambiguous overload for #{sig} with arity #{arity}"
+      elsif candidates.empty?
+        raise "No overload for #{sig} with arity #{blk.arity}"
+      end
+      sign = candidates.first[0]
+      connect(SIGNAL(sign), &blk)
+    else
+      observe(sig, &blk)
+    end
   end
-
-  def self.get_signal(sig)
-    (@signal_map || {})[sig] || sig
-  end
-
-  def on(sig, &blk)
-    connect(SIGNAL(self.class.get_signal(sig)), &blk)
-  end  
 
   def in(interval, &blk)
     Qt::Timer.in(interval, self, &blk)
@@ -186,6 +230,18 @@ class Qt::Base
 
   def run_later(&blk)
     self.in(0, &blk)
+  end
+  
+  def signal_map
+    self.class.signal_map(self)
+  end
+  
+  def self.signal_map(obj)
+    @signal_map ||= self.create_signal_map(obj)
+  end
+  
+  def self.create_signal_map(obj)
+    obj.meta_object.create_signal_map
   end
 end
 

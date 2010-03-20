@@ -30,7 +30,7 @@ class Console < Qt::Widget
     @bold_font = f
     @bold_font.bold = true
 
-    @input.on(:returnPressed) do
+    @input.on(:return_pressed) do
       text = @input.text
       with_font(@bold_font) do
         @output.append text

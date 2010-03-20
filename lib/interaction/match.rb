@@ -114,7 +114,7 @@ class Match
   def undo!(player)
     cancel_undo
     @manager = UndoManager.new(@players.keys)
-    @manager.observe(:execute) do |moves|
+    @manager.on(:execute) do |moves|
       if moves
         moves.times do
           history.undo!

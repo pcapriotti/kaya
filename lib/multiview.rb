@@ -12,9 +12,6 @@ class MultiView < KDE::TabWidget
   include Observable
   include Enumerable
   
-  CHANGED_SIG = 'currentChanged(int)'
-  CLOSED_SIG = 'tabCloseRequested(int)'
-  
   def initialize(parent, movelist_stack)
     super(parent)
     @movelist_stack = movelist_stack
@@ -22,8 +19,8 @@ class MultiView < KDE::TabWidget
     @index = -1
     tab_bar.visible = false
     tab_bar.tabs_closable = true
-    on(CHANGED_SIG) {|i| self.index = i; fire :changed }
-    tab_bar.on(CLOSED_SIG) {|i| delete_at(i) }
+    on(:current_changed) {|i| self.index = i; fire :changed }
+    tab_bar.on(:tab_close_requested) {|i| delete_at(i) }
   end
   
   def index=(value)

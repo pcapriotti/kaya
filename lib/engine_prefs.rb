@@ -93,10 +93,11 @@ class EngineData < KDE::Dialog
     
     name.set_focus
     
-    on(:okClicked) do
+    on(:ok_clicked) do
       unless path.text.empty? or name.text.empty?
         protocol = type.current_text
         game = games.item_data(games.current_index).toString.to_sym
+        puts "ok clicked"
         fire :ok => {
           :name => name.text,
           :protocol => type.current_text,
@@ -148,11 +149,10 @@ class EnginePrefs < KDE::Dialog
     @add_engine.on(:pressed) { add_engine }
     @edit_engine.on(:pressed) { edit_engine }
     @delete_engine.on(:pressed) { delete_engine }
-#     @list.on('itemDoubleClicked(QListWidgetItem*)') { edit_engine }
 
     self.main_widget = widget
 
-    on(:okClicked) do
+    on(:ok_clicked) do
       @loader.update_entries(@engines)
     end
   end
@@ -167,8 +167,8 @@ class EnginePrefs < KDE::Dialog
   end
   
   def add_engine
-    dialog = EngineData.new(KDE.i18n("New Engine"), self)
-    dialog.observe(:ok) do |data|
+    dialog = EngineData.new(KDE.i18n("New Engine"), self)    
+    dialog.on(:ok) do |data|
       engine = @loader.engine.new(data)
       @engines[engine.name] = engine
       index = @list.model.row_count
@@ -186,7 +186,7 @@ class EnginePrefs < KDE::Dialog
       old_name = @list.model.data(index, Qt::DisplayRole).toString
       old_engine = @engines[old_name]
       dialog = EngineData.new(KDE.i18n("Edit Engine"), self, old_engine)
-      dialog.observe(:ok) do |data|
+      dialog.on(:ok) do |data|
         engine = @loader.engine.new(data)
         if engine.name != old_name
           @engines.delete(old_name)

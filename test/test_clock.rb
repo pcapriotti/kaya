@@ -29,8 +29,8 @@ class TestClock < Test::Unit::TestCase
     
     # 2 seconds main time
     clock = Clock.new(2, 0, nil, FakeTimer)
-    clock.observe(:timer) {|timer|}
-    clock.observe(:elapsed) { elapsed = true }
+    clock.on(:timer) {|timer|}
+    clock.on(:elapsed) { elapsed = true }
     clock.start
     
     clock.tick
@@ -61,8 +61,8 @@ class TestClock < Test::Unit::TestCase
     
     # 10 seconds main time, 1 second increment
     clock = Clock.new(10, 1, nil, FakeTimer)
-    clock.observe(:timer) {|timer|}
-    clock.observe(:elapsed) { elapsed = true }
+    clock.on(:timer) {|timer|}
+    clock.on(:elapsed) { elapsed = true }
     clock.start
     
     80.times { clock.tick }
@@ -96,8 +96,8 @@ class TestClock < Test::Unit::TestCase
     
     # 10 seconds main time, 1 second byoyomi, 2 periods
     clock = Clock.new(10, 0, Clock::ByoYomi.new(1, 2), FakeTimer)
-    clock.observe(:timer) {|timer|}
-    clock.observe(:elapsed) { elapsed = true }
+    clock.on(:timer) {|timer|}
+    clock.on(:elapsed) { elapsed = true }
     clock.start
     
     80.times { clock.tick }

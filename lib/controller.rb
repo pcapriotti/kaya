@@ -65,22 +65,22 @@ class Controller
       clock.stop
     end
     
-    @board.observe(:click) {|p| on_board_click(p) }
-    @board.observe(:drag) {|data| on_board_drag(data) }
-    @board.observe(:drop) {|data| on_board_drop(data) }
+    @board.on(:click) {|p| on_board_click(p) }
+    @board.on(:drag) {|data| on_board_drag(data) }
+    @board.on(:drop) {|data| on_board_drop(data) }
     @pools.each do |col, pool|
-      pool.observe(:drag) {|data| on_pool_drag(col, data) }
-      pool.observe(:drop) {|data| on_pool_drop(col, data) }
+      pool.on(:drag) {|data| on_pool_drag(col, data) }
+      pool.on(:drop) {|data| on_pool_drop(col, data) }
     end
     @clocks.each do |col, clock|
       clock.data = { :color => col,
                      :player => match.player(col).name }
     end
     
-    match.history.observe(:current_changed) { refresh }
-    match.history.observe(:truncate) { refresh :instant => true }
-    match.history.observe(:force_update) { refresh :force => true }
-    match.history.observe(:new_move) do |data|
+    match.history.on(:current_changed) { refresh }
+    match.history.on(:truncate) { refresh :instant => true }
+    match.history.on(:force_update) { refresh :force => true }
+    match.history.on(:new_move) do |data|
       refresh(data[:opts])
       if match.time_running?
         @clocks.each do |player, clock|

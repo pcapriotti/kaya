@@ -15,20 +15,15 @@ module ICS
 class Connection < Qt::Object
   attr_accessor :debug
 
-  signal_map(:hostFound => nil,
-             :established => nil,
-             :received_line => 'receivedLine(QString)',
-             :received_text => 'receivedText(QString)')
-
   def initialize(host, port)
     super nil
 
     @create_socket = lambda do 
       puts "connecting to #{host}:#{port}"
       s = Qt::TcpSocket.new(self)
-      connect(s, SIGNAL(:hostFound), self, SIGNAL(:hostFound))
-      s.connect(s, SIGNAL(:connected), self, SIGNAL(:established))
-      s.on(:readyRead) { process_line }
+      s.on(:host_found) { fire :host_found }
+      s.on(:connected) { fire :established }
+      s.on(:ready_read) { process_line }
       s.connect_to_host(host, port)
       s
     end
@@ -44,14 +39,14 @@ class Connection < Qt::Object
       line = @socket.read_line.to_s
       line = @buffer + line.gsub("\r", '')
       line.chomp!
-      emit receivedLine(line)
+      fire :received_line => line
       @buffer = ''
     end
 
     if (size = @socket.bytes_available) > 0
       data = @socket.read_all
       @buffer += data.to_s.gsub("\r", '')
-      emit receivedText(@buffer)
+      fire :received_text => @buffer
     end
     
   end

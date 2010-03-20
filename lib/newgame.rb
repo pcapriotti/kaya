@@ -42,7 +42,7 @@ class NewGame < KDE::Dialog
         index(current_game.class.data(:id).to_s)
     end
     @games.current_index = current if current
-    @games.on('currentIndexChanged(int)') do |index|
+    @games.on(:current_index_changed) do |index|
       update_players(index)
     end
     
@@ -50,7 +50,7 @@ class NewGame < KDE::Dialog
     
     self.main_widget = @widget
     
-    on(:okClicked) do
+    on(:ok_clicked) do
       engines = { }
       humans = []
       g = game

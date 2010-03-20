@@ -45,10 +45,10 @@ class Protocol
   def link_to(connection)
     raise "protocol already linked" if @connection
     @connection = connection
-    connection.on(:received_line) do |line, offset|
+    connection.on(:received_line) do |line|
       process line[@last_partial_offset..-1]
     end
-    connection.on(:received_text) do |text, offset|
+    connection.on(:received_text) do |text|
       process_partial text[@last_partial_offset..-1]
     end
   end

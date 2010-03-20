@@ -31,6 +31,10 @@ module Observer
 end
 
 module Observable
+  def on(event, &blk)
+    observe(event, &blk)
+  end
+  
   def observe(event, &blk)
     obs = SimpleObserver.new(event, &blk)
     add_observer obs

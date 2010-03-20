@@ -1,5 +1,9 @@
 require 'korundum4'
 require 'toolkits/qt'
+begin 
+  require 'kio' 
+rescue LoadError
+end
 
 class KDE::ComboBox
   include ListLike
@@ -16,6 +20,14 @@ class KDE::ComboBox
   
   def item(i)
     Item.new(item_data(i).to_ruby)
+  end
+end
+
+class KDE::TabWidget
+  def self.create_signal_map(obj)
+    super(obj).tap do |m|
+      m[:current_changed] = [['currentChanged(int)', 1]]
+    end
   end
 end
 

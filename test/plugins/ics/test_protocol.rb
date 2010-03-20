@@ -19,7 +19,7 @@ class TestProtocol < Test::Unit::TestCase
     example2 = "{Game 502 (azsxdc vs. Hispanico) Creating unrated crazyhouse match.}"
     
     game_info = nil
-    @protocol.observe(:creating_game) { |game_info| }
+    @protocol.on(:creating_game) { |game_info| }
     @protocol.process(example1)
     @protocol.process(example2)
     
@@ -36,7 +36,7 @@ class TestProtocol < Test::Unit::TestCase
 
   def test_login
     fired = false
-    @protocol.observe :login_prompt do
+    @protocol.on(:login_prompt) do
       fired = true
     end
     @protocol.process_partial("login: ")
@@ -45,7 +45,7 @@ class TestProtocol < Test::Unit::TestCase
 
   def test_login
     fired = false
-    @protocol.observe :login_prompt do
+    @protocol.on(:login_prompt) do
       fired = true
     end
     @protocol.process("login: ")
@@ -54,7 +54,7 @@ class TestProtocol < Test::Unit::TestCase
   
   def test_beep
     fired = false
-    @protocol.observe :beep do
+    @protocol.on(:beep) do
       fired = true
     end
     @protocol.process("\a")
