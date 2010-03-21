@@ -68,8 +68,17 @@ class KDE::CmdLineArgs
   end
 end
 
-class KDE::ActionCollection
+class KDE::ActionCollection  
   def []=(name, action)
+    unless action.is_a? KDE::Action
+      orig_action = action
+      action = KDE::Action.new(action.text, action.parent)
+      action.icon = orig_action.icon
+      action.checkable = orig_action.checkable
+      action.checked = orig_action.checked
+      action.on(:triggered) { orig_action.trigger }
+      orig_action.on(:changed) { action.checked = orig_action.checked }
+    end
     add_action(name.to_s, action)
   end
 end
