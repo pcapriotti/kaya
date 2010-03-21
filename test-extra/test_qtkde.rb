@@ -6,8 +6,8 @@
 # (at your option) any later version.
 
 require 'test/unit'
-require 'toolkits/qt'
-require 'toolkits/compat/qtkde'
+$toolkit = :qt
+require 'toolkit'
 
 class TestQtKDECompatibility < Test::Unit::TestCase
   def test_empty_descriptor
