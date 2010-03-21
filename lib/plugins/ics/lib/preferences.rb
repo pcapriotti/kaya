@@ -14,7 +14,7 @@ class Preferences < KDE::Dialog
   def initialize(parent)
     super(parent)
     @gui = KDE::autogui(:preferences, 
-                    :caption => KDE::i18n("Configure ICS")) do |b|
+                        :caption => KDE::i18n("Configure ICS")) do |b|
       b.layout(:type => :vertical) do |vl|
         vl.layout(:type => :horizontal) do |l|
           l.label(:text => KDE::i18n("&Username:"),

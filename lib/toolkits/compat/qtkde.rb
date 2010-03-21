@@ -250,3 +250,7 @@ class Qt::Settings
     include GroupMixin
   end
 end
+
+class Qt::TabWidget
+  include Layoutable
+end

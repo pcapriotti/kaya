@@ -12,40 +12,48 @@ class ThemePrefs < KDE::Dialog
   
   def initialize(loader, theme_loader, parent)
     super(parent)
-
+    
     @loader = loader
     @theme_loader = theme_loader
-    widget = Qt::Frame.new(self)
-    layout = Qt::HBoxLayout.new(widget)
-    @tabs = Qt::TabWidget.new(widget)
-    layout.add_widget(@tabs)
-    @lists = {
-      :game => Game.new_list(nil),
-      :category => Qt::ListWidget.from_a(nil, Game.categories)
-    }
-    @tabs.add_tab(@lists[:game], KDE::i18n('&Games'))
-    @tabs.add_tab(@lists[:category], KDE::i18n('&Categories'))
-    @tabs.current_index = 0
-    @lists[:game].current_index = 0
-    
-    info_layout = Qt::VBoxLayout.new
-    layout.add_layout(info_layout)
-
     @combos = {
-      :pieces => new_labelled(combo_factory(:pieces), '&Pieces:', widget, info_layout),
-      :board => new_labelled(combo_factory(:board), '&Board:', widget, info_layout),
-      :layout => new_labelled(combo_factory(:layout), '&Layout:', widget, info_layout),
-      :clock => new_labelled(combo_factory(:clock), '&Clock:', widget, info_layout)
+      :pieces => KDE::i18n("&Pieces:"),
+      :board => KDE::i18n("&Board:"),
+      :layout => KDE::i18n("&Layout:"),
+      :clock => KDE::i18n("&Clock:") 
+    }
+    @lists = {
+      :game => Factory.new {|p| Game.new_list(p) },
+      :category => Factory.new {|p| Qt::ListWidget.from_a(p, Game.categories) }
     }
     
-    info_layout.add_stretch
+    @gui = KDE::autogui(:themes, 
+                        :caption => KDE::i18n("Configure themes")) do |g|
+      g.layout(:type => :horizontal) do |l|
+        l.tab_widget(:tabs) do |tabs|
+          tabs.tab(:text => KDE::i18n("&Games")) do |t|
+            t.widget(:game, :factory => @lists[:game])
+          end
+          tabs.tab(:text => KDE::i18n("&Categories")) do |t|
+            t.widget(:category, :factory => @lists[:category])
+          end
+        end
+        l.layout(:type => :vertical) do |info|
+          @combos.each do |name, text|
+            info.label(:text => text, :buddy => name)
+            info.widget(name, :factory => combo_factory(name))
+          end
+          info.stretch
+        end
+      end
+    end
+    setGUI(@gui)
     
-    self.main_widget = widget
-    self.caption = KDE::i18n("Configure themes")
-
+    tabs.current_index = 0
+    game.current_index = 0
+    
     update
-    @tabs.on(:current_changed) { update }
-    @lists.each {|type, list| list.on(:item_selection_changed) { update(type) } }
+    tabs.on(:current_changed) { update }
+    @lists.each_key {|name| send(name).on(:item_selection_changed) { update(name) } }
     on(:ok_clicked) do
       @theme_loader.save
       fire :ok
@@ -55,7 +63,7 @@ class ThemePrefs < KDE::Dialog
   private
   
   def current_type
-    if @tabs.current_widget == @lists[:game]
+    if tabs.current_widget == game
       :game
     else
       :category
@@ -64,15 +72,6 @@ class ThemePrefs < KDE::Dialog
   
   def item_name(type, data)
     type == :game ? data.class.data(:id) : data
-  end
-  
-  def new_labelled(widget_factory, label, parent, layout)
-    label = Qt::Label.new(label, parent)
-    layout.add_widget(label)
-    widget = widget_factory.new(parent)
-    label.buddy = widget
-    layout.add_widget(widget)
-    widget
   end
   
   def combo_factory(name)
@@ -84,7 +83,7 @@ class ThemePrefs < KDE::Dialog
       KDE::ComboBox.from_a(parent, themes).tap do |combo|
         combo.on(:current_index_changed) do |i|
           type = current_type
-          item = @lists[type].current_item
+          item = send(type).current_item
           @theme_loader.set(type, item_name(type, item.get), 
                             name, combo.current_item.get) if item
         end
@@ -94,17 +93,17 @@ class ThemePrefs < KDE::Dialog
 
   def update(type = nil)
     type ||= current_type
-    item = @lists[type].current_item
+    item = send(type).current_item
     
-    @combos.each do |component, combo|
-      combo.enabled = !!item
+    @combos.each_key do |component|
+      send(component).enabled = !!item
     end
     
     if item
       theme = @theme_loader.load_spec(type => item.get)
-      @combos.each do |component, combo|
+      @combos.each_key do |component|
         klass = theme[component]
-        combo.select_item do |data|
+        send(component).select_item do |data|
           data == klass
         end
       end

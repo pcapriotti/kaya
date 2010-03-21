@@ -237,3 +237,7 @@ module KDE
     end
   end
 end
+
+class KDE::TabWidget
+  include Layoutable
+end

@@ -20,10 +20,10 @@ module Qt
       element
     end
     
-    def setup_widget(widget, layout, desc)
+    def setup_widget(widget, parent, layout, desc)
       layout.add_widget(widget)
       if desc.opts[:name]
-        widget.parent.add_accessor(desc.opts[:name], widget)
+        parent.add_accessor(desc.opts[:name], widget)
       end        
     end
     
@@ -118,12 +118,20 @@ module Qt
       end
     end
     
+    class Stretch
+      include GuiBuilder
+      
+      def create_element(window, parent, desc)
+        parent.add_stretch
+      end
+    end
+    
     class Label
       include GuiBuilder
       
       def create_element(window, parent, desc)
         Qt::Label.new(desc.opts[:text].to_s, window).tap do |label|
-          setup_widget(label, parent, desc)
+          setup_widget(label, window, parent, desc)
           if desc.opts[:buddy]
             window.buddies[label] = desc.opts[:buddy]
           end
@@ -136,7 +144,50 @@ module Qt
       
       def create_element(window, parent, desc)
         Qt::LineEdit.new(window).tap do |edit|
-          setup_widget(edit, parent, desc)
+          setup_widget(edit, window, parent, desc)
+        end
+      end
+    end
+    
+    class TabWidget
+      include GuiBuilder
+      
+      def create_element(window, parent, desc)
+        KDE::TabWidget.new(window).tap do |widget|
+          setup_widget(widget, window, parent, desc)
+          widget.owner = window.owner
+        end
+      end
+    end
+    
+    class Widget
+      include GuiBuilder
+      
+      def create_element(window, parent, desc)
+        desc.opts[:factory].new(window).tap do |widget|
+          setup_widget(widget, window, parent, desc)
+        end
+      end
+    end
+    
+    class Tab
+      include GuiBuilder
+      
+      class Helper
+        def initialize(parent, text)
+          @parent = parent
+          @text = text
+        end
+        
+        def add_widget(widget)
+          @parent.add_tab(widget, @text)
+        end
+      end
+      
+      def build(window, parent, desc)
+        desc.children.each do |child|
+          b = builder(child.name).new
+          b.build(parent, Helper.new(parent, desc.opts[:text]), child)
         end
       end
     end
