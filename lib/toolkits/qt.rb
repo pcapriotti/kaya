@@ -5,7 +5,6 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-require 'Qt4'
 require 'observer_utils'
 require 'descriptor'
 require 'toolkits/qt_gui_builder'
@@ -420,6 +419,38 @@ class Qt::Widget
     Qt::GuiBuilder.build(self, gui)
     buddies.each do |label, buddy|
       label.buddy = owner.__send__(buddy)
+    end
+  end
+end
+
+class KDE::ComboBox
+  include ListLike
+  
+  Item = Struct.new(:get)
+  
+  def create_item(text, data)
+    add_item(text, Qt::Variant.from_ruby(data))
+  end
+
+  def current_item
+    item(current_index)
+  end
+  
+  def item(i)
+    Item.new(item_data(i).to_ruby)
+  end
+  
+  def self.create_signal_map(obj)
+    super(obj).tap do |m|
+      m[:current_index_changed] = [['currentIndexChanged(int)', 1]]
+    end
+  end
+end
+
+class KDE::TabWidget
+  def self.create_signal_map(obj)
+    super(obj).tap do |m|
+      m[:current_changed] = [['currentChanged(int)', 1]]
     end
   end
 end

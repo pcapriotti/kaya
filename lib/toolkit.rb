@@ -5,9 +5,11 @@ require 'builder'
 
 case ($toolkit || :kde)
 when :qt
-  require 'toolkits/qt'
+  require 'Qt4'
+  KDE = Qt
   require 'toolkits/compat/qtkde'
 when :kde
+  require 'korundum4'
   require 'toolkits/kde'
 end
 

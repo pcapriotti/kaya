@@ -5,9 +5,9 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-KDE = Qt # wait... what?
+require 'toolkits/qt'
 
-module Qt
+module KDE
   def self.ki18n(str)
     str
   end
