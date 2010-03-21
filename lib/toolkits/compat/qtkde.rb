@@ -318,3 +318,23 @@ end
 class Qt::TabWidget
   include Layoutable
 end
+
+class Qt::Process
+  def output_channel_mode=(val)
+    case val
+    when :only_stdout
+      setProcessChannelMode(Qt::Process::SeparateChannels)
+      setReadChannel(Qt::Process::StandardOutput)
+    else
+      raise "Unsupported output mode #{val}"
+    end
+  end
+  
+  def self.split_args(str)
+    str.split(/\s+/)
+  end
+  
+  def run(path, args)
+    start(path, args)
+  end
+end

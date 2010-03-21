@@ -208,3 +208,19 @@ end
 class KDE::TabWidget
   include Layoutable
 end
+
+class KDE::Process
+  def output_channel_mode=(value)
+    c = self.class.const_get("#{value.to_s.capitalize.camelize}Channel")
+    setOutputChannelMode(c)
+  end
+  
+  def self.split_args(str)
+    KDE::Shell.split_args(str)
+  end
+  
+  def run(path, args)
+    set_program(path, args)
+    start
+  end
+end
