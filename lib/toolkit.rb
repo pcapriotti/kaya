@@ -10,3 +10,11 @@ when :qt
 when :kde
   require 'toolkits/kde'
 end
+
+module KDE
+  def self.autogui(name, opts = { }, &blk)
+    Descriptor.new(:gui, opts.merge(:gui_name => name)).tap do |desc|
+      blk[Descriptor::Builder.new(desc)] if block_given?
+    end
+  end
+end

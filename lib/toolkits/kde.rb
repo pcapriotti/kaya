@@ -29,9 +29,7 @@ class KDE::ComboBox
   def item(i)
     Item.new(item_data(i).to_ruby)
   end
-end
-
-class KDE::ComboBox
+  
   def self.create_signal_map(obj)
     super(obj).tap do |m|
       m[:current_index_changed] = [['currentIndexChanged(int)', 1]]
@@ -44,6 +42,18 @@ class KDE::TabWidget
     super(obj).tap do |m|
       m[:current_changed] = [['currentChanged(int)', 1]]
     end
+  end
+end
+
+class KDE::Dialog
+  include Layoutable
+  
+  def setGUI(gui)
+    self.caption = gui.opts[:caption]
+    widget = Qt::Widget.new(self)
+    widget.owner = self
+    widget.setGUI(gui)
+    self.main_widget = widget
   end
 end
 

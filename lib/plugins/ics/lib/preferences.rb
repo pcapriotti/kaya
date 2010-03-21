@@ -13,30 +13,25 @@ module ICS
 class Preferences < KDE::Dialog
   def initialize(parent)
     super(parent)
+    @gui = KDE::autogui(:preferences, 
+                    :caption => KDE::i18n("Configure ICS")) do |b|
+      b.layout(:type => :vertical) do |vl|
+        vl.layout(:type => :horizontal) do |l|
+          l.label(:text => KDE::i18n("&Username:"),
+                  :buddy => :username)
+          l.line_edit(:username)
+        end
+        
+        vl.layout(:type => :horizontal) do |l|
+          l.label(:text => KDE::i18n("&Password:"),
+                  :buddy => :password)
+          l.line_edit(:password)
+        end
+      end
+    end
     
-    widget = Qt::Widget.new(self)
-    layout = Qt::VBoxLayout.new(widget)
+    setGUI(@gui)
     
-    tmp = Qt::HBoxLayout.new
-    label = Qt::Label.new(KDE::i18n("&Username:"), widget)
-    tmp.add_widget(label)
-    username = Qt::LineEdit.new(widget)
-    tmp.add_widget(username)
-    label.buddy = username
-    layout.add_layout(tmp)
-    
-    tmp = Qt::HBoxLayout.new
-    label = Qt::Label.new(KDE::i18n("&Password:"), widget)
-    tmp.add_widget(label)
-    password = Qt::LineEdit.new(widget)
-    password.echo_mode = Qt::LineEdit::Password
-    label.buddy = password
-    tmp.add_widget(password)
-    layout.add_layout(tmp)
-    
-    self.main_widget = widget
-    self.caption = KDE::i18n("Configure ICS")
-
     data = Config.load
     username.text = data[:username]
     password.text = data[:password]

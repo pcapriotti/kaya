@@ -7,6 +7,8 @@
 
 require 'Qt4'
 require 'observer_utils'
+require 'descriptor'
+require 'toolkits/qt_gui_builder'
 
 ParseException = Class.new(Exception)
 
@@ -385,6 +387,39 @@ module ModelUtils
       ensure
         end_insert_rows
       end
+    end
+  end
+end
+
+module Layoutable
+  attr_writer :owner
+  
+  def add_layout(layout)
+    self.layout = layout
+  end
+  
+  def add_accessor(name, result)
+    owner.metaclass_eval do
+      define_method(name) { result }
+    end
+  end
+  
+  def buddies
+    @buddies ||= { }
+  end
+  
+  def owner
+    @owner || self
+  end
+end
+
+class Qt::Widget
+  include Layoutable
+  
+  def setGUI(gui)
+    Qt::GuiBuilder.build(self, gui)
+    buddies.each do |label, buddy|
+      label.buddy = owner.__send__(buddy)
     end
   end
 end

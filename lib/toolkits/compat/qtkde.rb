@@ -17,8 +17,6 @@ module Qt
   end
 end
 
-require 'toolkits/compat/qt_gui_builder'
-
 Qt::XmlGuiWindow = Qt::MainWindow
 
 class Qt::MainWindow
@@ -105,8 +103,22 @@ class Qt::MainWindow
 end
 
 class Qt::Dialog
-  def caption=(val)
-    self.window_title = val
+  include Layoutable
+  
+  def setGUI(gui)
+    self.window_title = gui.opts[:caption]
+    layout = Qt::VBoxLayout.new(self)
+    widget = Qt::Widget.new(self)
+    widget.owner = self
+    widget.setGUI(gui)
+    buttons = Qt::DialogButtonBox.new
+    buttons.add_button(Qt::DialogButtonBox::Ok)
+    buttons.add_button(Qt::DialogButtonBox::Cancel)
+    layout.add_widget(widget)
+    layout.add_widget(buttons)
+    
+    buttons.on(:accepted) { fire :ok_clicked; accept }
+    buttons.on(:rejected) { reject }
   end
 end
 
@@ -178,82 +190,8 @@ module Qt
     :redo => [KDE::i18n("&Redo"), 'edit-redo']
   }
   
-  class Descriptor
-    attr_reader :name, :opts, :children
-    
-    def initialize(name, opts = { })
-      @name = name
-      @opts = opts
-      @children = []
-    end
-    
-    def add_child(desc)
-      @children << desc
-    end
-    
-    def merge_child(desc)
-      if @opts[:merge_point]
-        @children.insert(@opts[:merge_point], desc)
-        @opts[:merge_point] += 1
-      else
-        add_child(desc)
-      end
-    end
-    
-    def to_sexp
-      "(#{@name} #{@opts.inspect}#{@children.map{|c| ' ' + c.to_sexp}.join})"
-    end
-    
-    def merge!(other, prefix = "")
-      if name == other.name and
-          opts[:name] == other.opts[:name]
-        other.children.each do |child2|
-          merged = false
-          children.each do |child|
-            if child.merge!(child2, prefix + "    ")
-              merged = true
-              break
-            end
-          end
-          merge_child(child2.dup) unless merged
-        end
-        true
-      else
-        false
-      end
-    end
-    
-    class Builder
-      attr_reader :__desc__
-      private :__desc__
-      
-      def initialize(desc)
-        @__desc__ = desc
-      end
-      
-      def method_missing(name, *args, &blk)
-        opts = if args.empty?
-          { }
-        elsif args.size == 1
-          { :name => args.first }
-        else
-          args[-1].merge(:name => args.first)
-        end
-        child = Descriptor.new(name, opts)
-        blk[self.class.new(child)] if block_given?
-        __desc__.add_child(child)
-      end
-      
-      def merge_point
-        @__desc__.opts[:merge_point] = @__desc__.children.size
-      end
-    end
-  end
-  
-  def self.gui(name, &blk)
-    Descriptor.new(:gui, :gui_name => name).tap do |desc|
-      blk[Descriptor::Builder.new(desc)] if block_given?
-    end
+  def self.gui(name, opts = { }, &blk)
+    self.autogui(name, opts, &blk)
   end
 end
 
@@ -291,7 +229,11 @@ class Qt::Settings
       Group.new
     end
     
-    def write_entry(*args)
+    def write_entry(key, value)
+    end
+    
+    def read_entry(key, default_value = nil)
+      default_value
     end
     
     def sync

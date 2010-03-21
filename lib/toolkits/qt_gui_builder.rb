@@ -20,6 +20,13 @@ module Qt
       element
     end
     
+    def setup_widget(widget, layout, desc)
+      layout.add_widget(widget)
+      if desc.opts[:name]
+        widget.parent.add_accessor(desc.opts[:name], widget)
+      end        
+    end
+    
     def builder(name)
       GuiBuilder.const_get(name.to_s.capitalize.camelize)
     end
@@ -92,6 +99,44 @@ module Qt
         Qt::ToolBar.new(desc.opts[:text].to_s, parent).tap do |tb|
           tb.object_name = desc.opts[:name].to_s
           parent.add_tool_bar(Qt::TopToolBarArea, tb)
+        end
+      end
+    end
+    
+    class Layout
+      include GuiBuilder
+      
+      def create_element(window, parent, desc)
+        factory = if desc.opts[:type] == :horizontal
+          Qt::HBoxLayout
+        else
+          Qt::VBoxLayout
+        end
+        factory.new.tap do |layout|
+          parent.add_layout(layout)
+        end
+      end
+    end
+    
+    class Label
+      include GuiBuilder
+      
+      def create_element(window, parent, desc)
+        Qt::Label.new(desc.opts[:text].to_s, window).tap do |label|
+          setup_widget(label, parent, desc)
+          if desc.opts[:buddy]
+            window.buddies[label] = desc.opts[:buddy]
+          end
+        end
+      end
+    end
+    
+    class LineEdit
+      include GuiBuilder
+      
+      def create_element(window, parent, desc)
+        Qt::LineEdit.new(window).tap do |edit|
+          setup_widget(edit, parent, desc)
         end
       end
     end
