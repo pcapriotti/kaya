@@ -32,7 +32,7 @@ class Engine
     @serializer = @match.game.serializer.new(:simple)
     
     @engine = KDE::Process.new
-    @engine.on(:readyReadStandardOutput) { process_input }
+    @engine.on(:ready_read_standard_output) { process_input }
     @engine.on(:started) { on_started }
     @engine.on(:finished) { on_quit }
     
