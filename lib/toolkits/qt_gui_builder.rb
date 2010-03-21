@@ -113,6 +113,7 @@ module Qt
           Qt::VBoxLayout
         end
         factory.new.tap do |layout|
+          layout.margin = desc.opts[:margin] if desc.opts[:margin]
           parent.add_layout(layout)
         end
       end
@@ -207,6 +208,17 @@ module Qt
     class List < Widget
       def factory(desc)
         Qt::ListView
+      end
+    end
+    
+    class CheckBox < Widget
+      def factory(desc)
+        Factory.new do |parent|
+          Qt::CheckBox.new(parent).tap do |check|
+            check.text = desc.opts[:text].to_s
+            check.checked = desc.opts[:checked]
+          end
+        end
       end
     end
     

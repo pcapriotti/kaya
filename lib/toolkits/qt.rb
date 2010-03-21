@@ -393,9 +393,11 @@ end
 
 module Layoutable
   attr_writer :owner
+  attr_accessor :main_layout
   
   def add_layout(layout)
     self.layout = layout
+    owner.main_layout = layout
   end
   
   def add_accessor(name, result)
