@@ -15,12 +15,11 @@ class ThemePrefs < KDE::Dialog
     
     @loader = loader
     @theme_loader = theme_loader
-    @combos = {
-      :pieces => KDE::i18n("&Pieces:"),
-      :board => KDE::i18n("&Board:"),
-      :layout => KDE::i18n("&Layout:"),
-      :clock => KDE::i18n("&Clock:") 
-    }
+    @combos = [
+      [:pieces, KDE::i18n("&Pieces:")],
+      [:board, KDE::i18n("&Board:")],
+      [:layout, KDE::i18n("&Layout:")],
+      [:clock, KDE::i18n("&Clock:")]]
     @lists = {
       :game => Factory.new {|p| Game.new_list(p) },
       :category => Factory.new {|p| Qt::ListWidget.from_a(p, Game.categories) }
@@ -95,13 +94,13 @@ class ThemePrefs < KDE::Dialog
     type ||= current_type
     item = send(type).current_item
     
-    @combos.each_key do |component|
+    @combos.each do |component, _|
       send(component).enabled = !!item
     end
     
     if item
       theme = @theme_loader.load_spec(type => item.get)
-      @combos.each_key do |component|
+      @combos.each do |component, _|
         klass = theme[component]
         send(component).select_item do |data|
           data == klass

@@ -23,7 +23,8 @@ class Qt::Variant
   # Extract the ruby object contained in a QVariant.
   # 
   def to_ruby
-    Marshal.load(toString)
+    str = toString
+    Marshal.load(str) if str
   end
 end
 

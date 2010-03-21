@@ -226,42 +226,92 @@ end
 
 class KDE::Global
   def self.config
-    Qt::Settings.new
+    Qt::Settings::Group.new(Qt::Settings.new, "")
   end
 end
 
 class Qt::Settings
-  module GroupMixin
+  class Group
+    def initialize(settings, prefix)
+      @settings = settings
+      @prefix = prefix
+    end
+    
     def exists
-      false
+      in_group do
+        not @settings.all_keys.empty?
+      end
     end
     
     def delete_group
+      @settings.remove(@prefix)
     end
       
     def group(name)
-      Group.new
+      Group.new(@settings, prefixed(name))
     end
     
     def write_entry(key, value)
+      @settings.set_value(prefixed(key), 
+                          Qt::Variant.new(value))
     end
     
     def read_entry(key, default_value = nil)
-      default_value
+      @settings.value(prefixed(key)).toString || default_value
     end
     
     def sync
+      @settings.sync
     end
     
     def group_list
-      []
+      in_group do
+        @settings.child_groups
+      end
     end
-  end
-  
-  include GroupMixin
-  
-  class Group
-    include GroupMixin
+    
+    def entry_map
+      in_group do
+        @settings.child_keys.inject({}) do |res, key|
+          res[key] = @settings.value(key).toString
+          res
+        end
+      end
+    end
+    
+    def each_group
+      names = in_group do
+        @settings.child_groups
+      end
+      names.each do |name|
+        yield group(name)
+      end
+    end
+    
+    def name
+      if @prefix =~ /\/([^\/]+)$/
+        $1
+      else
+        @prefix
+      end
+    end
+    
+    private
+    
+    def prefixed(key)
+      if @prefix.empty?
+        key
+      else
+        [@prefix, key].join('/')
+      end
+    end
+    
+    def in_group
+      @settings.begin_group(@prefix)
+      result = yield
+      @settings.end_group
+      result
+    end
   end
 end
 
