@@ -13,25 +13,32 @@ class EngineData < KDE::Dialog
   
   def initialize(caption, parent, engine = nil)
     super(parent)
-    self.caption = caption
-    self.buttons = KDE::Dialog::Ok | KDE::Dialog::Cancel
     
-    page = Qt::Frame.new(self)
-    layout = Qt::VBoxLayout.new(page)
-
-    tmp = Qt::HBoxLayout.new
-    label = Qt::Label.new(KDE.i18n("&Name:"), page)
-    tmp.add_widget(label)
-    name = KDE::LineEdit.new(page)
-    label.buddy = name
-    tmp.add_widget(name)
-    layout.add_layout(tmp)
+    @gui = KDE::autogui(:engine_data,
+                        :caption => caption) do |g|
+      g.layout(:type => :vertical) do |l|
+        labelled(l, :name, KDE::i18n("&Name:")) do |h|
+          h.line_edit(:name)
+        end
+        labelled(l, :type, KDE::i18n("&Type:")) do |h|
+          h.combo_box(:type)
+        end
+        labelled(l, :games, KDE::i18n("&Games:")) do |h|
+          h.widget(:games, :factory => Factory.new {|p| Game.new_combo(p) })
+        end
+        labelled(l, :path, KDE::i18n("&Path:")) do |h|
+          h.url_requester(:path)
+        end
+        labelled(l, :args, KDE::i18n("&Arguments:")) do |h|
+          h.line_edit(:args)
+        end
+        labelled(l, :workdir, KDE::i18n("&Work directory:")) do |h|
+          h.url_requester(:workdir)
+        end
+      end
+    end
+    setGUI(@gui)
     
-    tmp = Qt::HBoxLayout.new
-    label = Qt::Label.new(KDE.i18n("&Type:"), page)
-    tmp.add_widget(label)
-    type = KDE::ComboBox.new(page)
-    label.buddy = type
     loader = PluginLoader.new
     protocols = loader.get_all_matching(:engine).map do |klass|
       klass.data(:protocol)
@@ -39,42 +46,6 @@ class EngineData < KDE::Dialog
     protocols.each do |prot|
       type.add_item(prot)
     end
-
-    tmp.add_widget(type)
-    layout.add_layout(tmp)
-    
-    tmp = Qt::HBoxLayout.new
-    label = Qt::Label.new(KDE.i18n("&Game:"), page)
-    tmp.add_widget(label)
-    games = Game.new_combo(page)
-
-    label.buddy = games
-    tmp.add_widget(games)
-    layout.add_layout(tmp)
-    
-    tmp = Qt::HBoxLayout.new
-    label = Qt::Label.new(KDE.i18n("&Path:"), page)
-    tmp.add_widget(label)
-    path = KDE::UrlRequester.new(page)
-    label.buddy = path
-    tmp.add_widget(path)
-    layout.add_layout(tmp)
-    
-    tmp = Qt::HBoxLayout.new
-    label = Qt::Label.new(KDE.i18n("&Arguments: "), page)
-    tmp.add_widget(label)
-    args = Qt::LineEdit.new(page)
-    label.buddy = args
-    tmp.add_widget(args)
-    layout.add_layout(tmp)
-    
-    tmp = Qt::HBoxLayout.new
-    label = Qt::Label.new(KDE.i18n("&Work directory:"), page)
-    tmp.add_widget(label)
-    workdir = KDE::UrlRequester.new(page)
-    label.buddy = workdir
-    tmp.add_widget(workdir)
-    layout.add_layout(tmp)
 
     if engine
       name.text = engine.name
@@ -88,8 +59,6 @@ class EngineData < KDE::Dialog
       current = protocols.index(engine.protocol)
       type.current_index = current if current
     end
-
-    self.main_widget = page
     
     name.set_focus
     
@@ -97,7 +66,6 @@ class EngineData < KDE::Dialog
       unless path.text.empty? or name.text.empty?
         protocol = type.current_text
         game = games.item_data(games.current_index).toString.to_sym
-        puts "ok clicked"
         fire :ok => {
           :name => name.text,
           :protocol => type.current_text,
@@ -108,20 +76,41 @@ class EngineData < KDE::Dialog
       end
     end
   end
+  
+  def labelled(builder, name, label)
+    builder.layout(:type => :horizontal) do |l|
+      l.label(:text => label, :buddy => name)
+      yield l
+    end
+  end
 end
 
 class EnginePrefs < KDE::Dialog
   def initialize(loader, parent)
     super(parent)
     @loader = loader
-    self.caption = KDE.i18n("Configure Engines")
-    self.buttons = KDE::Dialog::Ok | KDE::Dialog::Cancel
-    widget = Qt::Frame.new(self)
     
-    layout = Qt::HBoxLayout.new(widget)
-    
-    @list = Qt::ListView.new(widget)
-    @list.model = Qt::StringListModel.new(
+    @gui = KDE::autogui(:engine_prefs,
+                        :caption => KDE.i18n("Configure Engines")) do |g|
+      g.layout(:type => :horizontal) do |l|
+        l.list(:list)
+        l.layout(:type => :vertical) do |buttons|
+          buttons.button(:add_engine,
+                         :text => KDE.i18nc("engine", "&New..."),
+                         :icon => 'list-add')
+          buttons.button(:edit_engine,
+                         :text => KDE.i18nc("engine", "&Edit..."),
+                         :icon => 'configure')
+          buttons.button(:delete_engine,
+                         :text => KDE.i18nc("engine", "&Delete"),
+                         :icon => 'list-remove')
+          buttons.stretch
+        end
+      end
+    end
+    setGUI(@gui)
+
+    list.model = Qt::StringListModel.new(
       @loader.map{|name, engine| name }, self)
     
     # save loader state
@@ -130,60 +119,42 @@ class EnginePrefs < KDE::Dialog
       @engines[name] = engine
     end
     
-    layout.add_widget(@list)
-    
-    buttons = Qt::VBoxLayout.new
-    @add_engine = KDE::PushButton.new(
-      KDE::Icon.new('list-add'), KDE.i18nc("engine", "&New..."), widget)
-    buttons.add_widget(@add_engine)
-    @edit_engine = KDE::PushButton.new(
-      KDE::Icon.new('configure'), KDE.i18nc("engine", "&Edit..."), widget)
-    buttons.add_widget(@edit_engine)
-    @delete_engine = KDE::PushButton.new(
-      KDE::Icon.new('list-remove'), KDE.i18nc("engine", "&Delete"), widget)
-    buttons.add_widget(@delete_engine)
-    
-    buttons.add_stretch
-    layout.add_layout(buttons)
-
-    @add_engine.on(:pressed) { add_engine }
-    @edit_engine.on(:pressed) { edit_engine }
-    @delete_engine.on(:pressed) { delete_engine }
-
-    self.main_widget = widget
+    add_engine.on(:clicked) { do_add_engine }
+    edit_engine.on(:clicked) { do_edit_engine }
+    delete_engine.on(:clicked) { do_delete_engine }
 
     on(:ok_clicked) do
       @loader.update_entries(@engines)
     end
   end
   
-  def delete_engine
+  def do_delete_engine
     index = current
     if index
-      name = @list.model.data(index, Qt::DisplayRole).toString
-      @list.model.remove_rows(index.row, 1)
+      name = list.model.data(index, Qt::DisplayRole).toString
+      list.model.remove_rows(index.row, 1)
       @engines.delete(name)
     end
   end
   
-  def add_engine
+  def do_add_engine
     dialog = EngineData.new(KDE.i18n("New Engine"), self)    
     dialog.on(:ok) do |data|
       engine = @loader.engine.new(data)
       @engines[engine.name] = engine
-      index = @list.model.row_count
-      @list.model.insert_rows(index, 1)
-      @list.model.set_data(@list.model.index(index, 0), 
+      index = list.model.row_count
+      list.model.insert_rows(index, 1)
+      list.model.set_data(list.model.index(index, 0), 
                            Qt::Variant.new(engine.name),
                            Qt::DisplayRole)
     end
     dialog.exec
   end
   
-  def edit_engine
+  def do_edit_engine
     index = current
     if index
-      old_name = @list.model.data(index, Qt::DisplayRole).toString
+      old_name = list.model.data(index, Qt::DisplayRole).toString
       old_engine = @engines[old_name]
       dialog = EngineData.new(KDE.i18n("Edit Engine"), self, old_engine)
       dialog.on(:ok) do |data|
@@ -192,14 +163,14 @@ class EnginePrefs < KDE::Dialog
           @engines.delete(old_name)
         end
         @engines[engine.name] = engine
-        @list.model.set_data(index, engine.name, Qt::DisplayRole)
+        list.model.set_data(index, Qt::Variant.new(engine.name), Qt::DisplayRole)
       end
       dialog.exec
     end
   end
   
   def current
-    indexes = @list.selection_model.selection.indexes
+    indexes = list.selection_model.selection.indexes
     unless indexes.empty?
       indexes.first
     end

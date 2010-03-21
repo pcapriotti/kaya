@@ -139,16 +139,6 @@ module Qt
       end
     end
     
-    class LineEdit
-      include GuiBuilder
-      
-      def create_element(window, parent, desc)
-        Qt::LineEdit.new(window).tap do |edit|
-          setup_widget(edit, window, parent, desc)
-        end
-      end
-    end
-    
     class TabWidget
       include GuiBuilder
       
@@ -164,9 +154,13 @@ module Qt
       include GuiBuilder
       
       def create_element(window, parent, desc)
-        desc.opts[:factory].new(window).tap do |widget|
+        factory(desc).new(window).tap do |widget|
           setup_widget(widget, window, parent, desc)
         end
+      end
+      
+      def factory(desc)
+        desc.opts[:factory]
       end
     end
     
@@ -188,6 +182,39 @@ module Qt
         desc.children.each do |child|
           b = builder(child.name).new
           b.build(parent, Helper.new(parent, desc.opts[:text]), child)
+        end
+      end
+    end
+    
+    class UrlRequester < Widget
+      def factory(desc)
+        KDE::UrlRequester
+      end
+    end
+
+    class LineEdit < Widget
+      def factory(desc)
+        Qt::LineEdit
+      end
+    end
+    
+    class ComboBox < Widget
+      def factory(desc)
+        KDE::ComboBox
+      end
+    end
+    
+    class List < Widget
+      def factory(desc)
+        Qt::ListView
+      end
+    end
+    
+    class Button < Widget
+      def factory(desc)
+        Factory.new do |parent|
+          KDE::PushButton.new(KDE::Icon.from_theme(desc.opts[:icon]), 
+                              desc.opts[:text], parent)
         end
       end
     end

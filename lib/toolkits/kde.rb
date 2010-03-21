@@ -108,18 +108,8 @@ module ActionHandler
   end
   
   def regular_action(name, opts, &blk)
-    icon = if opts[:icon]
-      case opts[:icon]
-      when Qt::Icon
-        opts[:icon]
-      else
-        KDE::Icon.new(opts[:icon].to_s)
-      end
-    else
-      KDE::Icon.new
-    end
-    
-    KDE::Action.new(icon, opts[:text], action_parent).tap do |a|
+    KDE::Action.new(KDE::Icon.from_theme(opts[:icon]), 
+                    opts[:text], action_parent).tap do |a|
       action_collection.add_action(name.to_s, a)  
       a.connect(SIGNAL('triggered(bool)'), &blk)
     end
@@ -127,6 +117,16 @@ module ActionHandler
   
   def action_parent
     self
+  end
+end
+
+class KDE::Icon
+  def self.from_theme(name)
+    if name
+      new(name.to_s)
+    else
+      new
+    end
   end
 end
 

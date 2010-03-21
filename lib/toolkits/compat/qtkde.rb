@@ -15,9 +15,23 @@ module KDE
   def self.i18n(str)
     str
   end
+  
+  def self.i18nc(context, str)
+    str
+  end
 end
 
 Qt::XmlGuiWindow = Qt::MainWindow
+
+class Qt::UrlRequester < Qt::LineEdit
+  def url=(val)
+    self.text = val.to_string
+  end
+  
+  def url
+    Qt::Url.new(text)
+  end
+end
 
 class Qt::MainWindow
   attr_reader :gui
