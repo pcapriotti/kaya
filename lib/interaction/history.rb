@@ -17,7 +17,9 @@ class History
   attr_reader :current
   attr_reader :operations
   
-  Item = Struct.new(:state, :move)
+  class Item < Struct.new(:state, :move)
+    attr_accessor :text
+  end
   OutOfBound = Class.new(Exception)
 
   def initialize(state)
