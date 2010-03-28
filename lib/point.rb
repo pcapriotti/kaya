@@ -58,7 +58,7 @@ class Point
     "#{(self.x + ?a).chr if x}#{(ysize - self.y) if self.y}"
   end
   
-  def self.from_coord(s, ysize)
+  def self.from_coord(s, ysize, opts = { })
     if s =~ /^([a-zA-Z]?)(\d*)/
       letter = $1
       number = $2
@@ -70,7 +70,9 @@ class Point
         end
       end
       y = ysize - number.to_i unless number.empty?
-      new x, y
+      if (x and y) or (not opts[:strict])
+        new x, y
+      end
     end
   end
 end

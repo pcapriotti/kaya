@@ -35,7 +35,9 @@ class History
   def add_move(state, move, opts = { })
     op = operation do |op|
       op.truncate(@current + 1)
-      op.move(Item.new(state.dup, move))
+      item = Item.new(state.dup, move)
+      item.text = opts[:text] if opts[:text]
+      op.move(item)
     end
     op.execute :extra => opts
   end

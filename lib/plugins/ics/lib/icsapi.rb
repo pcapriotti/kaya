@@ -43,6 +43,15 @@ class ICSApi
     @game.piece.new(color, type)
   end
   
+  def parse_last_move(str)      
+    if str =~ /.*\/(.*)-(.*)$/
+      src, dst = [$1, $2].map do |c| 
+        Point.from_coord(c, @game.size.y, :strict => true)
+      end
+      @game.move.new(src, dst)
+    end
+  end
+  
   def same_state(state1, state2)
     (state1.board == state2.board).tap{|x| puts "boards differ" unless x } &&
     (state1.turn == state2.turn).tap{|x| puts "turns differ" unless x }
