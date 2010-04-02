@@ -12,8 +12,7 @@ class FantasyPieces < SvgTheme
   include Plugin
   plugin :name => 'Fantasy Pieces',
          :interface => :pieces,
-         :keywords => %w(chess),
-         :bundle => 'fantasy'
+         :keywords => %w(chess)
 
   def initialize(opts = {})
     super(opts)

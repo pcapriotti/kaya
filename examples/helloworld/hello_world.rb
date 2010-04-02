@@ -5,8 +5,7 @@ class HelloWorldPlugin
   include ActionProvider
 
   plugin :name => 'Hello World',
-         :interface => :action_provider,
-         :bundle => 'helloworld'
+         :interface => :action_provider
 
   def initialize
     action(:hello_world,

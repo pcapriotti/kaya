@@ -7,7 +7,7 @@
 
 require 'test/unit'
 require 'require_bundle'
-require_bundle 'chess', 'move'
+require 'plugins/chess/lib/move'
 
 class TestChessMove < Test::Unit::TestCase
   def test_simple_move_fields

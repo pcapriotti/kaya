@@ -20,8 +20,7 @@ class ShogibanBackground
   
   plugin :name => 'Shogiban',
          :interface => :board,
-         :keywords => %w(shogi),
-         :bundle => 'shogi'
+         :keywords => %w(shogi)
         
   def initialize(opts = {})
     @squares = opts[:board_size] || opts[:game].size
@@ -61,8 +60,7 @@ class ShogiPieces
 
   plugin :name => 'Shogi Pieces',
          :interface => :pieces,
-         :keywords => %w(shogi),
-         :bundle => 'shogi'
+         :keywords => %w(shogi)
   
   TYPES = { :knight => 'n' }
   NUDE_TILE = rel('pics', 'nude_tile.svg')

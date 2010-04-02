@@ -28,8 +28,7 @@ class Game
   plugin :name => KDE::i18n('Chess'),
          :id => :chess,
          :interface => :game,
-         :category => 'Chess',
-         :bundle => 'chess'
+         :category => 'Chess'
          
   attr_reader :size, :policy, :state, :board, :move,
               :animator, :validator, :piece, :players,

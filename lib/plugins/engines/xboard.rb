@@ -15,8 +15,7 @@ class XBoardEngine < Engine
   
   plugin :name => 'XBoard Engine Protocol',
          :protocol => 'XBoard',
-         :interface => :engine,
-         :bundle => 'engines'
+         :interface => :engine
   
   FEATURES = %w(ping setboard playother san usermove time draw sigint sigterm
                 reuse analyze myname variants colors ics name pause done)

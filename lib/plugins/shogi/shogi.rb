@@ -28,8 +28,7 @@ class Game
          :id => :shogi,
          :interface => :game,
          :category => 'Shogi',
-         :depends => [:chess],
-         :bundle => 'shogi'
+         :depends => [:chess]
   
   attr_reader :size, :state, :board, :pool,
               :policy, :move, :animator, :validator,

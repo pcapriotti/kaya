@@ -12,8 +12,7 @@ class CelticPieces < SvgTheme
   include Plugin
   plugin :name => 'Celtic Pieces',
          :interface => :pieces,
-         :keywords => %w(chess),
-         :bundle => 'celtic'
+         :keywords => %w(chess)
 
   def initialize(opts = {})
     super(opts)

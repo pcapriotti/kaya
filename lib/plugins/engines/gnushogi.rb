@@ -14,8 +14,7 @@ class GNUShogiEngine < Engine
   
   plugin :name => 'GNUShogi Engine Protocol',
          :protocol => 'GNUShogi',
-         :interface => :engine,
-         :bundle => 'engines'
+         :interface => :engine
 
   def on_move(data)
     text = @serializer.serialize(data[:move], data[:old_state])

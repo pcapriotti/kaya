@@ -18,13 +18,8 @@ module Plugin
   end
   
   module Bundle
-    BASE_PLUGIN_PATH = File.expand_path(File.dirname(__FILE__))
-    def bundle_rel(bundle, *args)
-      File.join(BASE_PLUGIN_PATH, bundle, *args)
-    end
-    
     def rel(*args)
-      bundle_rel(bundle, *args)
+      File.join(bundle_dir, *args)
     end
   end
   
@@ -33,6 +28,8 @@ module Plugin
     attr_reader :bundle_dir
     
     def plugin(args)
+      plugin_file, *_ = caller[0].split(':')
+      @bundle_dir = File.dirname(plugin_file)
       @plugin_data = args
     end
     
@@ -51,11 +48,6 @@ module Plugin
     def data(key)
       @plugin_data[key]
     end
-
-    def bundle
-      @plugin_data[:bundle] or
-      raise("No bundle specified")
-    end
   end
   
   extend ModuleMethods
@@ -65,7 +57,7 @@ module Plugin
     self.class.data(:keywords)
   end
   
-  def bundle
-    self.class.bundle
+  def bundle_dir
+    self.class.bundle_dir
   end
 end

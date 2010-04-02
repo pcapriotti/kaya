@@ -14,8 +14,7 @@ class CoolLayout
   include ItemUtils
   
   plugin :name => 'Cool Layout',
-         :interface => :layout,
-         :bundle => 'layouts'
+         :interface => :layout
         
   # values relative to unit = 1
   MARGIN = 0.2

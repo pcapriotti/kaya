@@ -20,8 +20,7 @@ class Game
          :interface => :game,
          :id => :crazyhouse,
          :category => 'Chess',
-         :depends => [:chess, :shogi],
-         :bundle => 'crazyhouse'
+         :depends => [:chess, :shogi]
 
   attr_reader :size, :state, :board, :pool,
               :policy, :move, :animator, :validator,

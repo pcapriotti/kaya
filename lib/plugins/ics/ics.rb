@@ -19,8 +19,7 @@ class ICSPlugin
   include ActionProvider
   
   plugin :name => 'ICS Plugin',
-         :interface => :action_provider,
-         :bundle => 'ics'
+         :interface => :action_provider
     
   attr_reader :gui
   
