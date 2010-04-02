@@ -14,8 +14,8 @@ module ICS
 class Protocol
   include Observable
   @@last_action = nil
-  @@actions = []
-  @@partial_actions = []
+  @@actions = Hash.new {|h, k| h[k] = [] }
+  @@partial_actions = Hash.new {|h, k| h[k] = [] }
   GAME_TYPES = {
     'standard' => :chess,
     'blitz' => :chess,
@@ -24,14 +24,16 @@ class Protocol
     
   attr_reader :connection
 
-  def self.on(regex, type = :full, &blk)
+  def self.on(regex, opts = { }, &blk)
     # ugly hack to work around the missing
     # instance_exec in ruby 1.8
     mname = "__action_#{regex.to_s}"
-    if type == :partial
-      @@partial_actions << [mname, regex]
-    else type == :full
-      @@actions << [mname, regex]
+    state = opts.fetch(:state, :normal)
+
+    if opts[:type] == :partial
+      @@partial_actions[state] << [mname, regex]
+    else
+      @@actions[state] << [mname, regex]
     end
     define_method mname, &blk
   end
@@ -40,6 +42,8 @@ class Protocol
     @debug = debug
     @games = {}
     @last_partial_offset = 0
+    
+    @state = :normal
   end
 
   def link_to(connection)
@@ -54,8 +58,7 @@ class Protocol
   end
 
   def process(line)
-    puts "> #{line}" if @debug
-    processed = execute_action @@actions, line
+    processed = execute_action @@actions[@state], line
     if not processed
       fire :text => line
     end
@@ -64,7 +67,7 @@ class Protocol
   end
 
   def process_partial(line)
-    if execute_action @@partial_actions, line
+    if execute_action @@partial_actions[@state], line
       @last_partial_offset += line.size
     else
       @last_partial_offset = 0
@@ -148,11 +151,11 @@ class Protocol
     fire :beep
   end
 
-  on /^login:/, :partial do
+  on /^login:/, :type => :partial do
     fire :login_prompt
   end
   
-  on /^password:/, :partial do
+  on /^password:/, :type => :partial do
     fire :password_prompt
   end
 
@@ -160,13 +163,35 @@ class Protocol
     fire :press_return_prompt
   end
   
-  on(/^\S+% /, :partial) do |match|
+  on(/^\S+% /, :type => :partial) do |match|
     fire :prompt => match[0]
   end
 
   on(Style12::PATTERN) do |match|
     style12 = Style12.from_match(match, @games)
     fire :style12 => style12
+  end
+  
+  on(/^\s*Movelist for game (\d+):/) do |match|
+    @movelist = { :number => match[1].to_i }
+    @state = :movelist_header
+  end
+  
+  on /^(\S+) (\S+) match, initial time:/, :state => :movelist_header do |match|
+    if @movelist
+      @movelist[:rated] = match[1]
+      @movelist[:type] = match[2]
+    end
+  end
+  
+  on /^[- ]+$/, :state => :movelist_header do |match|
+    @state = :movelist
+  end
+  
+  on /^\S*$/, :state => :movelist do |match|
+    @state = :normal
+    fire :movelist => @movelist
+    @movelist = nil
   end
 
   private

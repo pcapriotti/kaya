@@ -61,6 +61,13 @@ class MatchHandler
       match = Match.new(Game.dummy, :kind => :ics, :editable => true, :navigable => true)
       match_info = style12.match_info.merge(:type => :examined)
       @matches[style12.game_number] = [match, match_info]
+      
+      # request more info from the server
+      @protocol.connection.send_text('moves')
+      @protocol.observe_limited(:movelist) do |movelist|
+        puts "movelist = #{movelist.inspect}"
+        true
+      end
     end
     
     if match.started?

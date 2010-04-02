@@ -75,7 +75,7 @@ class ICSPlugin
     protocol.add_observer ICS::StartupModule.new(@connection)
     protocol.link_to @connection
 
-    protocol.observe :text do |text|
+    protocol.on :text do |text|
       parent.console.append(text)
     end
 
