@@ -74,7 +74,12 @@ class Qt::MainWindow
   end
   
   def setGUI(gui)
-    regular_action(:about, :text => KDE::i18n("&About")) { }
+    regular_action(:about, :text => KDE::i18n("&About")) do
+      Qt::MessageBox.about(nil,
+                           $qApp.data[:name],
+                           [$qApp.data[:description],
+                            $qApp.data[:copyright]].join("\n"))
+    end
     regular_action(:about_qt, :text => KDE::i18n("About &Qt")) { $qApp.about_qt }
     
     @gui.merge!(gui)
@@ -210,10 +215,13 @@ module Qt
 end
 
 class Qt::Application
+  attr_accessor :data
+  
   def self.init(data)
     new(ARGV).tap do |app|
       app.application_name = data[:id]
       app.organization_name = data[:id]
+      app.data = data
     end
   end
 end
