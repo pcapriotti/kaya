@@ -233,3 +233,10 @@ class KDE::Process
     start
   end
 end
+
+def KDE.download_tempfile(url, parent)
+  result = ""
+  if KIO::NetAccess.download(url, result, parent)
+    result
+  end
+end

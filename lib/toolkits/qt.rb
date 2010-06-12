@@ -355,6 +355,24 @@ class Qt::ListWidget
   end
 end
 
+class Qt::FileDialog
+  def self.get_open_url(dir, filter, parent, caption)
+    filename = get_open_file_name(parent, caption, dir.to_local_file, filter)
+    Qt::Url.from_local_file(filename)
+  end
+  
+  def self.get_save_url(dir, filter, parent, caption)
+    filename = get_save_file_name(parent, caption, dir.to_local_file, filter)
+    Qt::Url.from_local_file(filename)
+  end
+end
+
+class Qt::Url
+  def is_local_file
+    true
+  end
+end
+
 module ModelUtils
   # 
   # Helper method to delete model rows from within a block. This method
@@ -456,4 +474,8 @@ class KDE::TabWidget
       m[:current_changed] = [['currentChanged(int)', 1]]
     end
   end
+end
+
+def KDE.download_tempfile(url, parent)
+  url.to_local_file
 end

@@ -248,8 +248,8 @@ private
         return
       end
       
-      tmp_file = ""
-      return unless KIO::NetAccess.download(url, tmp_file, self)
+      tmp_file = KDE::download_tempfile(url, self)
+      return unless tmp_file
 
       history = nil
       game = nil
