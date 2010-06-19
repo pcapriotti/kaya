@@ -116,7 +116,7 @@ class MatchHandler
     if match.started?
       match_info[:icsplayer].on_style12(style12)
     else
-      helper.start(@protocol, @user, match, match_info, style12)
+      helper.start(@protocol, @user, match_info, style12)
     end
   end
 end

@@ -30,9 +30,9 @@ module MatchHelper
   # Create the opponent player. By default, create an ICSPlayer that
   # will respond to future style12 events.
   # 
-  def create_opponent(protocol, color, match, match_info)
+  def create_opponent(protocol, color, match_info)
     send = lambda {|msg| protocol.connection.send_text(msg) }
-    opponent = ICSPlayer.new(send, color, match, match_info)
+    opponent = ICSPlayer.new(send, color, match_info[:match], match_info)
     match_info[:icsplayer] = opponent
     opponent
   end
@@ -40,7 +40,7 @@ module MatchHelper
   # 
   # Create a player for this match.
   # 
-  def create_player(user, color, match, match_info)
+  def create_player(user, color, match_info)
     raise "not implemented"
   end
   
@@ -76,7 +76,7 @@ module MatchHelper
   # Start an existing match. Called when the first style12
   # for the given match is received.
   # 
-  def start(protocol, user, match, match_info, style12)
+  def start(protocol, user, match_info, style12)
     rel = style12.relation
     state = style12.state
     turns = [state.turn, state.opposite_turn(state.turn)]
@@ -84,11 +84,12 @@ module MatchHelper
     user_color, opponent_color = colors(state, rel)
         
     # create players
-    opponent = create_opponent(protocol, opponent_color, match, match_info)
-    player = create_player(user, user_color, match, match_info)
+    opponent = create_opponent(protocol, opponent_color, match_info)
+    player = create_player(user, user_color, match_info)
     setup_players(user, [player, opponent])
     
     # start match
+    match = match_info[:match]
     match.register(player)
     match.register(opponent)
     match.start(player)
@@ -112,7 +113,7 @@ end
 class DefaultMatchHelper
   include MatchHelper
 
-  def create_player(user, color, match, match_info)
+  def create_player(user, color, match_info)
     # do not create a new player, just return user
     user.color = color
     user.premove = true
@@ -127,7 +128,7 @@ end
 class ExaminingMatchHelper
   include MatchHelper
   
-  def create_player(user, color, match, match_info)
+  def create_player(user, color, match_info)
     user.color = nil
     
     # create a controlled player
