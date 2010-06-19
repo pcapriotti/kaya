@@ -77,8 +77,6 @@ module MatchHelper
   # for the given match is received.
   # 
   def start(protocol, user, match, match_info, style12)
-    puts "start: match_info = #{match_info.inspect}"
-    
     rel = style12.relation
     state = style12.state
     turns = [state.turn, state.opposite_turn(state.turn)]
@@ -130,7 +128,6 @@ class ExaminingMatchHelper
   include MatchHelper
   
   def create_player(user, color, match, match_info)
-    puts "match_info[#{color}] = #{match_info[color].inspect}"
     user.color = nil
     
     # create a controlled player
