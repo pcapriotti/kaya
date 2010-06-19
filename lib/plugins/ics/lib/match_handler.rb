@@ -1,4 +1,4 @@
-# Copyright (c) 2009 Paolo Capriotti <p.capriotti@gmail.com>
+# Copyright (c) 2009-2010 Paolo Capriotti <p.capriotti@gmail.com>
 # 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -12,17 +12,24 @@ require_bundle 'ics', 'match_helper'
 module ICS
 
 #
-# Handler for ICS games.
-# 
 # Responds to ICS protocol events creating and updating matches.
-# Matches are stored in the @matches instance variable. It is possible to
-# have more than one match running on ICS because of the observe feature.
+# 
+# Only one match handler per ICS connection is required. Each game created,
+# game deleted, and style12 event for the given connection is handled by
+# this object.
+# 
+# A map of matches by ICS game number is maintained in the @matches instance
+# variable. It is possible to have more than one match running at the same
+# time, since multiple games can be observed.
 # 
 class MatchHandler
   include Observer
   
   attr_reader :matches
   
+  # 
+  # Create a match handler for the ICS connection associated to protocol.
+  # 
   def initialize(user, protocol)
     @protocol = protocol
     @matches = { }
@@ -31,6 +38,12 @@ class MatchHandler
     protocol.add_observer(self)
   end
   
+  # 
+  # Create a new match.
+  # 
+  # This method is called whenever a new game is created on the server.
+  # The match_info structure is filled by the protocol.
+  # 
   def on_creating_game(data)
     match = Match.new(data[:game], 
         :kind => :ics,
@@ -42,6 +55,9 @@ class MatchHandler
     @matches[data[:number]] = match_info
   end
   
+  # 
+  # Remove a match.
+  # 
   def on_end_game(data)
     match_info = @matches.delete(data[:game_number])
     if match_info
@@ -50,12 +66,22 @@ class MatchHandler
     end
   end
   
+  # 
+  # Remove an examined game. Simply delegate to on_end_game.
+  # 
   def on_end_examination(number)
     on_end_game(:game_number => number,
                 :result => '',
                 :message => '')
   end
   
+  # 
+  # When reverting, set the :about_to_revert_to property to the
+  # move index we are about to revert to.
+  # 
+  # This is used by ICSPlayer to discard any expected navigation
+  # information on revert.
+  # 
   def on_examination_revert(data)
     match_info = @matches[data[:game_number]]
     if match_info
@@ -63,6 +89,14 @@ class MatchHandler
     end
   end
   
+  # 
+  # Forward a style12 event to the appropriate ICSPlayer.
+  # Special care is required in some cases, because ICS can issue style12
+  # events without any sort of header.
+  # This function takes care of creating a match when a style12 event for
+  # an unknown match is received, and to start a match when the first style12
+  # arrives.
+  # 
   def on_style12(style12)
     # retrieve match and helper
     helper = MatchHelper.create(style12)
