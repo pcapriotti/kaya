@@ -20,6 +20,7 @@ class Protocol
     'standard' => :chess,
     'blitz' => :chess,
     'lightning' => :chess,
+    'untimed' => :chess,
     'crazyhouse' => :crazyhouse }
     
   attr_reader :connection
@@ -58,6 +59,7 @@ class Protocol
   end
 
   def process(line)
+    puts "< #{line}" if @debug
     processed = execute_action @@actions[@state], line
     if not processed
       fire :text => line
@@ -137,6 +139,27 @@ class Protocol
     end
   end
   
+  # Header for observed games
+  on /^Game (\d+): (\S+) \((\d+\)) (\S+) \((\d+\)) (\S+) (\S+) (\d+) (\d+)$/ do |match|
+    game = game_from_type(match[7])
+    fire :creating_game => {
+      :number => match[1].to_i,
+      :white => { 
+        :name => match[2],
+        :score => match[3].to_i },
+      :black => {
+        :name => match[4],
+        :score => match[5].to_i },
+      :rated => match[6],
+      :type => match[7],
+      :game => game,
+      :icsapi => ICSApi.new(game),
+      :time => match[8].to_i,
+      :increment => match[9].to_i,
+      :helper => :observing }
+    
+  end
+  
   on /^Game (\d+): (\S+) reverts to main line move (\d+)\.$/ do |match|
     fire :examination_revert => {
       :game_number => match[1].to_i,
@@ -144,6 +167,13 @@ class Protocol
   end
 
   on /^You are no longer examining game (\d+)\.$/ do |match|
+    fire :end_examination => match[1].to_i
+  end
+  
+  on /^You are now observing game (\d+)\.$/ do |match|
+  end
+  
+  on /^Removing game (\d+) from observation list.$/ do |match|
     fire :end_examination => match[1].to_i
   end
 

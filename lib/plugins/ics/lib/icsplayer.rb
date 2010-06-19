@@ -9,15 +9,21 @@ require 'interaction/match'
 
 module ICS
 
+# 
+# This class represents a remote player on ICS.
+# 
 class ICSPlayer
   include Player
   include Observer
   
   attr_reader :color, :name
   
-  # create a new ICS player playing with
-  # the given color and using the given
-  # output channel to send moves
+  #
+  # Create a new ICS player playing with the given color and using the given
+  # output channel to send moves.
+  # 
+  # The out parameter is a Proc that will be used to send data to the server.
+  # 
   def initialize(out, color, match, match_info)
     @color = color
     @out = out
@@ -28,22 +34,34 @@ class ICSPlayer
     @expected_navigations = []
   end
 
+  # 
+  # Send a move to the server.
+  # 
   def on_move(data)
     text = @serializer.serialize(data[:move], 
                                  data[:old_state])
     @out[text]
   end
   
+  # 
+  # Send the server a request to move backwards.
+  # 
   def on_back(opts)
     @out['back']
     add_expected_navigation(opts)
   end
   
+  # 
+  # Send the server a request to move forward.
+  #   
   def on_forward(opts)
     @out['forward']
     add_expected_navigation(opts)
   end
   
+  # 
+  # Send a navigation request to the server.
+  # 
   def on_go_to(data)
     delta = data[:index] - data[:old_index]
     add_expected_navigation(data) unless delta == 0
@@ -54,6 +72,9 @@ class ICSPlayer
     end
   end
   
+  # 
+  # Use the takeback command to request an undo.
+  # 
   def allow_undo?(player, manager)
     # request undo
     @out['takeback']
@@ -61,9 +82,16 @@ class ICSPlayer
     manager.undo(self, nil)
   end
   
-  def on_style12(style12)
+  # 
+  # Process an incoming style12 event.
+  # 
+  def on_style12(style12)    
     @match.update_time(style12.time)
     delta = style12.move_index - @match.index
+    
+    puts "delta = #{delta}"
+    
+    # get previously stored revert information
     revert_to = @match_info[:about_to_revert_to]
     @match_info.delete(:about_to_revert_to)
     
@@ -90,12 +118,20 @@ class ICSPlayer
     end
     
     if delta == 1
+      # standard case: advancing forward by 1
       move = @serializer.deserialize(style12.last_move_san, @match.state)
       if move.nil?
+        # An invalid move can happen when the game used locally does not
+        # correspond to the actual played game.
+        # This is sometimes inevitable, since ICS does not send a header
+        # when beginning examination.
+        # In this case, force the move into the history, and be careful to
+        # use the SAN provided in the style12 event for rendering.
         warn "Received invalid move from ICS: #{style12.last_move_san}"
         move = @match_info[:icsapi].parse_last_move(style12.last_move)
         @match.history.add_move(style12.state, move, :text => style12.last_move_san)
       else
+        # Perform and store a new move.
         @match.move(self, move)
         unless @match_info[:icsapi].
                  same_state(style12.state, 
@@ -119,13 +155,15 @@ class ICSPlayer
         @match.history.remove_items_at(style12.move_index + 1)
         @match.history.set_item(state, move)
       end
+    else
+      move = @match_info[:icsapi].parse_last_move(style12.last_move)
+      @match.history.add_move(style12.state, move, :text => style12.last_move_san)
     end
   end
   
   private
   
   def add_expected_navigation(opts = {})
-	puts "add #{@match.index} to expected, opts = #{opts.inspect}"
     @expected_navigations << @match.index unless opts[:awaiting_server] 
   end
 end

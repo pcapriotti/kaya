@@ -10,7 +10,7 @@ require 'test/unit'
 require 'rubygems'
 require 'mocha'
 require_bundle 'ics', 'match_handler'
-require 'games/games'
+require 'games/all'
 require 'ostruct'
 
 class TestMatchHandler < Test::Unit::TestCase
@@ -26,8 +26,26 @@ class TestMatchHandler < Test::Unit::TestCase
                              :white => { :name => 'hello' },
                              :black => { :name => 'world' }
     assert_equal 1, handler.matches.size
-    match, info = handler.matches[37]
+    info = handler.matches[37]
     assert_equal 37, info[:number]
+  end
+  
+  def test_creation_observe
+    user = stub_everything("user")
+    protocol = stub_everything("protocol")
+    
+    handler = ICS::MatchHandler.new(user, protocol)
+    handler.on_creating_game :game => Game.get(:chess),
+                             :helper => :observing,
+                             :number => 37,
+                             :white => { :name => "A" },
+                             :black => { :name => "B" }
+    assert_equal 1, handler.matches.size
+    info = handler.matches[37]
+    assert_equal 37, info[:number]
+    
+    assert !info[:match].editable?
+    assert !info[:match].navigable?
   end
   
   def test_style12
@@ -57,7 +75,30 @@ class TestMatchHandler < Test::Unit::TestCase
                          :move_index => 0)
                        
     assert_equal 1, handler.matches.size
-    match, info = handler.matches[37]
-    assert match.started?    
+    info = handler.matches[37]
+    assert info[:match].started?    
+  end
+  
+  def test_observe_style12
+    user = stub_everything("user")
+    protocol = stub_everything("protocol")
+    handler = ICS::MatchHandler.new(user, protocol)
+    game = Game.get(:chess)
+    
+    handler.on_creating_game(
+      :game => game,
+      :icsapi => ICS::ICSApi.new(game),
+      :number => 37,
+      :white => { :name => "A" },
+      :black => { :name => "B" })
+    handler.on_style12 OpenStruct.new(
+      :game_number => 37,
+      :relation => ICS::Style12::Relation::OBSERVING_PLAYED,
+      :state => Game.get(:chess).state.new.tap {|s| s.setup },
+      :move_index => 0)
+    
+    assert_equal 1, handler.matches.size
+    info = handler.matches[37]
+    assert info[:match].started?
   end
 end

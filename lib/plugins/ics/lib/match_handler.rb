@@ -1,4 +1,4 @@
-# Copyright (c) 2009 Paolo Capriotti <p.capriotti@gmail.com>
+# Copyright (c) 2009-2010 Paolo Capriotti <p.capriotti@gmail.com>
 # 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -6,17 +6,31 @@
 # (at your option) any later version.
 
 require 'interaction/match'
+require 'dummy_player'
 require_bundle 'ics', 'icsplayer'
+require_bundle 'ics', 'match_helper'
 
 module ICS
 
-# Handler for ICS games
+#
+# Responds to ICS protocol events creating and updating matches.
+# 
+# Only one match handler per ICS connection is required. Each game created,
+# game deleted, and style12 event for the given connection is handled by
+# this object.
+# 
+# A map of matches by ICS game number is maintained in the @matches instance
+# variable. It is possible to have more than one match running at the same
+# time, since multiple games can be observed.
 # 
 class MatchHandler
   include Observer
   
   attr_reader :matches
   
+  # 
+  # Create a match handler for the ICS connection associated to protocol.
+  # 
   def initialize(user, protocol)
     @protocol = protocol
     @matches = { }
@@ -25,103 +39,81 @@ class MatchHandler
     protocol.add_observer(self)
   end
   
+  # 
+  # Create a new match.
+  # 
+  # This method is called whenever a new game is created on the server.
+  # The match_info structure is filled by the protocol.
+  # 
   def on_creating_game(data)
-    match = Match.new(data[:game], 
-        :kind => :ics, 
-        :editable => false,
-        :time_running => true)
-    @matches[data[:number]] = [match, data.merge(:type => :played)]
+    helper = MatchHelper.get(data[:helper] || :default)
+    match_info = helper.create_match(data)
+    @matches[match_info[:number]] = match_info
   end
   
+  # 
+  # Remove a match.
+  # 
   def on_end_game(data)
-    entry = @matches.delete(data[:game_number])
-    if entry
-      match, info = entry
+    match_info = @matches.delete(data[:game_number])
+    if match_info
+      match = match_info[:match]
       match.close(data[:result], data[:message])
     end
   end
   
+  # 
+  # Remove an examined game. Simply delegate to on_end_game.
+  # 
   def on_end_examination(number)
     on_end_game(:game_number => number,
                 :result => '',
                 :message => '')
   end
   
+  # 
+  # When reverting, set the :about_to_revert_to property to the
+  # move index we are about to revert to.
+  # 
+  # This is used by ICSPlayer to discard any expected navigation
+  # information on revert.
+  # 
   def on_examination_revert(data)
-    match, match_info = @matches[data[:game_number]]
+    match_info = @matches[data[:game_number]]
     if match_info
       match_info[:about_to_revert_to] = data[:index]
     end
   end
   
+  # 
+  # Forward a style12 event to the appropriate ICSPlayer.
+  # Special care is required in some cases, because ICS can issue style12
+  # events without any sort of header.
+  # This function takes care of creating a match when a style12 event for
+  # an unknown match is received, and to start a match when the first style12
+  # arrives.
+  # 
   def on_style12(style12)
-    match, match_info = @matches[style12.game_number]
-    if match.nil? && style12.relation == Style12::Relation::EXAMINING
-      # if it is an examined game, start a new match
-      match = Match.new(Game.dummy, :kind => :ics, :editable => true, :navigable => true)
-      match_info = style12.match_info.merge(:type => :examined)
-      @matches[style12.game_number] = [match, match_info]
-      
-      # request more info from the server
-      @protocol.connection.send_text('moves')
-      @protocol.observe_limited(:movelist) do |movelist|
-        puts "movelist = #{movelist.inspect}"
-        true
-      end
+    # retrieve match and helper
+    helper = MatchHelper.from_style12(style12)
+    if helper.nil?
+      warn "Unsupported style12. Skipping"
+      return
     end
+    match_info = @matches[style12.game_number]
+    
+    # update match using helper and save it back to the @matches array
+    match_info = helper.get_match(@protocol, match_info, style12)
+    @matches[style12.game_number] = match_info
+    
+    return unless match_info
+    match = match_info[:match]
     
     if match.started?
       match_info[:icsplayer].on_style12(style12)
     else
-      rel = style12.relation
-      state = style12.state
-      turns = [state.turn, state.opposite_turn(state.turn)]
-      @user.color, opponent_color =
-        if rel == Style12::Relation::MY_MOVE
-          turns
-        elsif rel == Style12::Relation::NOT_MY_MOVE
-          turns.reverse
-        else
-          [nil, turns[1]]
-        end
-      opponent = ICSPlayer.new(
-        lambda {|msg| @protocol.connection.send_text(msg) },
-        opponent_color,
-        match,
-        match_info)
-      match_info[:icsplayer] = opponent
-      
-      player = @user
-      
-      # in examined games, playing moves for the opponent is allowed
-      if @user.color.nil?
-        player = DummyPlayer.new(state.turn)
-        @user.add_controlled_player(player)
-        @user.add_controlled_player(opponent)
-        @user.premove = false
-      else
-        @user.premove = true
-      end
-      
-      player.name = match_info[player.color][:name]
-      
-      match.register(player)
-      match.register(opponent)
-      
-      match.start(player)
-      match.start(opponent)
-      
-      raise "couldn't start match" unless match.started?
-      unless match_info[:icsapi].same_state(match.state, style12.state)
-        match.history.state = style12.state
-      end
-      
-      @user.reset(match)
-      
-      match.update_time(style12.time)
+      helper.start(@protocol, @user, match_info, style12)
     end
-    
-    
   end
 end
 
