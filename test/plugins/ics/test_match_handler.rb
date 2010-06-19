@@ -10,7 +10,7 @@ require 'test/unit'
 require 'rubygems'
 require 'mocha'
 require_bundle 'ics', 'match_handler'
-require 'games/games'
+require 'games/all'
 require 'ostruct'
 
 class TestMatchHandler < Test::Unit::TestCase

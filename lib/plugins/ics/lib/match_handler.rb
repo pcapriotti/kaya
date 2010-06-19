@@ -6,6 +6,7 @@
 # (at your option) any later version.
 
 require 'interaction/match'
+require 'dummy_player'
 require_bundle 'ics', 'icsplayer'
 require_bundle 'ics', 'match_helper'
 
