@@ -53,8 +53,8 @@ class ICSApi
   end
   
   def same_state(state1, state2)
-    (state1.board == state2.board).tap{|x| puts "boards differ" unless x } &&
-    (state1.turn == state2.turn).tap{|x| puts "turns differ" unless x }
+    state1.board == state2.board &&
+    state1.turn == state2.turn
   end
   
   def amend_state(state1, state2)

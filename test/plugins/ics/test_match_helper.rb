@@ -83,9 +83,9 @@ class TestMatchHelper < Test::Unit::TestCase
   end
   
   def test_observation_start
-#     helper = ICS::ObservingMatchHelper.instance
-#     @match.expects(:start).with{|player| player.name == "Karpov" }
-#     @match.expects(:start).with{|player| player.name == "Fisher" }
-#     helper.start(@protocol, @user, @match_info, @style12)
+    helper = ICS::ObservingMatchHelper.instance
+    @match.expects(:start).with{|player| player.name == "Karpov" }
+    @match.expects(:start).with{|player| player.name == "Fisher" }
+    helper.start(@protocol, @user, @match_info, @style12)
   end
 end

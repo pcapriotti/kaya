@@ -22,6 +22,7 @@ module MatchHelper
       h[Style12::Relation::EXAMINING] = ExaminingMatchHelper.instance
       h[Style12::Relation::NOT_MY_MOVE] = DefaultMatchHelper.instance
       h[Style12::Relation::MY_MOVE] = h[Style12::Relation::NOT_MY_MOVE]
+      h[Style12::Relation::OBSERVING_PLAYED] = ObservingMatchHelper.instance
     end
     
     @@helpers[style12.relation]
@@ -127,6 +128,9 @@ end
 #
 # Helper class to setup normal ICS games.
 # 
+# The first player is the default user, and the opponent is a default
+# ICSPlayer instance created by create_opponent.
+# 
 class DefaultMatchHelper
   include MatchHelper
   include Singleton
@@ -149,7 +153,11 @@ class DefaultMatchHelper
 end
 
 # 
-# Helper class to setup matches in examination mode
+# Helper class to setup matches in examination mode.
+# 
+# The first player is dummy, and the user is set to control both
+# the dummy player and the opponent. This allows the user to perform
+# moves for both players.
 # 
 class ExaminingMatchHelper
   include MatchHelper
@@ -196,11 +204,29 @@ class ExaminingMatchHelper
 end
 
 # 
-# Helper class to setup matches in observation mode
+# Helper class to setup matches in observation mode.
+# 
+# Match is set to not editable and navigable, first player is dummy,
+# no controlled player for the user.
 # 
 class ObservingMatchHelper
   include MatchHelper
   include Singleton
+  
+  def create_player(user, color, match_info)
+    player = DummyPlayer.new(color)
+    player.name = match_info[color][:name]
+    user.premove = false
+    player
+  end
+  
+  def create_match(match_info)
+    match = Match.new(Game.dummy,
+                      :kind => :ics,
+                      :editable => false,
+                      :navigable => false)
+    match_info.merge(:match => match)
+  end
 end
 
 end
