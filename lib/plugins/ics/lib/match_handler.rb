@@ -75,6 +75,7 @@ class MatchHandler
     # update match using helper and save it back to the @matches array
     match_info = helper.get_match(@protocol, match_info, style12)
     @matches[style12.game_number] = match_info
+    
     return unless match_info
     match = match_info[:match]
     

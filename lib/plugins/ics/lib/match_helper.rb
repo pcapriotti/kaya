@@ -145,8 +145,6 @@ class ExaminingMatchHelper
 
   def get_match(protocol, match_info, style12)
     if match_info.nil?
-      puts "creating examined game"
-      
       # Examined games on ics have no header, so we have to be prepared to
       # create a new match on the fly at this point.
       # Create an editable Game.dummy match for the moment.
@@ -159,9 +157,9 @@ class ExaminingMatchHelper
       # We want to change the game type at some point, so request the game
       # movelist to the server.
       protocol.connection.send_text('moves')
-      
-      match_info
     end
+    
+    match_info
   end
 end
 
