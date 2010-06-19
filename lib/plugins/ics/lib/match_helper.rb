@@ -45,13 +45,19 @@ module MatchHelper
   end
   
   # 
+  # Perform post-creation initialization for players.
+  # 
+  def setup_players(user, players)
+  end
+  
+  # 
   # Return or create a match. Called on an existing match when a new style12 
   # event is received.
   # If no match for that style12 event is found, the match argument
   # will be nil.
   # 
-  def get_match(protocol, match, match_info, style12)
-    match
+  def get_match(protocol, match_info, style12)
+    match_info
   end
   
   # 
@@ -59,10 +65,10 @@ module MatchHelper
   # 
   def colors(state, rel)
     turns = [state.turn, state.opposite_turn(state.turn)]
-    if rel == Style12::Relation::MY_MOVE
-      turns
-    elsif rel == Style12::Relation::NOT_MY_MOVE
+    if rel == Style12::Relation::NOT_MY_MOVE
       turns.reverse
+    else
+      turns
     end
   end
   
@@ -71,15 +77,18 @@ module MatchHelper
   # for the given match is received.
   # 
   def start(protocol, user, match, match_info, style12)
+    puts "start: match_info = #{match_info.inspect}"
+    
     rel = style12.relation
     state = style12.state
     turns = [state.turn, state.opposite_turn(state.turn)]
     
     user_color, opponent_color = colors(state, rel)
-    
+        
     # create players
     opponent = create_opponent(protocol, opponent_color, match, match_info)
     player = create_player(user, user_color, match, match_info)
+    setup_players(user, [player, opponent])
     
     # start match
     match.register(player)
@@ -120,25 +129,25 @@ end
 class ExaminingMatchHelper
   include MatchHelper
   
-  def colors(state, rel)
-    [nil, state.opposite_turn(state.turn)]
-  end
-  
   def create_player(user, color, match, match_info)
+    puts "match_info[#{color}] = #{match_info[color].inspect}"
     user.color = nil
     
     # create a controlled player
-    player = DummyPlayer.new(state.turn)
+    player = DummyPlayer.new(color)
     player.name = match_info[color][:name]
-    user.add_controlled_player(player)
-    user.add_controlled_player(opponent)
     user.premove = false
     player
   end
   
+  def setup_players(user, players)
+    players.each do |player|
+      user.add_controlled_player(player)
+    end
+  end
 
-  def get_match(protocol, match, match_info, style12)
-    if match.nil?
+  def get_match(protocol, match_info, style12)
+    if match_info.nil?
       puts "creating examined game"
       
       # Examined games on ics have no header, so we have to be prepared to
@@ -147,13 +156,14 @@ class ExaminingMatchHelper
       match = Match.new(Game.dummy, 
                         :kind => :ics, 
                         :editable => true, :navigable => true)
-      match_info = style12.match_info.merge(:type => :examined)
+      match_info = style12.match_info.merge(:type => :examined,
+                                            :match => match)
       
       # We want to change the game type at some point, so request the game
       # movelist to the server.
       protocol.connection.send_text('moves')
       
-      match
+      match_info
     end
   end
 end

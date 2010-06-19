@@ -36,13 +36,16 @@ class MatchHandler
         :kind => :ics,
         :editable => false,
         :time_running => true)
-    @matches[data[:number]] = [match, data.merge(:type => :played)]
+    match_info = data.merge(
+      :type => :played,
+      :match => match)
+    @matches[data[:number]] = match_info
   end
   
   def on_end_game(data)
-    entry = @matches.delete(data[:game_number])
-    if entry
-      match, info = entry
+    match_info = @matches.delete(data[:game_number])
+    if match_info
+      match = match_info[:match]
       match.close(data[:result], data[:message])
     end
   end
@@ -54,7 +57,7 @@ class MatchHandler
   end
   
   def on_examination_revert(data)
-    match, match_info = @matches[data[:game_number]]
+    match_info = @matches[data[:game_number]]
     if match_info
       match_info[:about_to_revert_to] = data[:index]
     end
@@ -62,20 +65,20 @@ class MatchHandler
   
   def on_style12(style12)
     # retrieve match and helper
-    match, match_info = @matches[style12.game_number]
     helper = MatchHelper.create(style12)
     if helper.nil?
       warn "Unsupported style12. Skipping"
       return
     end
+    match_info = @matches[style12.game_number]
     
     # update match using helper and save it back to the @matches array
-    match = helper.get_match(@protocol, match, match_info, style12)
-    @matches[style12.game_number] = [match, match_info]
+    match_info = helper.get_match(@protocol, match_info, style12)
+    @matches[style12.game_number] = match_info
+    return unless match_info
+    match = match_info[:match]
     
-    if match.nil?
-      return
-    elsif match.started?
+    if match.started?
       match_info[:icsplayer].on_style12(style12)
     else
       helper.start(@protocol, @user, match, match_info, style12)
