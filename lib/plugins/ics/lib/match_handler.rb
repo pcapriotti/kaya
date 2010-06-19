@@ -61,17 +61,25 @@ class MatchHandler
   
   def on_style12(style12)
     match, match_info = @matches[style12.game_number]
-    if match.nil? && style12.relation == Style12::Relation::EXAMINING
-      # if it is an examined game, start a new match
-      match = Match.new(Game.dummy, :kind => :ics, :editable => true, :navigable => true)
-      match_info = style12.match_info.merge(:type => :examined)
-      @matches[style12.game_number] = [match, match_info]
-      
-      # request more info from the server
-      @protocol.connection.send_text('moves')
-      @protocol.observe_limited(:movelist) do |movelist|
-        puts "movelist = #{movelist.inspect}"
-        true
+    if match.nil?
+      if style12.relation == Style12::Relation::EXAMINING
+        # Examined games on ics have no header, so we have to be prepared to
+        # create a new match on the fly at this point.
+        # Create an editable Game.dummy match for the moment.
+        match = Match.new(Game.dummy, :kind => :ics, :editable => true, :navigable => true)
+        match_info = style12.match_info.merge(:type => :examined)
+        @matches[style12.game_number] = [match, match_info]
+        
+        # We want to change the game type at some point, so request the game
+        # movelist to the server.
+        @protocol.connection.send_text('moves')
+        @protocol.observe_limited(:movelist) do |movelist|
+          puts "movelist = #{movelist.inspect}"
+          true
+        end
+      else
+        # ignore spurious style12 events
+        return
       end
     end
     
