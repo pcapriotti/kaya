@@ -7,6 +7,7 @@
 
 require 'interaction/match'
 require_bundle 'ics', 'icsplayer'
+require_bundle 'ics', 'match_helper'
 
 module ICS
 
@@ -15,7 +16,7 @@ module ICS
 # 
 # Responds to ICS protocol events creating and updating matches.
 # Matches are stored in the @matches instance variable. It is possible to
-# have more than one match running on FICS because of the observe feature.
+# have more than one match running on ICS because of the observe feature.
 # 
 class MatchHandler
   include Observer
@@ -32,7 +33,7 @@ class MatchHandler
   
   def on_creating_game(data)
     match = Match.new(data[:game], 
-        :kind => :ics, 
+        :kind => :ics,
         :editable => false,
         :time_running => true)
     @matches[data[:number]] = [match, data.merge(:type => :played)]
@@ -60,81 +61,25 @@ class MatchHandler
   end
   
   def on_style12(style12)
+    # retrieve match and helper
     match, match_info = @matches[style12.game_number]
-    if match.nil?
-      if style12.relation == Style12::Relation::EXAMINING
-        # Examined games on ics have no header, so we have to be prepared to
-        # create a new match on the fly at this point.
-        # Create an editable Game.dummy match for the moment.
-        match = Match.new(Game.dummy, :kind => :ics, :editable => true, :navigable => true)
-        match_info = style12.match_info.merge(:type => :examined)
-        @matches[style12.game_number] = [match, match_info]
-        
-        # We want to change the game type at some point, so request the game
-        # movelist to the server.
-        @protocol.connection.send_text('moves')
-        @protocol.observe_limited(:movelist) do |movelist|
-          puts "movelist = #{movelist.inspect}"
-          true
-        end
-      else
-        # ignore spurious style12 events
-        return
-      end
+    helper = MatchHelper.create(style12)
+    if helper.nil?
+      warn "Unsupported style12. Skipping"
+      return
     end
     
-    if match.started?
+    # update match using helper and save it back to the @matches array
+    match = helper.get_match(@protocol, match, match_info, style12)
+    @matches[style12.game_number] = [match, match_info]
+    
+    if match.nil?
+      return
+    elsif match.started?
       match_info[:icsplayer].on_style12(style12)
     else
-      rel = style12.relation
-      state = style12.state
-      turns = [state.turn, state.opposite_turn(state.turn)]
-      @user.color, opponent_color =
-        if rel == Style12::Relation::MY_MOVE
-          turns
-        elsif rel == Style12::Relation::NOT_MY_MOVE
-          turns.reverse
-        else
-          [nil, turns[1]]
-        end
-      opponent = ICSPlayer.new(
-        lambda {|msg| @protocol.connection.send_text(msg) },
-        opponent_color,
-        match,
-        match_info)
-      match_info[:icsplayer] = opponent
-      
-      player = @user
-      
-      # in examined games, playing moves for the opponent is allowed
-      if @user.color.nil?
-        player = DummyPlayer.new(state.turn)
-        @user.add_controlled_player(player)
-        @user.add_controlled_player(opponent)
-        @user.premove = false
-      else
-        @user.premove = true
-      end
-      
-      player.name = match_info[player.color][:name]
-      
-      match.register(player)
-      match.register(opponent)
-      
-      match.start(player)
-      match.start(opponent)
-      
-      raise "couldn't start match" unless match.started?
-      unless match_info[:icsapi].same_state(match.state, style12.state)
-        match.history.state = style12.state
-      end
-      
-      @user.reset(match)
-      
-      match.update_time(style12.time)
+      helper.start(@protocol, @user, match, match_info, style12)
     end
-    
-    
   end
 end
 
