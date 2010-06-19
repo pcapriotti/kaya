@@ -126,7 +126,11 @@ class Style12
   end
   
   def method_missing(field)
-    @opts[field]
+    if @opts.has_key?(field)
+      @opts[field]
+    else
+      super(field)
+    end
   end
   
   def move_index
