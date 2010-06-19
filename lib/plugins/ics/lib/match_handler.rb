@@ -10,7 +10,12 @@ require_bundle 'ics', 'icsplayer'
 
 module ICS
 
-# Handler for ICS games
+#
+# Handler for ICS games.
+# 
+# Responds to ICS protocol events creating and updating matches.
+# Matches are stored in the @matches instance variable. It is possible to
+# have more than one match running on FICS because of the observe feature.
 # 
 class MatchHandler
   include Observer
