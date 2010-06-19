@@ -1,0 +1,336 @@
+# Copyright (C) 2010 Paolo Capriotti <p.capriotti@gmail.com>
+# This file is distributed under the same license as the kaya package.
+#
+# Karel Volný <kvolny@redhat.com>, 2010.
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.3\n"
+"Report-Msgid-Bugs-To: http://github.com/pcapriotti/kaya/issues\n"
+"POT-Creation-Date: 2010-05-25 09:05+0200\n"
+"PO-Revision-Date: 2010-05-25 11:57+0200\n"
+"Last-Translator: Karel Volný <kvolny@redhat.com>\n"
+"Language-Team: Czech <kde-czech-apps@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#: examples/helloworld/hello_world.rb:12
+msgid "Say &Hello World"
+msgstr "Řekni „&Haló světe“"
+
+#: lib/engine_prefs.rb:20
+msgid "&Name:"
+msgstr "&Název:"
+
+#: lib/engine_prefs.rb:23
+msgid "&Type:"
+msgstr "&Typ"
+
+#: lib/engine_prefs.rb:26
+msgid "&Games:"
+msgstr "&Hry:"
+
+#: lib/engine_prefs.rb:29
+msgid "&Path:"
+msgstr "&Cesta:"
+
+#: lib/engine_prefs.rb:32
+msgid "&Arguments:"
+msgstr "P&arametry:"
+
+#: lib/engine_prefs.rb:35
+msgid "&Work directory:"
+msgstr "&Pracovní adresář:"
+
+#: lib/engine_prefs.rb:94
+msgid "Configure Engines"
+msgstr "Nastavit protivníky"
+
+#: lib/engine_prefs.rb:99
+msgctxt "engine"
+msgid "&New..."
+msgstr "&Nový..."
+
+#: lib/engine_prefs.rb:102
+msgctxt "engine"
+msgid "&Edit..."
+msgstr "&Upravit..."
+
+#: lib/engine_prefs.rb:105
+msgctxt "engine"
+msgid "&Delete"
+msgstr "O&dstranit"
+
+#: lib/engine_prefs.rb:141
+msgid "New Engine"
+msgstr "Nový protivník"
+
+#: lib/engine_prefs.rb:159
+msgid "Edit Engine"
+msgstr "Upravit protivníka"
+
+#: lib/games/games.rb:17
+msgid "White"
+msgstr "Bílý"
+
+#: lib/games/games.rb:18
+msgid "Black"
+msgstr "Černý"
+
+#: lib/kaya.rb:24
+msgid "Kaya"
+msgstr "Kaya"
+
+#: lib/kaya.rb:25
+msgid "KDE Board Game Suite"
+msgstr "Kolekce deskových her pro KDE"
+
+#: lib/kaya.rb:26
+msgid "(C) 2009 Paolo Capriotti"
+msgstr "© 2009 Paolo Capriotti"
+
+#: lib/kaya.rb:27
+msgid "Paolo Capriotti"
+msgstr "Paolo Capriotti"
+
+#: lib/kaya.rb:28
+msgid "Jani Huhtanen"
+msgstr "Jani Huhtanen"
+
+#: lib/kaya.rb:28
+msgid "Gaussian blur code"
+msgstr "Kód gausovského rozostření"
+
+#: lib/kaya.rb:29
+msgid "Yann Dirson"
+msgstr "Yann Dirson"
+
+#: lib/kaya.rb:29
+msgid "Minishogi"
+msgstr "Minišógi"
+
+#: lib/kaya.rb:31
+msgid "Initial game"
+msgstr "Úvodní hra"
+
+#: lib/kaya_ui.rb:22
+msgid "&Game"
+msgstr "&Hra"
+
+#: lib/kaya_ui.rb:34
+msgid "&View"
+msgstr "&Pohled"
+
+#: lib/kaya_ui.rb:52
+msgid "Game Toolbar"
+msgstr "Nástrojová lišta hry"
+
+#: lib/mainwindow.rb:72
+msgid "B&ack"
+msgstr "&Zpět"
+
+#: lib/mainwindow.rb:76
+msgid "&Forward"
+msgstr "&Vpřed"
+
+#: lib/mainwindow.rb:81
+msgid "F&lip"
+msgstr "&Otočit"
+
+#: lib/mainwindow.rb:88
+msgid "Configure &Engines..."
+msgstr "Nastavit &protivníky..."
+
+#: lib/mainwindow.rb:95
+msgid "Configure &Themes..."
+msgstr "Nastavit &témata..."
+
+#: lib/mainwindow.rb:135
+msgid "History"
+msgstr "Historie"
+
+#: lib/mainwindow.rb:152
+msgid "Console"
+msgstr "Konzole"
+
+#: lib/mainwindow.rb:234
+msgid "Open game"
+msgstr "Načíst hru"
+
+#: lib/mainwindow.rb:298
+msgid "Save game"
+msgstr "Uložit hru"
+
+#: lib/newgame.rb:18
+msgid "New game"
+msgstr "Nová hra"
+
+#: lib/newgame.rb:20
+msgid "Open in new &tab"
+msgstr "Otevřít v nové kar&tě"
+
+#: lib/newgame.rb:23
+msgid "&Game:"
+msgstr "&Hra:"
+
+#: lib/newgame.rb:94
+msgid "Human"
+msgstr "Člověk"
+
+#: lib/plugins/clocks/lib/clock_display.rb:48
+msgid "(unknown)"
+msgstr "(neznámý)"
+
+#: lib/plugins/crazyhouse/crazyhouse.rb:19
+msgid "Crazyhouse"
+msgstr "Crazyhouse"
+
+#: lib/plugins/chess/chess.rb:28
+msgid "Chess"
+msgstr "Šachy"
+
+#: lib/plugins/chess/chess.rb:59
+msgid "Promote to &Queen"
+msgstr "Proměnit na &dámu"
+
+#: lib/plugins/chess/chess.rb:63
+msgid "Promote to &Rook"
+msgstr "Proměnit na &věž"
+
+#: lib/plugins/chess/chess.rb:67
+msgid "Promote to &Bishop"
+msgstr "Proměnit na &střelce"
+
+#: lib/plugins/chess/chess.rb:71
+msgid "Promote to &Knight"
+msgstr "Proměnit na &jezdce"
+
+#: lib/plugins/chess/chess.rb:98
+msgid "Chess 5x5"
+msgstr "Šachy 5×5"
+
+#: lib/plugins/ics/ics.rb:37
+msgid "&ICS Toolbar"
+msgstr "Nástrojová lišta &ICS"
+
+#: lib/plugins/ics/ics.rb:44
+msgid "&Connect to ICS"
+msgstr "&Připojit se k ICS"
+
+#: lib/plugins/ics/ics.rb:49
+msgid "&Disconnect from ICS"
+msgstr "&Odpojit se od ICS"
+
+#: lib/plugins/ics/ics.rb:62
+msgid "Configure &ICS..."
+msgstr "Nastavit &ICS..."
+
+#: lib/plugins/ics/lib/preferences.rb:17
+msgid "Configure ICS"
+msgstr "Nastavit ICS"
+
+#: lib/plugins/ics/lib/preferences.rb:20
+msgid "&Username:"
+msgstr "&Uživatelské jméno:"
+
+#: lib/plugins/ics/lib/preferences.rb:26
+msgid "&Password:"
+msgstr "&Heslo:"
+
+#: lib/plugins/movelist/simple_movelist.rb:63
+msgid "Mainline"
+msgstr "Partiář"
+
+#: lib/plugins/shogi/shogi.rb:27
+msgid "Shogi"
+msgstr "Šógi"
+
+#: lib/plugins/shogi/shogi.rb:77
+msgid "MiniShogi"
+msgstr "Minišógi"
+
+#: lib/theme_prefs.rb:19
+msgid "&Pieces:"
+msgstr "&Figury:"
+
+#: lib/theme_prefs.rb:20
+msgid "&Board:"
+msgstr "&Deska:"
+
+#: lib/theme_prefs.rb:21
+msgid "&Layout:"
+msgstr "&Rozvržení:"
+
+#: lib/theme_prefs.rb:22
+msgid "&Clock:"
+msgstr "&Hodiny:"
+
+#: lib/theme_prefs.rb:29
+msgid "Configure themes"
+msgstr "Nastavit témata"
+
+#: lib/theme_prefs.rb:32
+msgid "&Games"
+msgstr "&Hry"
+
+#: lib/theme_prefs.rb:35
+msgid "&Categories"
+msgstr "&Kategorie"
+
+#: lib/toolkits/compat/qtkde.rb:47
+msgid "&File"
+msgstr "&Soubor"
+
+#: lib/toolkits/compat/qtkde.rb:57
+msgid "&Edit"
+msgstr "&Úpravy"
+
+#: lib/toolkits/compat/qtkde.rb:62
+msgid "&Settings"
+msgstr "Na&stavení"
+
+#: lib/toolkits/compat/qtkde.rb:63
+msgid "&Help"
+msgstr "&Nápověda"
+
+#: lib/toolkits/compat/qtkde.rb:68
+msgid "&Main toolbar"
+msgstr "&Hlavní nástrojová lišta"
+
+#: lib/toolkits/compat/qtkde.rb:77
+msgid "&About"
+msgstr "&O aplikaci"
+
+#: lib/toolkits/compat/qtkde.rb:83
+msgid "About &Qt"
+msgstr "O &Qt"
+
+#: lib/toolkits/compat/qtkde.rb:203
+msgid "&New..."
+msgstr "&Nová..."
+
+#: lib/toolkits/compat/qtkde.rb:204
+msgid "&Open..."
+msgstr "&Otevřít..."
+
+#: lib/toolkits/compat/qtkde.rb:205
+msgid "&Quit"
+msgstr "U&končit"
+
+#: lib/toolkits/compat/qtkde.rb:206
+msgid "&Save"
+msgstr "&Uložit"
+
+#: lib/toolkits/compat/qtkde.rb:207
+msgid "S&ave as..."
+msgstr "Uložit j&ako..."
+
+#: lib/toolkits/compat/qtkde.rb:208
+msgid "&Undo"
+msgstr "&Zpět"
+
+#: lib/toolkits/compat/qtkde.rb:209
+msgid "&Redo"
+msgstr "Z&novu"
