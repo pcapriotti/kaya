@@ -26,7 +26,7 @@ class TestMatchHandler < Test::Unit::TestCase
                              :white => { :name => 'hello' },
                              :black => { :name => 'world' }
     assert_equal 1, handler.matches.size
-    match, info = handler.matches[37]
+    info = handler.matches[37]
     assert_equal 37, info[:number]
   end
   
@@ -57,7 +57,7 @@ class TestMatchHandler < Test::Unit::TestCase
                          :move_index => 0)
                        
     assert_equal 1, handler.matches.size
-    match, info = handler.matches[37]
-    assert match.started?    
+    info = handler.matches[37]
+    assert info[:match].started?    
   end
 end
