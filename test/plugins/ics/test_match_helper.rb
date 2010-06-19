@@ -47,7 +47,7 @@ class TestMatchHelper < Test::Unit::TestCase
   end
   
   def test_default_start
-    helper = ICS::DefaultMatchHelper.new
+    helper = ICS::DefaultMatchHelper.instance
     @user.expects(:name=).with("Karpov")
     @match.expects(:start).with(@user)
     @match.expects(:start).with{|opp| opp.name == "Fisher" }
@@ -55,7 +55,7 @@ class TestMatchHelper < Test::Unit::TestCase
   end
   
   def test_default_get_match
-    helper = ICS::DefaultMatchHelper.new
+    helper = ICS::DefaultMatchHelper.instance
     info = helper.get_match(@protocol, @match_info, @style12)
     assert_same @match, info[:match]
     
@@ -64,14 +64,14 @@ class TestMatchHelper < Test::Unit::TestCase
   end
   
   def test_examination_start
-    helper = ICS::ExaminingMatchHelper.new
+    helper = ICS::ExaminingMatchHelper.instance
     @match.expects(:start).with{|player| player.name == "Karpov" }
     @match.expects(:start).with{|player| player.name == "Fisher" }
     helper.start(@protocol, @user, @match_info, @style12)
   end
   
   def test_examination_get_match
-    helper = ICS::ExaminingMatchHelper.new
+    helper = ICS::ExaminingMatchHelper.instance
     info = helper.get_match(@protocol, @match_info, @style12)
     assert_same @match, info[:match]
     
@@ -80,5 +80,12 @@ class TestMatchHelper < Test::Unit::TestCase
     assert_not_nil info
     assert_not_nil info[:match]
     assert_equal 37, info[:number]
+  end
+  
+  def test_observation_start
+#     helper = ICS::ObservingMatchHelper.instance
+#     @match.expects(:start).with{|player| player.name == "Karpov" }
+#     @match.expects(:start).with{|player| player.name == "Fisher" }
+#     helper.start(@protocol, @user, @match_info, @style12)
   end
 end

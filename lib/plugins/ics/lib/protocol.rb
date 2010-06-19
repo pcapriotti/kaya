@@ -155,7 +155,8 @@ class Protocol
       :game => game,
       :icsapi => ICSApi.new(game),
       :time => match[8].to_i,
-      :increment => match[9].to_i }
+      :increment => match[9].to_i,
+      :helper => :observing }
     
   end
   

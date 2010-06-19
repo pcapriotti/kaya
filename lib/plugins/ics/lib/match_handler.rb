@@ -46,14 +46,9 @@ class MatchHandler
   # The match_info structure is filled by the protocol.
   # 
   def on_creating_game(data)
-    match = Match.new(data[:game], 
-        :kind => :ics,
-        :editable => false,
-        :time_running => true)
-    match_info = data.merge(
-      :type => :played,
-      :match => match)
-    @matches[data[:number]] = match_info
+    helper = MatchHelper.get(data[:helper] || :default)
+    match_info = helper.create_match(data)
+    @matches[match_info[:number]] = match_info
   end
   
   # 
@@ -100,7 +95,7 @@ class MatchHandler
   # 
   def on_style12(style12)
     # retrieve match and helper
-    helper = MatchHelper.create(style12)
+    helper = MatchHelper.from_style12(style12)
     if helper.nil?
       warn "Unsupported style12. Skipping"
       return

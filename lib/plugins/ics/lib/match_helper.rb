@@ -6,6 +6,7 @@
 # (at your option) any later version.
 
 require_bundle 'ics', 'style12'
+require 'singleton'
 
 module ICS
 
@@ -16,14 +17,23 @@ module MatchHelper
   #
   # Create an appropriate MatchHelper instance for the given style12
   # 
-  def self.create(style12)
+  def self.from_style12(style12)
     @@helpers ||= {}.tap do |h|
-      h[Style12::Relation::EXAMINING] = ExaminingMatchHelper.new
-      h[Style12::Relation::NOT_MY_MOVE] = DefaultMatchHelper.new
+      h[Style12::Relation::EXAMINING] = ExaminingMatchHelper.instance
+      h[Style12::Relation::NOT_MY_MOVE] = DefaultMatchHelper.instance
       h[Style12::Relation::MY_MOVE] = h[Style12::Relation::NOT_MY_MOVE]
     end
     
     @@helpers[style12.relation]
+  end
+  
+  # 
+  # Get the helper instance for this type.
+  # 
+  # Currently supported types: :default, :examining, :observing.
+  # 
+  def self.get(type)
+    ICS.const_get(type.to_s.capitalize + "MatchHelper").instance
   end
   
   # 
@@ -41,6 +51,13 @@ module MatchHelper
   # Create a player for this match.
   # 
   def create_player(user, color, match_info)
+    raise "not implemented"
+  end
+  
+  # 
+  # Create a new match instance.
+  # 
+  def create_match(match_info)
     raise "not implemented"
   end
   
@@ -112,6 +129,7 @@ end
 # 
 class DefaultMatchHelper
   include MatchHelper
+  include Singleton
 
   def create_player(user, color, match_info)
     # do not create a new player, just return user
@@ -120,6 +138,14 @@ class DefaultMatchHelper
     user.name = match_info[color][:name]
     user
   end
+  
+  def create_match(match_info)
+    match = Match.new(match_info[:game], 
+        :kind => :ics,
+        :editable => false,
+        :time_running => true)
+    match_info.merge(:match => match)
+  end
 end
 
 # 
@@ -127,6 +153,7 @@ end
 # 
 class ExaminingMatchHelper
   include MatchHelper
+  include Singleton
   
   def create_player(user, color, match_info)
     user.color = nil
@@ -149,11 +176,7 @@ class ExaminingMatchHelper
       # Examined games on ics have no header, so we have to be prepared to
       # create a new match on the fly at this point.
       # Create an editable Game.dummy match for the moment.
-      match = Match.new(Game.dummy, 
-                        :kind => :ics, 
-                        :editable => true, :navigable => true)
-      match_info = style12.match_info.merge(:type => :examined,
-                                            :match => match)
+      match_info = create_match(style12.match_info)
       
       # We want to change the game type at some point, so request the game
       # movelist to the server.
@@ -162,6 +185,22 @@ class ExaminingMatchHelper
     
     match_info
   end
+  
+  def create_match(match_info)
+    match = Match.new(Game.dummy, 
+      :kind => :ics,
+      :editable => true,
+      :navigable => true)
+    match_info.merge(:match => match)
+  end
+end
+
+# 
+# Helper class to setup matches in observation mode
+# 
+class ObservingMatchHelper
+  include MatchHelper
+  include Singleton
 end
 
 end
