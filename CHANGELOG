@@ -1,3 +1,15 @@
+## Version 0.3 (20 Jun 2010)
+
+- Qt-only version.
+- Localization support.
+- Italian translation.
+- Czech translation.
+- Preliminary support for ICS "Observe" mode.
+- More consistent undo/redo behavior.
+- Fixed bug which caused a dropped piece to return to the wrong spot.
+- Fix aligment of pools in the XBoard layout.
+- Better support for examining games other than chess on ICS.
+
 ## Version 0.2 (13 Feb 2010)
 
 - Premove support.
