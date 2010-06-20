@@ -1,0 +1,8 @@
+---
+title: Kaya 0.3 released
+---
+Kaya 0.3 has been [released](download.html)!
+
+This is the first version that can optionally run without KDE. It is now relatively easy to run Kaya on platforms other than Linux.
+Localization support has been added to this release, as well as the Italian and Czech translations.
+Refer to the changelog for a more detailed list of changes.
