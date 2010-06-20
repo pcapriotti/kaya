@@ -3,6 +3,7 @@
 - [KDE 4](http://www.kde.org)
 - [Ruby](http://www.ruby-lang.org/en/)
 - [Korundum](http://rubyforge.org/projects/korundum/)
+- [Builder](http://builder.rubyforge.org/)
 - [CMake](http://www.cmake.org)
 
 To compile the extension library (optional, but recommended), you also need:
