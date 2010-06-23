@@ -196,6 +196,28 @@ end
 class Qt::Base
   include Observable
   
+  class SignalDisconnecter
+    def initialize(obj, sig)
+      @obj = obj
+      @sig = sig
+    end
+    
+    def disconnect!
+      @obj.disconnect(@sig)
+    end
+  end
+  
+  class ObserverDisconnecter
+    def initialize(obj, observer)
+      @obj = obj
+      @observer = observer
+    end
+    
+    def disconnect!
+      @obj.delete_observer(@observer)
+    end
+  end
+  
   def on(sig, opts = {}, &blk)
     raise "Only symbols are supported as signals" unless sig.is_a?(Symbol)
     candidates = if is_a? Qt::Object
@@ -217,10 +239,12 @@ class Qt::Base
       elsif candidates.empty?
         raise "No overload for #{sig} with arity #{blk.arity}"
       end
-      sign = candidates.first[0]
-      connect(SIGNAL(sign), &blk)
+      sign = SIGNAL(candidates.first[0])
+      connect(sign, &blk)
+      SignalDisconnecter.new(self, sign)
     else
-      observe(sig, &blk)
+      observer = observe(sig, &blk)
+      ObserverDisconnecter.new(self, observer)
     end
   end
 
