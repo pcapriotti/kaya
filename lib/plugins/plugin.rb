@@ -28,7 +28,8 @@ module Plugin
     attr_reader :bundle_dir
     
     def plugin(args)
-      plugin_file, *_ = caller[0].split(':')
+	  caller[0] =~ /^(.*):\d+$/
+      plugin_file = $1
       @bundle_dir = File.dirname(plugin_file)
       @plugin_data = args
     end
