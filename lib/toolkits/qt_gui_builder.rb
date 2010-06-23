@@ -24,7 +24,12 @@ module Qt
       layout.add_widget(widget)
       if desc.opts[:name]
         parent.add_accessor(desc.opts[:name], widget)
-      end        
+      end
+      if desc.opts[:properties]
+        desc.opts[:properties].each do |k, v|
+          widget.send("#{k}=", v)
+        end
+      end
     end
     
     def builder(name)
