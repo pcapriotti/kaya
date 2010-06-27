@@ -31,12 +31,7 @@ class Console < Qt::Widget
     @bold_font.bold = true
 
     @input.on(:return_pressed) do
-      text = @input.text
-      with_font(@bold_font) do
-        @output.append text
-      end
-      @input.text = ''
-      fire :input => text
+      write_line(@input.text)
     end
   end
 
@@ -49,5 +44,13 @@ class Console < Qt::Widget
   
   def append(text)
     @output.append(text)
+  end
+  
+  def write_line(text)
+    with_font(@bold_font) do
+      @output.append text
+    end
+    @input.text = ''
+    fire :input => text
   end
 end
