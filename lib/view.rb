@@ -6,6 +6,8 @@
 # (at your option) any later version.
 
 class View
+  include Observable
+  
   attr_reader :controller, :movelist, :table
   
   def initialize(table, controller, movelist)
@@ -16,5 +18,9 @@ class View
   
   def main_widget
     @table
+  end
+  
+  def close
+    fire :close
   end
 end

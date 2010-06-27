@@ -316,6 +316,10 @@ class Controller
     end
   end
     
+  def close
+    @match.close
+  end
+  
   private
   
   def navigate(direction)

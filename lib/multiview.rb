@@ -79,6 +79,8 @@ class MultiView < KDE::TabWidget
       v = @views.delete_at(index)
       @movelist_stack.remove_widget(v.movelist)
       tab_bar.visible = size > 1
+      v.controller.close
+      v.close
       v
     end
   end
