@@ -194,7 +194,6 @@ class Match
     broadcast nil, :close => { 
       :result => result,
       :message => message }
-    @history = nil
     @closed = true
   end
   
