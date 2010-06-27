@@ -140,7 +140,14 @@ module MatchHelper
     match.update_time(style12.time)
     
     # activate view
-    view.activate(user)
+    view.activate(user, match_name(match_info))
+  end
+  
+  # 
+  # A name for the match, to be displayed in the tab bar.
+  # 
+  def match_name(match_info)
+    "#{match_info[:white][:name]} - #{match_info[:black][:name]}"
   end
 end
 
@@ -271,10 +278,6 @@ class ObservingMatchHelper
     v = view.create(:name => match_name(match_info),
                     :activate => true)
     v.controller
-  end
-  
-  def match_name(match_info)
-    "#{match_info[:white][:name]} - #{match_info[:black][:name]}"
   end
 end
 

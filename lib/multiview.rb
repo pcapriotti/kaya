@@ -32,10 +32,11 @@ class MultiView < KDE::TabWidget
     end
   end
   
-  def activate(user)
+  def activate(user, name = nil)
     @views.each_with_index do |view, i|
       if user == view.controller
         self.index = i
+        set_tab_text(i, name) if name
         break
       end
     end

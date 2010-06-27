@@ -34,8 +34,8 @@ class ICSPlugin
       @view.create(opts)
     end
     
-    def activate(user)
-      @view.activate(user)
+    def activate(user, name)
+      @view.activate(user, name)
     end
   end
   
