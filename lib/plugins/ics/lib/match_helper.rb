@@ -89,7 +89,7 @@ module MatchHelper
   # If no match for that style12 event is found, the match argument
   # will be nil.
   # 
-  def get_match(protocol, match_info, style12)
+  def get_match(handler, match_info, style12)
     match_info
   end
   

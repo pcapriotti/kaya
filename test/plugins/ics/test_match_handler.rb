@@ -15,12 +15,12 @@ require 'ostruct'
 
 class TestMatchHandler < Test::Unit::TestCase
   def test_creation
-    user = mock("user")
+    view = stub_everything("view")
     protocol = mock("protocol") do |x|
       x.expects(:add_observer)
     end
     
-    handler = ICS::MatchHandler.new(user, protocol)
+    handler = ICS::MatchHandler.new(view, protocol)
     handler.on_creating_game :game => Game.get(:chess),
                              :number => 37,
                              :white => { :name => 'hello' },
@@ -31,10 +31,10 @@ class TestMatchHandler < Test::Unit::TestCase
   end
   
   def test_creation_observe
-    user = stub_everything("user")
+    view = stub_everything("view")
     protocol = stub_everything("protocol")
     
-    handler = ICS::MatchHandler.new(user, protocol)
+    handler = ICS::MatchHandler.new(view, protocol)
     handler.on_creating_game :game => Game.get(:chess),
                              :helper => :observing,
                              :number => 37,
@@ -60,8 +60,11 @@ class TestMatchHandler < Test::Unit::TestCase
     protocol = mock("protocol") do |x|
       x.expects(:add_observer)
     end
+    view = stub_everything("view")
+    view.stubs(:main).returns(view)
+    view.stubs(:controller).returns(user)
     
-    handler = ICS::MatchHandler.new(user, protocol)
+    handler = ICS::MatchHandler.new(view, protocol)
     game = Game.get(:chess)
     handler.on_creating_game :game => game,
                              :icsapi => ICS::ICSApi.new(game),
@@ -81,8 +84,11 @@ class TestMatchHandler < Test::Unit::TestCase
   
   def test_observe_style12
     user = stub_everything("user")
+    view = stub_everything("view")
+    view.stubs(:create).returns(view)
+    view.stubs(:controller).returns(user)
     protocol = stub_everything("protocol")
-    handler = ICS::MatchHandler.new(user, protocol)
+    handler = ICS::MatchHandler.new(view, protocol)
     game = Game.get(:chess)
     
     handler.on_creating_game(
