@@ -14,6 +14,7 @@ class View
     @table = table
     @controller = controller
     @movelist = movelist
+    @closed = false
   end
   
   def main_widget
@@ -21,6 +22,11 @@ class View
   end
   
   def close
+    @closed = true
     fire :close
+  end
+  
+  def closed?
+    @closed
   end
 end

@@ -19,11 +19,15 @@ class ICSPlugin
   include ActionProvider
   
   class ICSView
-    attr_reader :main
-    
     def initialize(view)
       @view = view
-      @main = create(:name => 'ICS')
+    end
+    
+    def main
+      if not @main or @main.closed?
+        @main = create(:name => 'ICS')
+      end
+      @main
     end
     
     def create(opts = { })
