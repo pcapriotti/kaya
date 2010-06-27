@@ -279,7 +279,7 @@ class StartupModule
       @connection.send_text("iset startpos 1");
       @connection.send_text("iset ms 1");
       @connection.send_text("iset lock 1");
-      @connection.send_text("set interface Tagua-2.1 (http://www.tagua-project.org)");
+      @connection.send_text("set interface Kaya-#{$version} (http://pcapriotti.github.com/kaya)");
       @connection.send_text("set style 12");
       @startup = true
     end

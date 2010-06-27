@@ -16,6 +16,7 @@ def version
 end
 
 def start_kaya
+  $version = version
   default_game = :chess
 
   app = KDE::Application.init(
