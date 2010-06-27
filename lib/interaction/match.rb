@@ -76,7 +76,9 @@ class Match
   
   def move(player, move, opts = {})
     cancel_undo
-    return false if @closed
+    if @closed
+      warn "a closed match is still active"
+    end
     return false unless @history
     
     # if the match is non-editable, jump to the last move    
@@ -147,7 +149,11 @@ class Match
   end
   
   def started?
-    ! ! @history
+    @history || @closed
+  end
+  
+  def closed?
+    @closed
   end
   
   def state
@@ -184,6 +190,7 @@ class Match
     broadcast nil, :close => { 
       :result => result,
       :message => message }
+    @history = nil
     @closed = true
   end
   
@@ -220,6 +227,7 @@ class Match
   private
   
   def broadcast(player, event)
+    return if @closed
     fire event
     @players.each_key do |p|
       p.update any_to_event(event) unless p == player
@@ -232,6 +240,7 @@ class Match
   end
   
   def navigate_internal(player, method, history_args, event_args = {})
+    return if @closed
     awaiting_server = false
     begin
       history.send(method, *history_args)

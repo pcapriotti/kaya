@@ -94,6 +94,7 @@ class MatchHandler
   # arrives.
   # 
   def on_style12(style12)
+    puts "matches = #{@matches.size}"
     # retrieve match and helper
     helper = MatchHelper.from_style12(style12)
     if helper.nil?
@@ -101,6 +102,11 @@ class MatchHandler
       return
     end
     match_info = @matches[style12.game_number]
+    if match_info and match_info[:match] and match_info[:match].closed?
+      @matches.delete(style12.game_number)
+      helper.close_match(@protocol, match_info)
+      return
+    end
     
     # update match using helper and save it back to the @matches array
     match_info = helper.get_match(@protocol, match_info, style12)

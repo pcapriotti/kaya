@@ -63,6 +63,13 @@ module MatchHelper
   end
   
   # 
+  # Close a match.
+  # 
+  def close_match(protocol, match_info)
+    raise "not implemented"
+  end
+  
+  # 
   # Perform post-creation initialization for players.
   # 
   def setup_players(user, players)
@@ -150,6 +157,10 @@ class DefaultMatchHelper
         :time_running => true)
     match_info.merge(:match => match)
   end
+  
+  def close_match(protocol, match_info)
+    protocol.connection.send_text("resign")
+  end
 end
 
 # 
@@ -202,6 +213,10 @@ class ExaminingMatchHelper
       :navigable => true)
     match_info.merge(:match => match)
   end
+  
+  def close_match(protocol, match_info)
+    protocol.connection.send_text("unexamine")
+  end
 end
 
 # 
@@ -228,6 +243,10 @@ class ObservingMatchHelper
                       :editable => false,
                       :navigable => false)
     match_info.merge(:match => match)
+  end
+  
+  def close_match(protocol, match_info)
+    protocol.connection.send_text("unobserve #{match_info[:number]}")
   end
 end
 

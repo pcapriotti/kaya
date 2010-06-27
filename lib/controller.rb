@@ -45,8 +45,12 @@ class Controller
     @clocks.each {|c, clock| yield clock }
   end
   
-  def reset(match = nil)
+  def reset(match)
+    if @match and match
+      @match.close
+    end
     match ||= @match
+    
     @match = match if match
     @policy = match.game.policy.new
     @current = match.history.current
