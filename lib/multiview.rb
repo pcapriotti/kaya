@@ -32,6 +32,15 @@ class MultiView < KDE::TabWidget
     end
   end
   
+  def activate(user)
+    @views.each_with_index do |view, i|
+      if user == view.controller
+        self.index = i
+        break
+      end
+    end
+  end
+  
   def current
     if @index != -1
       @views[@index]
@@ -45,6 +54,7 @@ class MultiView < KDE::TabWidget
     
     v = View.new(table, controller, movelist)
     add(v, opts)
+    v
   end
   
   def add(view, opts = { })

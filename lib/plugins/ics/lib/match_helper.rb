@@ -71,10 +71,10 @@ module MatchHelper
   
   # 
   # Get user from the view. The default implementation
-  # simply returns the current controller.
+  # simply returns the controller of the main ics view.
   # 
   def get_user(view, match_info)
-    view.current.controller
+    view.main.controller
   end
   
   # 
@@ -138,6 +138,9 @@ module MatchHelper
       match.history.state = style12.state
     end
     match.update_time(style12.time)
+    
+    # activate view
+    view.activate(user)
   end
 end
 
@@ -259,9 +262,9 @@ class ObservingMatchHelper
   end
   
   def get_user(view, match_info)
-    view.create(:name => match_name(match_info),
-                :activate => true)
-    super(view, match_info)
+    v = view.create(:name => match_name(match_info),
+                    :activate => true)
+    v.controller
   end
   
   def match_name(match_info)

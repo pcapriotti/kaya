@@ -18,6 +18,23 @@ class ICSPlugin
   include Plugin
   include ActionProvider
   
+  class ICSView
+    attr_reader :main
+    
+    def initialize(view)
+      @view = view
+      @main = create(:name => 'ICS')
+    end
+    
+    def create(opts = { })
+      @view.create(opts)
+    end
+    
+    def activate(user)
+      @view.activate(user)
+    end
+  end
+  
   plugin :name => 'ICS Plugin',
          :interface => :action_provider
     
@@ -84,7 +101,9 @@ class ICSPlugin
       end
     end
 
-    @handler = ICS::MatchHandler.new(parent.view, protocol)
+    # create an ICS view
+    @view = ICSView.new(parent.view)
+    @handler = ICS::MatchHandler.new(@view, protocol)
     @connection.start
   end
 end
