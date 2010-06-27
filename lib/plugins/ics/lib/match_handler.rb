@@ -27,6 +27,7 @@ class MatchHandler
   include Observer
   
   attr_reader :matches
+  attr_reader :protocol
   
   # 
   # Create a match handler for the ICS connection associated to protocol.
@@ -47,7 +48,7 @@ class MatchHandler
   # 
   def on_creating_game(data)
     helper = MatchHelper.get(data[:helper] || :default)
-    match_info = helper.create_match(data)
+    match_info = helper.create_match(self, data)
     @matches[match_info[:number]] = match_info
   end
   
@@ -102,13 +103,12 @@ class MatchHandler
     end
     match_info = @matches[style12.game_number]
     if match_info and match_info[:match] and match_info[:match].closed?
-      @matches.delete(style12.game_number)
-      helper.close_match(@protocol, match_info)
+      helper.close_match(self, match_info)
       return
     end
     
     # update match using helper and save it back to the @matches array
-    match_info = helper.get_match(@protocol, match_info, style12)
+    match_info = helper.get_match(self, match_info, style12)
     @matches[style12.game_number] = match_info
     
     return unless match_info

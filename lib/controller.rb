@@ -296,6 +296,14 @@ class Controller
     @controlled[player.color] = player
   end
   
+  def controls?(x)
+    return true if x == self
+    @controlled.each do |c, p|
+      return true if x == p
+    end
+    false
+  end
+  
   def color=(value)
     @match.close if @match
     @match = nil

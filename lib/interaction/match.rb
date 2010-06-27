@@ -16,6 +16,10 @@ module Player
   def inspect
     "<#{name}:#{self.class.name}>"
   end
+  
+  def controls?(x)
+    x == self
+  end
 end
 
 class Match
@@ -81,7 +85,7 @@ class Match
     end
     return false unless @history
     
-    # if the match is non-editable, jump to the last move    
+    # if the match is non-editable, jump to the last move
     unless editable?
       @history.go_to_last 
     end
@@ -90,7 +94,7 @@ class Match
     if player == nil
       player = current_player
     else
-      return false unless @players.has_key?(player)
+      return false unless is_playing?(player)
     end
 
     validate = @game.validator.new(@history.state)
@@ -99,7 +103,7 @@ class Match
       warn "Invalid move from #{player.name}: #{move}"
       return false 
     end
-
+    
     old_state = @history.state
     state = old_state.dup
     state.perform! move
@@ -254,5 +258,12 @@ class Match
       broadcast player, 
         method => event_args.merge(:awaiting_server => awaiting_server)
     end
+  end
+  
+  def is_playing?(player)
+    @players.each_key do |p|
+      return true if player.controls?(p)
+    end
+    false
   end
 end

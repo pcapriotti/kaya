@@ -58,15 +58,15 @@ module MatchHelper
   # 
   # Create a new match instance.
   # 
-  def create_match(match_info)
+  def create_match(handler, match_info)
     raise "not implemented"
   end
   
   # 
   # Close a match.
   # 
-  def close_match(protocol, match_info)
-    raise "not implemented"
+  def close_match(handler, match_info)
+    handler.matches.delete(match_info[:game_number])
   end
   
   # 
@@ -162,16 +162,18 @@ class DefaultMatchHelper
     user
   end
   
-  def create_match(match_info)
+  def create_match(handler, match_info)
     match = Match.new(match_info[:game], 
         :kind => :ics,
         :editable => false,
         :time_running => true)
+    match.on(:close) { close_match(handler, match_info) }
     match_info.merge(:match => match)
   end
   
-  def close_match(protocol, match_info)
-    protocol.connection.send_text("resign")
+  def close_match(handler, match_info)
+    super(handler, match_info)
+    handler.protocol.connection.send_text("resign")
   end
 end
 
@@ -203,31 +205,33 @@ class ExaminingMatchHelper
     end
   end
 
-  def get_match(protocol, match_info, style12)
+  def get_match(handler, match_info, style12)
     if match_info.nil?
       # Examined games on ics have no header, so we have to be prepared to
       # create a new match on the fly at this point.
       # Create an editable Game.dummy match for the moment.
-      match_info = create_match(style12.match_info)
+      match_info = create_match(handler, style12.match_info)
       
       # We want to change the game type at some point, so request the game
       # movelist to the server.
-      protocol.connection.send_text('moves')
+      handler.protocol.connection.send_text('moves')
     end
     
     match_info
   end
   
-  def create_match(match_info)
+  def create_match(handler, match_info)
     match = Match.new(Game.dummy, 
       :kind => :ics,
       :editable => true,
       :navigable => true)
+    match.on(:close) { close_match(handler, match_info) }
     match_info.merge(:match => match)
   end
   
-  def close_match(protocol, match_info)
-    protocol.connection.send_text("unexamine")
+  def close_match(handler, match_info)
+    super(handler, match_info)
+    handler.protocol.connection.send_text("unexamine")
   end
 end
 
@@ -249,16 +253,18 @@ class ObservingMatchHelper
     player
   end
   
-  def create_match(match_info)
+  def create_match(handler, match_info)
     match = Match.new(Game.dummy,
                       :kind => :ics,
                       :editable => false,
                       :navigable => false)
+    match.on(:close) { close_match(handler, match_info) }
     match_info.merge(:match => match)
   end
   
-  def close_match(protocol, match_info)
-    protocol.connection.send_text("unobserve #{match_info[:number]}")
+  def close_match(handler, match_info)
+    super(handler, match_info)
+    handler.protocol.connection.send_text("unobserve #{match_info[:number]}")
   end
   
   def get_user(view, match_info)
