@@ -70,6 +70,14 @@ module MatchHelper
   end
   
   # 
+  # Get user from the view. The default implementation
+  # simply returns the current controller.
+  # 
+  def get_user(view, match_info)
+    view.current.controller
+  end
+  
+  # 
   # Perform post-creation initialization for players.
   # 
   def setup_players(user, players)
@@ -101,7 +109,7 @@ module MatchHelper
   # Start an existing match. Called when the first style12
   # for the given match is received.
   # 
-  def start(protocol, user, match_info, style12)
+  def start(protocol, view, match_info, style12)
     rel = style12.relation
     state = style12.state
     turns = [state.turn, state.opposite_turn(state.turn)]
@@ -110,6 +118,7 @@ module MatchHelper
         
     # create players
     opponent = create_opponent(protocol, opponent_color, match_info)
+    user = get_user(view, match_info)
     player = create_player(user, user_color, match_info)
     setup_players(user, [player, opponent])
     
@@ -121,14 +130,14 @@ module MatchHelper
     match.start(opponent)
     raise "couldn't start match" unless match.started?
     
+    # reset controller
+    user.reset(match)
+    
     # set initial state and time
     unless match_info[:icsapi].same_state(match.state, style12.state)
       match.history.state = style12.state
     end
     match.update_time(style12.time)
-    
-    # reset controller
-    user.reset(match)
   end
 end
 
@@ -247,6 +256,16 @@ class ObservingMatchHelper
   
   def close_match(protocol, match_info)
     protocol.connection.send_text("unobserve #{match_info[:number]}")
+  end
+  
+  def get_user(view, match_info)
+    view.create(:name => match_name(match_info),
+                :activate => true)
+    super(view, match_info)
+  end
+  
+  def match_name(match_info)
+    "#{match_info[:white][:name]} - #{match_info[:black][:name]}"
   end
 end
 
