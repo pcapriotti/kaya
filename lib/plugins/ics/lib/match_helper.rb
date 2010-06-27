@@ -170,6 +170,7 @@ class ExaminingMatchHelper
     player = DummyPlayer.new(color)
     player.name = match_info[color][:name]
     user.premove = false
+    match_info[:match].add_observer(user)
     player
   end
   
@@ -217,6 +218,7 @@ class ObservingMatchHelper
     player = DummyPlayer.new(color)
     player.name = match_info[color][:name]
     user.premove = false
+    match_info[:match].add_observer(user)
     player
   end
   

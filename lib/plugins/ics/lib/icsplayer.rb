@@ -85,11 +85,9 @@ class ICSPlayer
   # 
   # Process an incoming style12 event.
   # 
-  def on_style12(style12)    
+  def on_style12(style12)
     @match.update_time(style12.time)
     delta = style12.move_index - @match.index
-    
-    puts "delta = #{delta}"
     
     # get previously stored revert information
     revert_to = @match_info[:about_to_revert_to]
