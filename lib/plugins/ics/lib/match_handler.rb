@@ -94,7 +94,6 @@ class MatchHandler
   # arrives.
   # 
   def on_style12(style12)
-    puts "matches = #{@matches.size}"
     # retrieve match and helper
     helper = MatchHelper.from_style12(style12)
     if helper.nil?

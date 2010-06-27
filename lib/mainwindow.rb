@@ -39,6 +39,20 @@ class MainWindow < KDE::XmlGuiWindow
     @loader = loader
     @theme_loader = @loader.get_matching(:theme_loader).new
     
+    @factories = Hash.new do |h, interface|
+      @loader.get_matching(interface)
+    end
+    @factories[:table] = Factory.new do |parent|
+        Table.new(Scene.new, @loader, @theme_loader, parent)
+      end
+    @factories[:controller] = Factory.new do |parent|
+      Controller.new(parent, @field).tap do |c|
+        c.on(:changed_active_actions) do
+          update_active_actions(c)
+        end
+      end
+    end
+
     startup(game)
     setup_actions
     load_action_providers
@@ -114,18 +128,6 @@ private
     end
   end
   
-  def create_view(opts = { })
-    scene = Scene.new
-    table = Table.new(scene, @loader, @theme_loader, @view)
-    contr = Controller.new(table, @field)
-    movelist = @loader.get_matching(:movelist).new(contr)
-    v = View.new(table, contr, movelist)
-    @view.add(v, opts)
-    contr.on(:changed_active_actions) do
-      update_active_actions(contr)
-    end
-  end
-  
   def startup(game)
     @field = AnimationField.new(20)
 
@@ -138,8 +140,8 @@ private
     movelist_dock.show
     action_collection[:toggle_history] = movelist_dock.toggle_view_action
 
-    @view = MultiView.new(self, movelist_stack)
-    create_view(:name => game.class.plugin_name)
+    @view = MultiView.new(self, movelist_stack, @factories)
+    @view.create(:name => game.class.plugin_name)
     @view.on(:changed) { update_active_actions(controller) }
     
     @engine_loader = @loader.get_matching(:engine_loader).new
@@ -191,8 +193,8 @@ private
       game = data[:game]
       match = Match.new(game, :editable => data[:engines].empty?)
       if data[:new_tab]
-        create_view(:activate => true,
-                    :name => game.class.plugin_name)
+        @view.create(:activate => true,
+                     :name => game.class.plugin_name)
       else
         @view.set_tab_text(@view.index, game.class.plugin_name)
       end
@@ -276,8 +278,8 @@ private
       
       # create game
       match = Match.new(game)
-      create_view(:activate => true,
-                  :name => game.class.plugin_name)
+      @view.create(:activate => true,
+                   :name => game.class.plugin_name)
       setup_single_player(match)
       match.history = history
       match.add_info(info)

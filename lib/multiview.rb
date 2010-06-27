@@ -12,9 +12,10 @@ class MultiView < KDE::TabWidget
   include Observable
   include Enumerable
   
-  def initialize(parent, movelist_stack)
+  def initialize(parent, movelist_stack, factories)
     super(parent)
     @movelist_stack = movelist_stack
+    @factories = factories
     @views = []
     @index = -1
     tab_bar.visible = false
@@ -35,6 +36,15 @@ class MultiView < KDE::TabWidget
     if @index != -1
       @views[@index]
     end
+  end
+  
+  def create(opts =  { })
+    table = @factories[:table].new(self)
+    controller = @factories[:controller].new(table)
+    movelist = @factories[:movelist].new(controller)
+    
+    v = View.new(table, controller, movelist)
+    add(v, opts)
   end
   
   def add(view, opts = { })
