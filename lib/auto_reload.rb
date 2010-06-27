@@ -17,7 +17,6 @@ class AutoReload
   end
   
   def initialize(basedir)
-    puts "basedir = #{basedir}"
     @watch = KDE::DirWatch.new
     @watch.add_dir(basedir, KDE::DirWatch::WatchSubDirs)
     @watch.on(:dirty) do |filename|
