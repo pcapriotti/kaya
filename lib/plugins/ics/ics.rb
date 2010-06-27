@@ -84,9 +84,7 @@ class ICSPlugin
       end
     end
 
-    @handler = ICS::MatchHandler.new(parent.controller, 
-                                    protocol)
-
+    @handler = ICS::MatchHandler.new(parent.view, protocol)
     @connection.start
   end
 end

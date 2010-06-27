@@ -32,6 +32,7 @@ class MainWindow < KDE::XmlGuiWindow
   include FileWriter
   
   attr_reader :console
+  attr_reader :view
 
   def initialize(loader, game)
     super nil

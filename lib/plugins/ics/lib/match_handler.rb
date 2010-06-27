@@ -31,10 +31,10 @@ class MatchHandler
   # 
   # Create a match handler for the ICS connection associated to protocol.
   # 
-  def initialize(user, protocol)
+  def initialize(view, protocol)
     @protocol = protocol
     @matches = { }
-    @user = user
+    @view = view
     
     protocol.add_observer(self)
   end
@@ -117,7 +117,7 @@ class MatchHandler
     if match.started?
       match_info[:icsplayer].on_style12(style12)
     else
-      helper.start(@protocol, @user, match_info, style12)
+      helper.start(@protocol, @view.current.controller, match_info, style12)
     end
   end
 end
