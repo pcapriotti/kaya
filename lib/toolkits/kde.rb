@@ -66,6 +66,10 @@ class KDE::CmdLineArgs
   def [](i)
     arg(i)
   end
+  
+  def is_set(name)
+    isSet(Qt::ByteArray.new(name))
+  end
 end
 
 class KDE::ActionCollection  

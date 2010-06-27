@@ -230,6 +230,10 @@ class KDE::CmdLineArgs
   def self.parsed_args
     ARGV
   end
+  
+  def is_set(name)
+    false
+  end
 end
 
 class KDE::Global

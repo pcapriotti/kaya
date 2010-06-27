@@ -6,7 +6,8 @@
 # (at your option) any later version.
 
 #!/usr/bin/env ruby
-$:.unshift(File.dirname(__FILE__))
+$basedir = File.dirname(__FILE__)
+$:.unshift($basedir)
 require 'toolkit'
 require 'mainwindow'
 require 'require_bundle'
@@ -29,13 +30,20 @@ def start_kaya
     :contributors => [[KDE.ki18n("Jani Huhtanen"), KDE.ki18n('Gaussian blur code')],
                       [KDE.ki18n("Yann Dirson"), KDE.ki18n('Minishogi')]],
     :bug_tracker => 'http://github.com/pcapriotti/kaya/issues',
-    :options => [['+[game]', KDE.ki18n('Initial game')]])
+    :options => [['+[game]', KDE.ki18n('Initial game')],
+                 ['auto-reload', KDE.ki18n("Reload source files when modified")]])
     
   require 'plugins/loader'
   require 'games/all'
   require 'ext/loader'
     
   args = KDE::CmdLineArgs.parsed_args
+  
+  if args.is_set("auto-reload")
+    require 'auto_reload'
+    AutoReload.start($basedir)
+  end
+  
   game = if args.count > 0
     name = args[0]
     g = Game.get(name.to_sym)
