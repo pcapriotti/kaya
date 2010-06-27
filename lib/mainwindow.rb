@@ -144,6 +144,8 @@ private
     @view = MultiView.new(self, movelist_stack, @factories)
     @view.create(:name => game.class.plugin_name)
     @view.on(:changed) { update_active_actions(controller) }
+    @view.on(:changed) { update_title }
+    update_title
     
     @engine_loader = @loader.get_matching(:engine_loader).new
     @engine_loader.reload
@@ -198,6 +200,7 @@ private
                      :name => game.class.plugin_name)
       else
         @view.set_tab_text(@view.index, game.class.plugin_name)
+        update_title
       end
       contr = controller
       
@@ -337,6 +340,10 @@ private
       []
     end
     plug_action_list('game_actions', actions)
+  end
+  
+  def update_title
+    self.caption = @view.current_name.gsub('&', '')
   end
   
   def update_active_actions(contr)

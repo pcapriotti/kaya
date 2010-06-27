@@ -119,6 +119,11 @@ class Qt::MainWindow
     settings.end_group
     settings.sync
   end
+  
+  def caption=(title)
+    self.window_title = $qApp.application_name.capitalize + 
+        " - " + title
+  end
 end
 
 class Qt::Dialog
@@ -228,7 +233,19 @@ end
 
 class KDE::CmdLineArgs
   def self.parsed_args
-    ARGV
+    new(ARGV)
+  end
+  
+  def initialize(args)
+    @args = args
+  end
+  
+  def [](i)
+    @args[i]
+  end
+  
+  def count
+    @args.size
   end
   
   def is_set(name)

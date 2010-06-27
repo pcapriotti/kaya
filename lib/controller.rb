@@ -45,7 +45,7 @@ class Controller
     @clocks.each {|c, clock| yield clock }
   end
   
-  def reset(match)
+  def reset(match = nil)
     if @match and match
       @match.close
     end

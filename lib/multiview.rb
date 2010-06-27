@@ -42,9 +42,20 @@ class MultiView < KDE::TabWidget
     end
   end
   
+  def set_tab_text(i, name)
+    puts "name = #{name}"
+    super(i, name)
+  end
+  
   def current
     if @index != -1
       @views[@index]
+    end
+  end
+  
+  def current_name
+    if @index != -1
+      tab_text(@index)
     end
   end
   
