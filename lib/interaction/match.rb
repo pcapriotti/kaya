@@ -149,7 +149,7 @@ class Match
   end
   
   def started?
-    @history || @closed
+    @history
   end
   
   def closed?

@@ -62,6 +62,8 @@ class Clock
   end
   
   def tick
+    return unless @running
+    
     # update counter
     @count += 1
     elapsed = false
@@ -117,6 +119,7 @@ class Clock
     if @main <= 0
       @main = 0
       @timer.stop
+      @running = false
     end
     
     # reset counter

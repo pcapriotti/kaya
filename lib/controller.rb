@@ -189,6 +189,7 @@ class Controller
   
   def on_board_click(p)
     return unless match
+    return unless match.started?
     state = match.history.state
     # if there is a selection already, move or premove
     # to the clicked square
