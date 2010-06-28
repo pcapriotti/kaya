@@ -221,7 +221,7 @@ class Qt::Base
   def on(sig, opts = {}, &blk)
     raise "Only symbols are supported as signals" unless sig.is_a?(Symbol)
     candidates = if is_a? Qt::Object
-      self.signal_map[sig]
+      signal_map[sig]
     end
     if candidates
       if candidates.size > 1
