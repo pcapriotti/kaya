@@ -344,7 +344,7 @@ private
   end
   
   def update_title
-    self.caption = @view.current_name.gsub('&', '')
+    self.caption = @view.current_name
   end
   
   def update_active_actions(contr)
