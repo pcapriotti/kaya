@@ -10,6 +10,7 @@ require 'observer_utils'
 class MultiView < KDE::TabWidget
   attr_reader :index
   include Observable
+  include Observer
   include Enumerable
   
   def initialize(parent, movelist_stack, factories)
@@ -29,6 +30,7 @@ class MultiView < KDE::TabWidget
       @index = value
       self.current_index = value
       @movelist_stack.current_index = value
+      current.active = false
     end
   end
   
@@ -40,6 +42,13 @@ class MultiView < KDE::TabWidget
         break
       end
     end
+  end
+  
+  def find
+    @views.each_with_index do |view, i|
+      return i if yield view
+    end
+    nil
   end
   
   def set_tab_text(i, name)
@@ -70,6 +79,7 @@ class MultiView < KDE::TabWidget
   end
   
   def add(view, opts = { })
+    view.add_observer(self)
     @views << view
     i = add_tab(view.main_widget, opts[:name] || "?")
     unless i == size - 1
@@ -93,6 +103,7 @@ class MultiView < KDE::TabWidget
       tab_bar.visible = size > 1
       v.controller.close
       v.close
+      v.delete_observer(self)
       v
     end
   end
@@ -103,5 +114,19 @@ class MultiView < KDE::TabWidget
   
   def each(&blk)
     @views.each(&blk)
+  end
+  
+  def on_active(view, value)
+    i = find { |v| v == view }
+    return unless i
+    @@base_color ||= tab_bar.tab_text_color(i)
+    
+    if i != @index && value
+      scheme = KDE::ColorScheme.new(Qt::Palette::Active, KDE::ColorScheme::Window)
+      color = scheme.foreground(KDE::ColorScheme::PositiveText).color
+      tab_bar.set_tab_text_color(i, color)
+    else
+      tab_bar.set_tab_text_color(i, @@base_color)
+    end
   end
 end

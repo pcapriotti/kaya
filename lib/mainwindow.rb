@@ -145,6 +145,7 @@ private
     @view.create(:name => game.class.plugin_name)
     @view.on(:changed) { update_active_actions(controller) }
     @view.on(:changed) { update_title }
+
     update_title
     
     @engine_loader = @loader.get_matching(:engine_loader).new

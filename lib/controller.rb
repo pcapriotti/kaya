@@ -135,6 +135,8 @@ class Controller
     return if index == @current && (!opts[:force])
     set_active_actions(index)
     
+    fire :activity
+    
     @clocks.each do |color, clock|
       clock.active = match.history.state.turn == color
     end
