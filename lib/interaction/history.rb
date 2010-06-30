@@ -136,7 +136,7 @@ class History
   end
   
   def remove_items_at(index)
-    @current = index.pred
+    @current = index - 1
     fire :current_changed
     
     items = @history[index..-1]
