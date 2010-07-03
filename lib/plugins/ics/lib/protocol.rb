@@ -140,7 +140,7 @@ class Protocol
   end
   
   # Header for observed games
-  on /^Game (\d+): (\S+) \((\d+\)) (\S+) \((\d+\)) (\S+) (\S+) (\d+) (\d+)$/ do |match|
+  on /^Game (\d+): (\S+) \((\S+\)) (\S+) \((\S+\)) (\S+) (\S+) (\d+) (\d+)$/ do |match|
     game = game_from_type(match[7])
     fire :creating_game => {
       :number => match[1].to_i,
