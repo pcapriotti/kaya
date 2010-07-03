@@ -126,7 +126,7 @@ class ICSPlayer
         # In this case, force the move into the history, and be careful to
         # use the SAN provided in the style12 event for rendering.
         warn "Received invalid move from ICS: #{style12.last_move_san}"
-        move = @match_info[:icsapi].parse_last_move(style12.last_move)
+        move = @match_info[:icsapi].parse_last_move(style12.last_move, style12.state.turn)
         @match.history.add_move(style12.state, move, :text => style12.last_move_san)
       else
         # Perform and store a new move.
@@ -154,8 +154,12 @@ class ICSPlayer
         @match.history.set_item(state, move)
       end
     else
-      move = @match_info[:icsapi].parse_last_move(style12.last_move)
-      @match.history.add_move(style12.state, move, :text => style12.last_move_san)
+      move = @match_info[:icsapi].parse_last_move(style12.last_move, style12.state.turn)
+      if move
+        @match.history.add_move(style12.state, move, :text => style12.last_move_san)
+      else
+        warn "Invalid last move #{style12.last_move}"
+      end
     end
   end
   

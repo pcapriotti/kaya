@@ -43,11 +43,19 @@ class ICSApi
     @game.piece.new(color, type)
   end
   
-  def parse_last_move(str)      
+  def parse_last_move(str, turn)      
     if str =~ /.*\/(.*)-(.*)$/
       src, dst = [$1, $2].map do |c| 
         Point.from_coord(c, @game.size.y, :strict => true)
       end
+      @game.move.new(src, dst)
+    elsif str.downcase == "o-o-o"
+      src = Point.new(4, turn == :white ? 7 : 0)
+      dst = Point.new(2, turn == :white ? 7 : 0)
+      @game.move.new(src, dst)
+    elsif str.downcase == "o-o"
+      src = Point.new(4, turn == :white ? 7 : 0)
+      dst = Point.new(6, turn == :white ? 7 : 0)
       @game.move.new(src, dst)
     end
   end
