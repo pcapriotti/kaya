@@ -70,6 +70,7 @@ class MultiView < KDE::TabWidget
       @clean = false
       if opts[:name]
         set_tab_text(index, opts[:name])
+        fire :changed
       end
       current
     else    
