@@ -264,7 +264,8 @@ class ObservingMatchHelper
     match = Match.new(Game.dummy,
                       :kind => :ics,
                       :editable => false,
-                      :navigable => false)
+                      :navigable => false,
+                      :time_running => true)
     match.on(:close) { close_match(handler, match_info) }
     match_info.merge(:match => match)
   end
