@@ -19,6 +19,10 @@ module KDE
   def self.i18nc(context, str)
     str
   end
+  
+  def self.active_color
+    $qApp.palette.color(Qt::Palette::Highlight)
+  end
 end
 
 Qt::XmlGuiWindow = Qt::MainWindow

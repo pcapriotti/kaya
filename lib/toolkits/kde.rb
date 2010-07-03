@@ -216,6 +216,11 @@ module KDE
       end
     end
   end
+  
+  def self.active_color
+    scheme = KDE::ColorScheme.new(Qt::Palette::Active, KDE::ColorScheme::Window)
+    color = scheme.foreground(KDE::ColorScheme::PositiveText).color
+  end
 end
 
 class KDE::TabWidget

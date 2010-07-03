@@ -128,9 +128,7 @@ class MultiView < KDE::TabWidget
     @@base_color ||= tab_bar.tab_text_color(i)
     
     if i != @index && value
-      scheme = KDE::ColorScheme.new(Qt::Palette::Active, KDE::ColorScheme::Window)
-      color = scheme.foreground(KDE::ColorScheme::PositiveText).color
-      tab_bar.set_tab_text_color(i, color)
+      tab_bar.set_tab_text_color(i, KDE::active_color)
     else
       tab_bar.set_tab_text_color(i, @@base_color)
     end
