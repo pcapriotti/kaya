@@ -145,6 +145,7 @@ private
     @view.create(:name => game.class.plugin_name)
     @view.on(:changed) { update_active_actions(controller) }
     @view.on(:changed) { update_title }
+    @view.clean = true
 
     update_title
     
@@ -198,6 +199,7 @@ private
       match = Match.new(game, :editable => data[:engines].empty?)
       if data[:new_tab]
         @view.create(:activate => true,
+                     :force => true,
                      :name => game.class.plugin_name)
       else
         @view.set_tab_text(@view.index, game.class.plugin_name)

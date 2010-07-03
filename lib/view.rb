@@ -9,14 +9,15 @@ class View
   include Observable
   
   attr_reader :controller, :movelist, :table
-  attr_reader :active
   
   def initialize(table, controller, movelist)
     @table = table
     @controller = controller
     @movelist = movelist
     @closed = false
-    @controller.on(:activity) { self.active = true }
+    
+    @controller.on(:activity) { fire :activity => self }
+    @controller.on(:dirty) { fire :dirty => self }
   end
   
   def main_widget
@@ -30,10 +31,5 @@ class View
   
   def closed?
     @closed
-  end
-  
-  def active=(value)
-    @active = value
-    fire :active => [self, value]
   end
 end

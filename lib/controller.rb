@@ -24,6 +24,7 @@ class Controller
   attr_reader :controlled
   attr_reader :table
   attr_reader :policy
+  attr_reader :dirty
   attr_accessor :name
   attr_accessor :premove
   attr_reader :active_actions
@@ -360,6 +361,8 @@ class Controller
   def perform!(move, opts = {})
     turn = match.history.state.turn
     match.move(self, move, opts)
+    fire :dirty unless @dirty
+    @dirty = true
   end
   
   def cancel_drop(data)
