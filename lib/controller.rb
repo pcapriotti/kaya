@@ -87,7 +87,7 @@ class Controller
     match.history.on(:force_update) { refresh :force => true }
     match.history.on(:new_move) do |data|
       refresh(data[:opts])
-      if match.time_running?
+      if match.time_running? and (not data[:opts][:quiet])
         @clocks.each do |player, clock|
           if data[:state].turn == player
             clock.start
@@ -132,6 +132,8 @@ class Controller
   # 
   def refresh(opts = { })
     return unless match
+    return unless match.valid_state?
+    
     index = match.history.current
     return if index == @current && (!opts[:force])
     set_active_actions(index)
@@ -141,7 +143,10 @@ class Controller
     @clocks.each do |color, clock|
       clock.active = match.history.state.turn == color
     end
-    if opts[:instant] || (index == @current && opts[:force])
+    
+    if opts[:instant] || 
+       (index == @current && opts[:force]) ||
+       (not match.history.path_defined?(@current, index))
       anim = @animator.warp(match.history.state, opts)
       perform_animation anim
     elsif index > @current

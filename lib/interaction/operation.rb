@@ -49,7 +49,7 @@ class TruncateOperation
   end
   
   def execute(opts = { })
-    items = @history.remove_items_at(@index)
+    items = @history.remove_items_at(@index, opts[:extra] || { })
     if opts.fetch(:undoable, true)
       @undo_op = MoveOperation.new(@history, *items)
     end

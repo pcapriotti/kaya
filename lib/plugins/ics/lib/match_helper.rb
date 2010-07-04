@@ -133,9 +133,19 @@ module MatchHelper
     # reset controller
     user.reset(match)
     
+    # pad history with placeholders
+    style12.move_index.times do
+      match.history.add_placeholder
+    end
+    match.history.current = match.history.size - 1
+    
     # set initial state and time
-    unless match_info[:icsapi].same_state(match.state, style12.state)
+    unless match.valid_state? and 
+           match_info[:icsapi].same_state(match.state, style12.state)
       match.history.state = style12.state
+    end
+    unless match.history.move
+      match.history[].text = style12.last_move_san
     end
     match.update_time(style12.time)
     

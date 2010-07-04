@@ -64,7 +64,11 @@ class SimpleMoveList < Qt::ListView
       else
         state = @history[i - 1].state
         move = @history[i].move
-        @history[i].text ||= @serializer.serialize(move, state)
+        if move
+          @history[i].text ||= @serializer.serialize(move, state)
+        else
+          @history[i].text ||= "???"
+        end
         
         count = (i + 1) / 2
         dots = if i % 2 == 1

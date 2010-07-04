@@ -175,6 +175,10 @@ class Match
   def time_running?
     @opts.fetch(:time_running, false)
   end
+  
+  def valid_state?
+    @history.valid_index?(@history.current)
+  end
     
   def player(color)
     @players.keys.find{|p| p.color == color }

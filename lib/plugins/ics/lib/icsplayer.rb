@@ -115,9 +115,18 @@ class ICSPlayer
       end
     end
     
+    if delta > 1
+      (delta - 1).times do
+        @match.history.add_placeholder
+      end
+      delta = 1
+    end
+    
     if delta == 1
       # standard case: advancing forward by 1
-      move = @serializer.deserialize(style12.last_move_san, @match.state)
+      if @match.valid_state?
+        move = @serializer.deserialize(style12.last_move_san, @match.state)
+      end
       if move.nil?
         # An invalid move can happen when the game used locally does not
         # correspond to the actual played game.
