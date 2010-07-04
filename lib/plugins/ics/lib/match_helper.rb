@@ -145,7 +145,7 @@ module MatchHelper
       match.history.state = style12.state
     end
     unless match.history.move
-      match.history[].text = style12.last_move_san
+      match.history.text = style12.last_move_san
     end
     match.update_time(style12.time)
     
