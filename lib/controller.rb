@@ -87,15 +87,6 @@ class Controller
     match.history.on(:force_update) { refresh :force => true }
     match.history.on(:new_move) do |data|
       refresh(data[:opts])
-      if match.time_running? and (not data[:opts][:quiet])
-        @clocks.each do |player, clock|
-          if data[:state].turn == player
-            clock.start
-          else
-            clock.stop
-          end
-        end
-      end
     end
     
     @clocks[match.game.players.first].active = true
@@ -140,8 +131,20 @@ class Controller
     
     fire :activity
     
+    # update active clock
     @clocks.each do |color, clock|
       clock.active = match.history.state.turn == color
+    end
+    
+    # update running clock
+    if match.time_running?
+      @clocks.each do |player, clock|
+        if match.history.state.turn == player
+          clock.start
+        else
+          clock.stop
+        end
+      end
     end
     
     if opts[:instant] || 
