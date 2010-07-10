@@ -173,7 +173,8 @@ class Match
   end
   
   def time_running?
-    @opts.fetch(:time_running, false)
+    @opts.fetch(:time_running, false) and
+        @history.current > 1
   end
   
   def valid_state?
