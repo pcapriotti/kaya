@@ -1,7 +1,6 @@
 require 'rubygems' rescue nil
 require 'observer_utils'
 require 'utils'
-require 'builder'
 
 case ($toolkit || :kde)
 when :qt
