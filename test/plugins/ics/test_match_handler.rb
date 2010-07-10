@@ -75,7 +75,8 @@ class TestMatchHandler < Test::Unit::TestCase
                          :game_number => 37,
                          :relation => ICS::Style12::Relation::MY_MOVE,
                          :state => Game.get(:chess).state.new.tap {|s| s.setup },
-                         :move_index => 0)
+                         :move_index => 0,
+                         :last_move => '')
                        
     assert_equal 1, handler.matches.size
     info = handler.matches[37]
@@ -101,7 +102,8 @@ class TestMatchHandler < Test::Unit::TestCase
       :game_number => 37,
       :relation => ICS::Style12::Relation::OBSERVING_PLAYED,
       :state => Game.get(:chess).state.new.tap {|s| s.setup },
-      :move_index => 0)
+      :move_index => 0,
+      :last_move => 'P/e2-e4')
     
     assert_equal 1, handler.matches.size
     info = handler.matches[37]
