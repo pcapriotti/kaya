@@ -13,7 +13,7 @@ class PluginLoader
   NoPluginFound = Class.new(Exception)
   include Enumerable
   
-  def initialize
+  def setup
     # load all ruby files in subdirectories
     Dir[File.join(BASE_DIR, '*')].each do |f|
       if File.directory?(f)
@@ -51,7 +51,11 @@ class PluginLoader
     alias :internal_new :new
     
     def new
-      @instance ||= PluginLoader.internal_new
+      unless @instance
+        @instance = PluginLoader.internal_new
+        @instance.setup
+      end
+      @instance
     end
   end
   
