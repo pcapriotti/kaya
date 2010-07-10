@@ -145,6 +145,8 @@ module MatchHelper
       match.history.state = style12.state
     end
     unless match.history.move
+      move = match_info[:icsapi].parse_last_move(style12.last_move, style12.state.turn)
+      match.history.move = move
       match.history.text = style12.last_move_san
     end
     match.update_time(style12.time)
