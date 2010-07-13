@@ -1,0 +1,350 @@
+# Copyright (C) 2010 Kaya
+# This file is distributed under the same license as the Kaya package.
+#
+# Robert Riemann <robert.riemann@physik.hu-berlin.de>, 2010.
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.3\n"
+"Report-Msgid-Bugs-To: http://github.com/pcapriotti/kaya/issues\n"
+"POT-Creation-Date: 2010-07-13 20:23+0200\n"
+"PO-Revision-Date: 2010-07-13 22:25+0200\n"
+"Last-Translator: Robert Riemann <robert.riemann@physik.hu-berlin.de>\n"
+"Language-Team: German <kde-i18n-de@kde.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 1.0\n"
+
+#: lib/engine_prefs.rb:20
+msgid "&Name:"
+msgstr "Name:"
+
+#: lib/engine_prefs.rb:23
+msgid "&Type:"
+msgstr "Typ:"
+
+#: lib/engine_prefs.rb:26
+msgid "&Games:"
+msgstr "Spiele:"
+
+#: lib/engine_prefs.rb:29
+msgid "&Path:"
+msgstr "Verzeichnis:"
+
+#: lib/engine_prefs.rb:32
+msgid "&Arguments:"
+msgstr "Argumente:"
+
+#: lib/engine_prefs.rb:35
+msgid "&Work directory:"
+msgstr "Arbeitsverzeichnis:"
+
+#: lib/engine_prefs.rb:94
+msgid "Configure Engines"
+msgstr "Spielserver konfiguieren"
+
+#: lib/engine_prefs.rb:99
+msgctxt "engine"
+msgid "&New..."
+msgstr "&Neu…"
+
+#: lib/engine_prefs.rb:102
+msgctxt "engine"
+msgid "&Edit..."
+msgstr "&Bearbeiten…"
+
+#: lib/engine_prefs.rb:105
+msgctxt "engine"
+msgid "&Delete"
+msgstr "&Entfernen"
+
+#: lib/engine_prefs.rb:141
+msgid "New Engine"
+msgstr "Neuer Spielserver"
+
+#: lib/engine_prefs.rb:159
+msgid "Edit Engine"
+msgstr "Spielserver bearbeiten"
+
+#: lib/games/games.rb:17
+msgid "White"
+msgstr "Weiß"
+
+#: lib/games/games.rb:18
+msgid "Black"
+msgstr "Schwarz"
+
+#: lib/kaya.rb:26
+msgid "Kaya"
+msgstr "Kaya"
+
+#: lib/kaya.rb:27
+msgid "KDE Board Game Suite"
+msgstr "KDE Brettspiel Suite"
+
+#: lib/kaya.rb:28
+msgid "(C) 2009 Paolo Capriotti"
+msgstr "(C) 2009 Paolo Capriotti"
+
+#: lib/kaya.rb:29
+msgid "Paolo Capriotti"
+msgstr "Paolo Capriotti"
+
+#: lib/kaya.rb:30
+msgid "Jani Huhtanen"
+msgstr "Jani Huhtanen"
+
+#: lib/kaya.rb:30
+msgid "Gaussian blur code"
+msgstr "Gauß'scher Unschärfe-Code"
+
+#: lib/kaya.rb:31
+msgid "Yann Dirson"
+msgstr "Yann Dirson"
+
+#: lib/kaya.rb:31
+msgid "Minishogi"
+msgstr "Minishogi "
+
+#: lib/kaya.rb:33
+msgid "Initial game"
+msgstr "Erstes Spiel"
+
+#: lib/kaya.rb:34
+msgid "Reload source files when modified"
+msgstr "Lade Quelldateien erneut bei Veränderung"
+
+#: lib/kaya_ui.rb:22
+msgid "&Game"
+msgstr "&Game"
+
+#: lib/kaya_ui.rb:34
+msgid "&View"
+msgstr "&Ansicht"
+
+#: lib/kaya_ui.rb:52
+msgid "Game Toolbar"
+msgstr "Spiel-Werkzeugleiste"
+
+#: lib/mainwindow.rb:87
+msgid "B&ack"
+msgstr "&Zurück"
+
+#: lib/mainwindow.rb:91
+msgid "&Forward"
+msgstr "&Vorwärts"
+
+#: lib/mainwindow.rb:96
+msgid "F&lip"
+msgstr "&Drehen"
+
+#: lib/mainwindow.rb:103
+msgid "Configure &Engines..."
+msgstr "&Spielserver konfiguieren..."
+
+#: lib/mainwindow.rb:110
+msgid "Configure &Themes..."
+msgstr "&Darstellung konfiguieren..."
+
+#: lib/mainwindow.rb:138
+msgid "History"
+msgstr "Verlauf"
+
+#: lib/mainwindow.rb:158
+msgid "Console"
+msgstr "Konsole"
+
+#: lib/mainwindow.rb:241
+msgid "Open game"
+msgstr "Spiel Öffnen"
+
+#: lib/mainwindow.rb:305
+msgid "Save game"
+msgstr "Spiel Speichern"
+
+#: lib/newgame.rb:18
+msgid "New game"
+msgstr "Neues Spiel"
+
+#: lib/newgame.rb:20
+#, fuzzy
+msgid "Open in new &tab"
+msgstr "In neuem Un&terfenster öffnen"
+
+#: lib/newgame.rb:23
+msgid "&Game:"
+msgstr "&Spiel:"
+
+#: lib/newgame.rb:94
+msgid "Human"
+msgstr "Mensch"
+
+#: lib/plugins/chess/chess.rb:28
+msgid "Chess"
+msgstr "Schach"
+
+#: lib/plugins/chess/chess.rb:59
+msgid "Promote to &Queen"
+msgstr ""
+
+#: lib/plugins/chess/chess.rb:63
+msgid "Promote to &Rook"
+msgstr ""
+
+#: lib/plugins/chess/chess.rb:67
+msgid "Promote to &Bishop"
+msgstr ""
+
+#: lib/plugins/chess/chess.rb:71
+msgid "Promote to &Knight"
+msgstr ""
+
+#: lib/plugins/chess/chess.rb:98
+msgid "Chess 5x5"
+msgstr ""
+
+#: lib/plugins/clocks/lib/clock_display.rb:48
+msgid "(unknown)"
+msgstr "(unbekannt)"
+
+#: lib/plugins/crazyhouse/crazyhouse.rb:19
+msgid "Crazyhouse"
+msgstr "Einsetzschach"
+
+#: lib/plugins/ics/ics.rb:58
+msgid "&ICS Toolbar"
+msgstr "&ICS-Werkzeugleiste"
+
+#: lib/plugins/ics/ics.rb:65
+msgid "&Connect to ICS"
+msgstr "Mit ICS &Verbinden"
+
+#: lib/plugins/ics/ics.rb:70
+msgid "&Disconnect from ICS"
+msgstr "Von ISC &Trennen"
+
+#: lib/plugins/ics/ics.rb:83
+msgid "Configure &ICS..."
+msgstr "ICS &Konfigurieren"
+
+#: lib/plugins/ics/lib/preferences.rb:17
+msgid "Configure ICS"
+msgstr "ICS Konfigurieren"
+
+#: lib/plugins/ics/lib/preferences.rb:20
+msgid "&Username:"
+msgstr "&Benutzername:"
+
+#: lib/plugins/ics/lib/preferences.rb:26
+msgid "&Password:"
+msgstr "&Passwort:"
+
+#: lib/plugins/movelist/simple_movelist.rb:63
+msgid "Mainline"
+msgstr "Mainline"
+
+#: lib/plugins/shogi/shogi.rb:27
+msgid "Shogi"
+msgstr "Shogi"
+
+#: lib/plugins/shogi/shogi.rb:77
+msgid "MiniShogi"
+msgstr "MiniShogi"
+
+#: lib/theme_prefs.rb:19
+msgid "&Pieces:"
+msgstr "&Figuren:"
+
+#: lib/theme_prefs.rb:20
+msgid "&Board:"
+msgstr "&Brett:"
+
+#: lib/theme_prefs.rb:21
+msgid "&Layout:"
+msgstr "&Layout:"
+
+#: lib/theme_prefs.rb:22
+msgid "&Clock:"
+msgstr "&Uhr:"
+
+#: lib/theme_prefs.rb:29
+msgid "Configure themes"
+msgstr "Darstellung konfiguieren"
+
+#: lib/theme_prefs.rb:32
+msgid "&Games"
+msgstr "&Spiele"
+
+#: lib/theme_prefs.rb:35
+msgid "&Categories"
+msgstr "&Kategorien"
+
+#: lib/toolkits/compat/qtkde.rb:47
+msgid "&File"
+msgstr "&Datei"
+
+#: lib/toolkits/compat/qtkde.rb:57
+msgid "&Edit"
+msgstr "&Bearbeiten"
+
+#: lib/toolkits/compat/qtkde.rb:62
+msgid "&Settings"
+msgstr "&Einstellungen"
+
+#: lib/toolkits/compat/qtkde.rb:63
+msgid "&Help"
+msgstr "&Hilfe"
+
+#: lib/toolkits/compat/qtkde.rb:68
+msgid "&Main toolbar"
+msgstr "&Haupt-Werkzeugleiste"
+
+#: lib/toolkits/compat/qtkde.rb:77
+msgid "&About"
+msgstr "&Über"
+
+#: lib/toolkits/compat/qtkde.rb:83
+msgid "About &Qt"
+msgstr "Über &Qt"
+
+#: lib/toolkits/compat/qtkde.rb:208
+msgid "&New..."
+msgstr "&Neu…"
+
+#: lib/toolkits/compat/qtkde.rb:209
+msgid "&Open..."
+msgstr "&Öffnen…"
+
+#: lib/toolkits/compat/qtkde.rb:210
+msgid "&Quit"
+msgstr "&Beenden"
+
+#: lib/toolkits/compat/qtkde.rb:211
+msgid "&Save"
+msgstr "&Speichern"
+
+#: lib/toolkits/compat/qtkde.rb:212
+msgid "S&ave as..."
+msgstr "Speichern &unter…"
+
+#: lib/toolkits/compat/qtkde.rb:213
+msgid "&Undo"
+msgstr "&Rückgang"
+
+#: lib/toolkits/compat/qtkde.rb:214
+msgid "&Redo"
+msgstr "&Rückgängig"
+
+#: rc.cpp:3
+msgid "&Game"
+msgstr "&Spiel"
+
+#: rc.cpp:6
+msgid "&View"
+msgstr "&Ansicht"
+
+#: rc.cpp:9
+msgid "Game Toolbar"
+msgstr "Spiel-Werkzeugleiste"
+
