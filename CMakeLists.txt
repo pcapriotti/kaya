@@ -5,6 +5,7 @@ find_package(KDE4 REQUIRED)
 include(KDE4Defaults)
 add_subdirectory(lib)
 add_subdirectory(translations)
+add_subdirectory(data)
 
 configure_file(main.rb main.rb)
 configure_file(main-qt.rb main-qt.rb)
