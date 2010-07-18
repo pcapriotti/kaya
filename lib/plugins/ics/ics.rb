@@ -47,9 +47,9 @@ class ICSPlugin
   def initialize
     @gui = KDE::gui(:icsplugin) do |g|
       g.menu_bar do |mb|
-        mb.menu(:file) do |m|
-          m.action :connect, :group => "file_extensions"
-          m.action :disconnect, :group => "file_extensions"
+        mb.menu(:game) do |m|
+          m.action :connect, :group => :file_extensions
+          m.action :disconnect, :group => :file_extensions
         end
         mb.menu(:settings) do |m|
           m.action :configure_ics

@@ -77,11 +77,44 @@ private
 
   def setup_actions
     @actions = { }
-    std_action(:open_new) { create_game }
-    std_action(:open) { load_game }
-    std_action(:quit) { close }
-    std_action(:save) { save_game }
-    std_action(:save_as) { save_game_as }
+    regular_action(:open_new,
+                   :icon => 'document-new',
+                   :text => KDE::i18n("&New..."),
+                   :shortcut => KDE::std_shortcut(:new),
+                   :tooltip => KDE::i18n("Start a new game...")) do
+      create_game
+    end
+    
+    regular_action(:open,
+                   :icon => 'document-open',
+                   :text => KDE::i18n("&Load..."),
+                   :shortcut => KDE::std_shortcut(:open),
+                   :tooltip => KDE::i18n("Open a saved game...")) do
+      load_game
+    end
+    
+    regular_action(:quit,
+                   :icon => 'application-exit',
+                   :text => KDE::i18n("&Quit"),
+                   :shortcut => KDE::std_shortcut(:quit),
+                   :tooltip => KDE::i18n("Quit the program")) do
+      close
+    end
+    
+    regular_action(:save,
+                   :icon => 'document-save',
+                   :text => KDE::i18n("&Save"),
+                   :shortcut => KDE::std_shortcut(:save),
+                   :tooltip => KDE::i18n("Save the current game")) do
+      save_game
+    end
+    
+    regular_action(:save_as,
+                   :icon => 'document-save-as',
+                   :text => KDE::i18n("Save &As..."),
+                   :tooltip => KDE::i18n("Save the current game to another file")) do
+      save_game_as
+    end
     
     @actions[:back] = regular_action :back, :icon => 'go-previous', 
                           :text => KDE.i18n("B&ack") do
@@ -113,11 +146,19 @@ private
       dialog.show
     end
     
-    @actions[:undo] = std_action(:undo) do
+    @actions[:undo] = regular_action(:undo,
+            :icon => 'edit-undo',
+            :text => KDE::i18n("Und&o"),
+            :shortcut => KDE::std_shortcut(:undo),
+            :tooltip => KDE::i18n("Undo the last history operation")) do
       controller.undo!
     end
 
-    @actions[:redo] = std_action(:redo) do
+    @actions[:redo] = regular_action(:redo,
+            :icon => 'edit-redo',
+            :text => KDE::i18n("Re&do"),
+            :shortcut => KDE::std_shortcut(:redo),
+            :tooltip => KDE::i18n("Redo the last history operation")) do
       controller.redo!
     end
   end

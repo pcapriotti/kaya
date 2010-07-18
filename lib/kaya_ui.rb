@@ -10,16 +10,24 @@ require 'toolkit'
 module Kaya
   GUI = KDE::gui(:kaya) do |g|
     g.menu_bar do |mb|
-      mb.menu(:file) do |m|
-        m.group(:file_extensions)
+      mb.menu(:game, :text => KDE::i18n("&Game")) do |m|
+        m.action :open_new
+        m.separator
+        m.action :open
+        m.action :save
+        m.action :save_as
+        m.separator
+        m.group :file_extensions
+        m.separator
+        m.action :quit
       end
       
-      mb.menu(:edit) do |m|
+      mb.menu(:edit, :text => KDE::i18n("&Edit")) do |m|
         m.action :undo
         m.action :redo
       end
       
-      mb.menu(:gameMenu, :text => KDE::i18n("&Game")) do |m|
+      mb.menu(:move, :text => KDE::i18n("&Move")) do |m|
         m.action :begin
         m.action :back
         m.action :pause
@@ -44,12 +52,18 @@ module Kaya
       end
     end
     
-    g.tool_bar(:mainToolBar) do |tb|
+    g.tool_bar(:main_toolbar, :text => KDE::i18n("&Main toolbar")) do |tb|
+      tb.action :open_new
+      tb.action :open
+      tb.action :save
+    end
+    
+    g.tool_bar(:edit_toolbar, :text => KDE::i18n("&Edit toolbar")) do |tb|
       tb.action :undo
       tb.action :redo
     end
     
-    g.tool_bar(:gameToolbar, :text => KDE::i18n("Game Toolbar")) do |tb|
+    g.tool_bar(:move_toolbar, :text => KDE::i18n("Mo&ve Toolbar")) do |tb|
       tb.action :begin
       tb.action :back
       tb.action :pause

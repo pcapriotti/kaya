@@ -125,6 +125,8 @@ module ActionHandler
                     opts[:text], action_parent).tap do |a|
       action_collection.add_action(name.to_s, a)  
       a.connect(SIGNAL('triggered(bool)'), &blk)
+      a.tool_tip = opts[:tooltip] if opts[:tooltip]
+      a.shortcut = opts[:shortcut] if opts[:shortcut]
     end
   end
   
@@ -220,6 +222,11 @@ module KDE
   def self.active_color
     scheme = KDE::ColorScheme.new(Qt::Palette::Active, KDE::ColorScheme::Window)
     color = scheme.foreground(KDE::ColorScheme::PositiveText).color
+  end
+  
+  def self.std_shortcut(name)
+    code = KDE::StandardShortcut.send(name.to_s.capitalize)
+    StandardShortcut::shortcut(code)
   end
 end
 

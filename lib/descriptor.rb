@@ -19,11 +19,18 @@ class Descriptor
   end
   
   def merge_child(desc)
-    if @opts[:merge_point]
-      @children.insert(@opts[:merge_point], desc)
-      @opts[:merge_point] += 1
+    mp = @opts[:merge_points].first if @opts[:merge_points]
+    if mp
+      @children.insert(mp.position, desc)
+      @opts[:merge_points].step!
     else
       add_child(desc)
+    end
+  end
+  
+  def first_valid_merge_point
+    if @opts[:merge_points]
+      @opts[:merge_points].first
     end
   end
   
@@ -45,8 +52,53 @@ class Descriptor
         merge_child(child2.dup) unless merged
       end
       true
+    elsif name == :group and other.opts[:group] == opts[:name]
+      merge_child(other)
     else
       false
+    end
+  end
+  
+  class MergePoint
+    attr_accessor :position, :count
+    
+    class List
+      def initialize
+        @mps = []
+      end
+      
+      def first
+        @mps.first.dup
+      end
+      
+      def add(mp)
+        @mps << mp
+      end
+      
+      def step!
+        raise "Stepping invalid merge point list" if @mps.empty?
+        @mps.each do |mp|
+          mp.position += 1
+        end
+        @mps.first.count -= 1
+        clean!
+      end
+      
+      private
+      
+      def clean!
+        @mps.delete_if {|mp| not mp.valid? }
+      end
+    end
+    
+    def initialize(position, count = -1)
+      @position = position
+      @count = count
+      raise "Creating invalid merge point" if @count == 0
+    end
+    
+    def valid?
+      @count != 0
     end
   end
   
@@ -75,8 +127,10 @@ class Descriptor
       __desc__.add_child(child)
     end
     
-    def merge_point
-      @__desc__.opts[:merge_point] = @__desc__.children.size
+    def merge_point(count = -1)
+      mp = MergePoint.new(@__desc__.children.size, count)
+      @__desc__.opts[:merge_points] ||= MergePoint::List.new
+      @__desc__.opts[:merge_points].add(mp)
     end
   end
 end

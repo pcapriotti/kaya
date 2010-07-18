@@ -23,6 +23,11 @@ module KDE
   def self.active_color
     $qApp.palette.color(Qt::Palette::Highlight)
   end
+  
+  def self.std_shortcut(name)
+    code = Qt::KeySequence.send(name.to_s.capitalize)
+    Qt::KeySequence.new(code)
+  end
 end
 
 Qt::XmlGuiWindow = Qt::MainWindow
@@ -38,7 +43,7 @@ class Qt::UrlRequester < Qt::LineEdit
 end
 
 class Qt::MainWindow
-  attr_reader :gui
+  attr_reader :guis
   
   def initialize(parent)
     super(parent)
@@ -46,33 +51,15 @@ class Qt::MainWindow
     setToolButtonStyle(Qt::ToolButtonFollowStyle)
     
     # create basic GUI
+    @guis = []
     @gui = Qt::gui(:qt_base) do |g|
       g.menu_bar do |mb|
-        mb.menu(:file, :text => KDE::i18n("&File")) do |m|
-          m.action :open_new
-          m.action :open
-          m.action :save
-          m.action :save_as
-          m.separator
-          m.merge_point
-          m.separator
-          m.action :quit
-        end
-        mb.menu(:edit, :text => KDE::i18n("&Edit")) do |m|
-          m.action :undo
-          m.action :redo
-        end
         mb.merge_point
         mb.menu(:settings, :text => KDE::i18n("&Settings"))
         mb.menu(:help, :text => KDE::i18n("&Help")) do |m|
           m.action :about
           m.action :about_qt
         end
-      end
-      g.tool_bar(:mainToolBar, :text => KDE::i18n("&Main toolbar")) do |tb|
-        tb.action :open_new
-        tb.action :open
-        tb.action :save
       end
     end
   end
@@ -87,6 +74,7 @@ class Qt::MainWindow
     regular_action(:about_qt, :text => KDE::i18n("About &Qt")) { $qApp.about_qt }
     
     @gui.merge!(gui)
+    @guis.each {|g| @gui.merge! g }
     Qt::GuiBuilder.build(self, @gui)
     
     # restore state
@@ -152,7 +140,7 @@ end
 
 class Qt::XMLGUIClient < Qt::Object
   def setGUI(gui)
-    parent.gui.merge!(gui)
+    parent.guis << gui
   end
 end
 
@@ -199,6 +187,8 @@ module ActionHandler
     if (opts[:icon])
       a.icon = Qt::Icon.from_theme(opts[:icon])
     end
+    a.shortcut = opts[:shortcut] if opts[:shortcut]
+    a.tool_tip = opts[:tooltip] if opts[:tooltip]
     a
   end
   
@@ -209,11 +199,11 @@ end
 
 module Qt
   STD_ACTIONS = {
-    :open_new => [KDE::i18n("&New..."), 'document-new'],
-    :open => [KDE::i18n("&Open..."), 'document-open'],
-    :quit => [KDE::i18n("&Quit"), 'application-exit'],
-    :save => [KDE::i18n("&Save"), 'document-save'],
-    :save_as => [KDE::i18n("S&ave as..."), 'document-save-as'],
+#     :open_new => [KDE::i18n("&New..."), 'document-new'],
+#     :open => [KDE::i18n("&Open..."), 'document-open'],
+#     :quit => [KDE::i18n("&Quit"), 'application-exit'],
+#     :save => [KDE::i18n("&Save"), 'document-save'],
+#     :save_as => [KDE::i18n("S&ave as..."), 'document-save-as'],
     :undo => [KDE::i18n("&Undo"), 'edit-undo'],
     :redo => [KDE::i18n("&Redo"), 'edit-redo']
   }
