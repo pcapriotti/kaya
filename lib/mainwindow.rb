@@ -282,58 +282,60 @@ private
   def load_game
     url = KDE::FileDialog.get_open_url(KDE::Url.new, '*.*', self,
       KDE.i18n("Open game"))
-    unless url.is_empty
-      # find readers
-      ext = File.extname(url.path)[1..-1]
-      return unless ext
-      readers = Game.to_enum.find_all do |_, game|
-        game.respond_to?(:game_extensions) and
-        game.game_extensions.include?(ext)
-      end.map do |_, game|
-        [game, game.game_reader]
-      end
-      
-      if readers.empty?
-        warn "Unknown file extension #{ext}"
-        return
-      end
-      
-      tmp_file = KDE::download_tempfile(url, self)
-      return unless tmp_file
-
-      history = nil
-      game = nil
-      info = nil
-      
-      readers.each do |g, reader|
-        begin
-          data = File.open(tmp_file) do |f|
-            f.read
-          end
-          i = {}
-          history = reader.read(data, i)
-          game = g
-          info = i
-          break
-        rescue ParseException
-        end
-      end
-      
-      unless history
-        warn "Could not load file #{url.path}"
-        return
-      end
-      
-      # create game
-      match = Match.new(game)
-      @view.create(:activate => true,
-                   :name => game.class.plugin_name)
-      setup_single_player(match)
-      match.history = history
-      match.add_info(info)
-      match.url = url
-      controller.reset(match)
+    
+    return if url.is_empty or (not url.path)
+    
+    puts "url = #{url.inspect}"
+    # find readers
+    ext = File.extname(url.path)[1..-1]
+    return unless ext
+    readers = Game.to_enum.find_all do |_, game|
+      game.respond_to?(:game_extensions) and
+      game.game_extensions.include?(ext)
+    end.map do |_, game|
+      [game, game.game_reader]
     end
+    
+    if readers.empty?
+      warn "Unknown file extension #{ext}"
+      return
+    end
+    
+    tmp_file = KDE::download_tempfile(url, self)
+    return unless tmp_file
+
+    history = nil
+    game = nil
+    info = nil
+    
+    readers.each do |g, reader|
+      begin
+        data = File.open(tmp_file) do |f|
+          f.read
+        end
+        i = {}
+        history = reader.read(data, i)
+        game = g
+        info = i
+        break
+      rescue ParseException
+      end
+    end
+    
+    unless history
+      warn "Could not load file #{url.path}"
+      return
+    end
+    
+    # create game
+    match = Match.new(game)
+    @view.create(:activate => true,
+                  :name => game.class.plugin_name)
+    setup_single_player(match)
+    match.history = history
+    match.add_info(info)
+    match.url = url
+    controller.reset(match)
   end
   
   def save_game_as
@@ -362,6 +364,8 @@ private
   end
   
   def write_game(url = nil)
+    return if url.is_empty or (not url.path)
+    
     match = controller.match
     if match
       url ||= match.url
