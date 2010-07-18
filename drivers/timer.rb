@@ -17,6 +17,10 @@ class View < Qt::GraphicsView
   def resizeEvent(e)
     fire :resize => e.size
   end
+  
+  def mousePressEvent(e)
+    fire :click
+  end
 end
 
 main = Qt::Widget.new
@@ -36,9 +40,17 @@ clock = display.new(scene, lambda{|x| x})
 main.view.on(:resize) do |size|
   clock.set_geometry(Qt::Rect.new(0, 0, size.width, size.height))
 end
+main.view.on(:click) do
+  if clock.clock.running?
+    clock.clock.stop
+  else
+    clock.clock.start
+  end
+    
+end
 clock.show
 
-clock.clock = Clock.new(72, 0)
+clock.clock = Clock.new(5, 0)
 clock.start
 
 

@@ -24,95 +24,86 @@ class TestClock < Test::Unit::TestCase
   end
 
   def test_main
-    elapsed = false
     timer = nil
     
     # 2 seconds main time
-    clock = Clock.new(2, 0, nil, FakeTimer)
+    clock = Clock.new(2, 0, FakeTimer)
     clock.on(:timer) {|timer|}
-    clock.on(:elapsed) { elapsed = true }
     clock.start
     
     clock.tick
-    assert ! elapsed
     assert_nil timer
     
     8.times { clock.tick }
-    assert ! elapsed
     assert_nil timer
     
     clock.tick
-    assert ! elapsed
-    assert_equal({ :main => 1 }, timer)
+    assert_equal(1000, timer)
     timer = nil
     
     9.times { clock.tick }
-    assert ! elapsed
     assert_nil timer
     
     clock.tick
-    assert elapsed
-    assert_nil timer
+    assert_equal(0, timer)
   end
   
   def test_increment
-    elapsed = false
     timer = nil
     
     # 10 seconds main time, 1 second increment
-    clock = Clock.new(10, 1, nil, FakeTimer)
+    clock = Clock.new(10, 1, FakeTimer)
     clock.on(:timer) {|timer|}
-    clock.on(:elapsed) { elapsed = true }
     clock.start
     
     80.times { clock.tick }
-    assert ! elapsed
-    assert_equal({:main => 2}, timer)
+    assert_equal(2000, timer)
     timer = nil
     
     clock.stop
-    assert ! elapsed
-    assert_equal({:main => 3}, timer)
+    assert_equal(3000, timer)
     clock.start
     
     15.times { clock.tick }
-    assert ! elapsed
-    assert_equal({:main => 2}, timer)
+    assert_equal(2000, timer)
     timer = nil
     
     14.times { clock.tick }
-    assert ! elapsed
-    assert_equal({:main => 1}, timer)
+    assert_equal(1000, timer)
     timer = nil
     
     clock.tick
-    assert elapsed
+    assert_equal(0, timer)
+    timer = nil
+    
+    7.times { clock.tick }
     assert_nil timer
   end
   
-  def test_byoyomi
-    elapsed = false
+  def test_resolution
     timer = nil
     
-    # 10 seconds main time, 1 second byoyomi, 2 periods
-    clock = Clock.new(10, 0, Clock::ByoYomi.new(1, 2), FakeTimer)
+    clock = Clock.new(5, 0, FakeTimer)
     clock.on(:timer) {|timer|}
-    clock.on(:elapsed) { elapsed = true }
+    clock.resolution = 100
     clock.start
     
-    80.times { clock.tick }
-    assert ! elapsed
-    assert_equal({:main => 2}, timer)
-
-    25.times { clock.tick }
-    assert ! elapsed
-    assert_equal({:byoyomi => Clock::ByoYomi.new(1, 2)}, timer)
+    24.times { clock.tick }
+    assert_equal(2600, timer)
+    timer = nil
     
-    10.times { clock.tick }
-    assert ! elapsed
-    assert_equal({:byoyomi => Clock::ByoYomi.new(1, 1) }, timer)
+    clock.tick
+    assert_equal(2500, timer)
+    timer = nil
     
-    5.times { clock.tick }
-    assert elapsed
+    30.times { clock.tick }
+    assert_equal(-500, timer)
+  end
+  
+  def test_invalid_resolution
+    clock = Clock.new(10, 0, FakeTimer)
+    assert_raise(RuntimeError) do
+      clock.resolution = 50
+    end
   end
 end

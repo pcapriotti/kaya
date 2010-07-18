@@ -74,10 +74,16 @@ module ClockDisplay
     on_timer(clock.timer)
   end
   
-  def on_timer(data)
-    min = data[:main] / 60
-    sec = data[:main] % 60
+  def on_timer(ms)
+    neg = ms < 0
+    sign = ms <= -1000
+    ms = -ms if neg
     
-    @items[:time].text = "%02d:%02d" % [min, sec]
+    min = ms / 60000
+    ms -= min * 60000
+    sec = ms / 1000
+    ms -= sec * 1000
+    sec += 1 if ms > 0 and (not neg)
+    @items[:time].text = "#{sign ? '-' : ''}%02d:%02d" % [min, sec]
   end
 end

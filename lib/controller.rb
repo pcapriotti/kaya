@@ -290,9 +290,12 @@ class Controller
   end
     
   def on_time(time)
-    time.each do |pl, seconds|
-      @clocks[pl].clock ||= Clock.new(seconds, 0, nil)
-      @clocks[pl].clock.set_time(seconds)
+    time.each do |pl, ms|
+      if @clocks[pl].clock
+        @clocks[pl].clock.set_time(ms)
+      else
+        @clocks[pl].clock ||= Clock.new(ms, 0, Qt::Timer)
+      end
     end
   end
   
