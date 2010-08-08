@@ -174,11 +174,11 @@ class Match
   
   def time_running?
     @opts.fetch(:time_running, false) and
-        @history.current > 1
+        index > 1
   end
   
   def valid_state?
-    @history.valid_index?(@history.current)
+    @history.valid_index?(index)
   end
     
   def player(color)
