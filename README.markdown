@@ -1,6 +1,8 @@
 # Kaya - KDE board game suite #
 
-*Kaya* is a collection of board games for [KDE][], currently containing [chess][] and [shogi][]. Kaya is built on a powerful plugin system which makes it easily extensible with new games, themes and behaviors.
+*Kaya* is a collection of board games for [KDE][], currently containing
+[chess][] and [shogi][]. Kaya is built on a powerful plugin system which makes
+it easily extensible with new games, themes and behaviors.
 
 ## Features ##
 
