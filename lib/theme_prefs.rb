@@ -80,7 +80,7 @@ class ThemePrefs < KDE::Dialog
       end
       themes = [['', nil]] + themes
       KDE::ComboBox.from_a(parent, themes).tap do |combo|
-        combo.on(:current_index_changed) do |i|
+        combo.on(:current_index_changed, ["int"]) do |i|
           type = current_type
           item = send(type).current_item
           @theme_loader.set(type, item_name(type, item.get), 

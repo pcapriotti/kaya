@@ -184,7 +184,7 @@ class Qt::MetaObject
         sign = m.signature 
         sign =~ /^(.*)\(.*\)$/
         sig = $1.underscore.to_sym
-        val = [sign, m.parameterTypes.size]
+        val = [sign, m.parameterTypes]
         map[sig] ||= []
         map[sig] << val
       end
@@ -218,12 +218,38 @@ class Qt::Base
     end
   end
   
-  def on(sig, opts = {}, &blk)
-    raise "Only symbols are supported as signals" unless sig.is_a?(Symbol)
+  class Signal
+    attr_reader :symbol
+
+    def initialize(signal, types)
+      raise "Only symbols are supported as signals" unless signal.is_a?(Symbol)
+      @symbol = signal
+      @types = types
+    end
+
+    def self.create(signal, types)
+      if signal.is_a?(self)
+        signal
+      else
+        new(signal, types)
+      end
+    end
+    
+    def to_s
+      @symbol.to_s
+    end
+  end
+
+  def on(sig, types = nil, &blk)
+    sig = Signal.create(sig, types)
     candidates = if is_a? Qt::Object
-      signal_map[sig]
+      signal_map[sig.symbol]
     end
     if candidates
+      if types
+        # find candidate with the correct argument types
+        candidates = candidates.find_all{|s| s[1] == types }
+      end
       if candidates.size > 1
         # find candidate with the correct arity
         arity = blk.arity
@@ -231,19 +257,24 @@ class Qt::Base
           # take first
           candidates = [candidates.first]
         else
-          candidates = candidates.find_all{|s| s[1] == arity }
+          candidates = candidates.find_all{|s| s[1].size == arity }
         end
       end
       if candidates.size > 1
         raise "Ambiguous overload for #{sig} with arity #{arity}"
       elsif candidates.empty?
-        raise "No overload for #{sig} with arity #{blk.arity}"
+        msg = if types
+          "with types #{types.join(' ')}"
+        else
+          "with arity #{blk.arity}"
+        end
+        raise "No overload for #{sig} #{msg}"
       end
       sign = SIGNAL(candidates.first[0])
       connect(sign, &blk)
       SignalDisconnecter.new(self, sign)
     else
-      observer = observe(sig, &blk)
+      observer = observe(sig.symbol, &blk)
       ObserverDisconnecter.new(self, observer)
     end
   end
@@ -483,20 +514,6 @@ class KDE::ComboBox
   
   def item(i)
     Item.new(item_data(i).to_ruby)
-  end
-  
-  def self.create_signal_map(obj)
-    super(obj).tap do |m|
-      m[:current_index_changed] = [['currentIndexChanged(int)', 1]]
-    end
-  end
-end
-
-class KDE::TabWidget
-  def self.create_signal_map(obj)
-    super(obj).tap do |m|
-      m[:current_changed] = [['currentChanged(int)', 1]]
-    end
   end
 end
 

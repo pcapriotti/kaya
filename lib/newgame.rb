@@ -35,7 +35,8 @@ class NewGame < KDE::Dialog
         index(current_game.class.data(:id).to_s)
     end
     games.current_index = current if current
-    games.on(:current_index_changed) do |index|
+    games.on(:current_index_changed, ["int"]) do |index|
+      puts "updating players"
       update_players(index)
     end
     
