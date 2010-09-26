@@ -144,22 +144,6 @@ class Qt::XMLGUIClient < Qt::Object
   end
 end
 
-class KDE::ComboBox
-  def self.create_signal_map(obj)
-    super(obj).tap do |m|
-      m[:current_index_changed] = [['currentIndexChanged(int)', 1]]
-    end
-  end
-end
-
-class KDE::TabWidget
-  def self.create_signal_map(obj)
-    super(obj).tap do |m|
-      m[:current_changed] = [['currentChanged(int)', 1]]
-    end
-  end
-end
-
 module ActionHandler
   def action_collection
     @action_collection ||= { }
