@@ -9,6 +9,7 @@ require 'toolkit'
 require 'plugins/plugin'
 require 'plugins/shadow'
 require 'plugins/background'
+require 'require_bundle'
 require_bundle 'shogi', 'type'
 
 class ShogibanBackground

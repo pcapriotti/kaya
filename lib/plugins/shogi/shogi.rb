@@ -6,6 +6,7 @@
 # (at your option) any later version.
 
 require 'plugins/plugin'
+require 'require_bundle'
 require_bundle 'shogi', 'state'
 require_bundle 'shogi', 'pool'
 require_bundle 'shogi', 'move'
