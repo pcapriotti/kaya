@@ -27,7 +27,7 @@ class TestClock < Test::Unit::TestCase
     timer = nil
     
     # 2 seconds main time
-    clock = Clock.new(2, 0, FakeTimer)
+    clock = Clock.new(2000, 0, FakeTimer)
     clock.on(:timer) {|timer|}
     clock.start
     
@@ -52,7 +52,7 @@ class TestClock < Test::Unit::TestCase
     timer = nil
     
     # 10 seconds main time, 1 second increment
-    clock = Clock.new(10, 1, FakeTimer)
+    clock = Clock.new(10000, 1000, FakeTimer)
     clock.on(:timer) {|timer|}
     clock.start
     
@@ -83,7 +83,7 @@ class TestClock < Test::Unit::TestCase
   def test_resolution
     timer = nil
     
-    clock = Clock.new(5, 0, FakeTimer)
+    clock = Clock.new(5000, 0, FakeTimer)
     clock.on(:timer) {|timer|}
     clock.resolution = 100
     clock.start
