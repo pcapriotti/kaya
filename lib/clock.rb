@@ -8,6 +8,25 @@
 require 'observer_utils'
 require 'toolkit'
 
+#
+# A clock keeps track of game time and sends regular updates to a graphical
+# clock component whenever the displayed time needs to change.
+#
+# The clock is based on the idea of _displayed_ time, which is the value in
+# milliseconds that is displayed to the user on a clock with a specified
+# _resolution_. For example, if the remaining time is 13561 milliseconds, and
+# the resolution is 1 second, the displayed time is 14000.
+#
+# In general, the displayed time is the smallest multiple of the resolution
+# which is greater or equal to the actual time.
+#
+# The other important concept is the _step_. This is currently set to the
+# constant 100, and represents the frequency with which the internal timer is
+# fired.
+#
+# The resolution can be set while the clock is running, but only to a multiple
+# of the step.
+#
 class Clock
   include Observable
   STEP = 100
@@ -15,6 +34,11 @@ class Clock
   attr_reader :resolution
   attr_accessor :debug
   
+  #
+  # Create a clock object. Times are expressed in milliseconds.
+  # The timer_class argument can be used to provide a different factory for
+  # the internal timer (the default is Qt::Timer).
+  #
   def initialize(main, increment, timer_class = Qt::Timer)
     @rem = main
     @rem_last = @rem
@@ -30,6 +54,12 @@ class Clock
     
   end
   
+  #
+  # Stop the timer.
+  #
+  # The clock keeps track of the portion of step elapsed since the last tick,
+  # and will compensate when resuming.
+  #
   def stop
     if @running
       @timer.stop
@@ -43,6 +73,9 @@ class Clock
     end
   end
   
+  #
+  # Start or resume the timer.
+  #
   def start
     if not @running
       @rem_last = @rem
@@ -53,10 +86,19 @@ class Clock
     end
   end
   
+  #
+  # The current displayed time.
+  #
   def timer
     @displayed
   end
   
+  #
+  # The main internal method, called every STEP milliseconds to update the
+  # internal state and keep track of elapsed time.
+  #
+  # Fire timer signal when the displayed time is a multiple of resolution.
+  #
   def tick
     return unless @running
     
@@ -70,6 +112,11 @@ class Clock
     @timer.start(delta)
   end
   
+  #
+  # Forcibly set a time for this clock.
+  #
+  # As a side effect, this method causes the timer to stop.
+  #
   def set_time(rem)
     @rem = rem
     update_displayed
@@ -81,10 +128,18 @@ class Clock
     fire :timer => timer
   end
   
+  #
+  # Whether the clock is running
+  #
   def running?
     @running
   end
   
+  #
+  # Set resolution in milliseconds.
+  #
+  # The value must be a multiple of STEP.
+  #
   def resolution=(value)
     if value <= 0 || (value % STEP != 0)
       raise "Invalid resolution"
