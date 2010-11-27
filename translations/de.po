@@ -115,10 +115,6 @@ msgstr "Erstes Spiel"
 msgid "Reload source files when modified"
 msgstr "Lade Quelldateien erneut bei Veränderung"
 
-#: lib/kaya_ui.rb:22
-msgid "&Game"
-msgstr "&Game"
-
 #: lib/kaya_ui.rb:34
 msgid "&View"
 msgstr "&Ansicht"
@@ -340,11 +336,4 @@ msgstr "&Rückgängig"
 msgid "&Game"
 msgstr "&Spiel"
 
-#: rc.cpp:6
-msgid "&View"
-msgstr "&Ansicht"
-
-#: rc.cpp:9
-msgid "Game Toolbar"
-msgstr "Spiel-Werkzeugleiste"
 
