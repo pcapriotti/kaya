@@ -133,6 +133,14 @@ module ActionHandler
   def action_parent
     self
   end
+
+  def plug_action_list(name, actions)
+    plugActionList(name.to_s, actions)
+  end
+
+  def unplug_action_list(name)
+    unplugActionList(name.to_s)
+  end
 end
 
 class KDE::Icon

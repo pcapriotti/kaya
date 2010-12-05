@@ -102,7 +102,7 @@ class Qt::MainWindow
     restore_geometry(geometry)
     restore_state(state)
   end
-  
+
   def saveGUI
     settings = Qt::Settings.new
     settings.begin_group("mainwindow")
@@ -147,6 +147,25 @@ end
 module ActionHandler
   def action_collection
     @action_collection ||= { }
+  end
+
+  def action_list_entries
+    @action_list_entries ||= Hash.new {|h, x| h[x] = [] }
+  end
+
+  def plug_action_list(name, actions)
+    action_list_entries[name].each do |entry|
+      actions.each do |action|
+        puts "adding action to #{entry.parent}: #{action.text}"
+        entry.add_action(action)
+      end
+    end
+  end
+
+  def unplug_action_list(name)
+    action_list_entries[name].each do |entry|
+      entry.clear
+    end
   end
   
   def add_action(name, a)

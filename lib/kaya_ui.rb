@@ -69,7 +69,6 @@ module Kaya
       tb.action :pause
       tb.action :forward
       tb.action :end
-      tb.action_list :variantActions
     end
   end
 end

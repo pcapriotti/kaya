@@ -387,7 +387,7 @@ private
   end
   
   def update_game_actions(contr)
-    unplug_action_list('game_actions')
+    unplug_action_list(:game_actions)
     if contr.match
       game = contr.match.game
       actions = if game.respond_to?(:actions)
@@ -395,7 +395,7 @@ private
       else
         []
       end
-      plug_action_list('game_actions', actions)
+      plug_action_list(:game_actions, actions)
     end
   end
   

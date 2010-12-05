@@ -91,8 +91,27 @@ module Qt
     
     class ActionList
       include GuiBuilder
+
+      class Entry
+        attr_reader :parent
+
+        def initialize(parent)
+          @parent = parent
+          @actions = []
+        end
+
+        def add_action(action)
+          @parent.add_action(action)
+          @actions << action
+        end
+
+        def clear
+        end
+      end
       
       def create_element(window, parent, desc)
+        entry = Entry.new(parent)
+        window.action_list_entries[desc.opts[:name]] << entry
         parent
       end
     end

@@ -24,7 +24,7 @@ module GameActions
     end
     text = data.opts[:text] || data.id.to_s
     a = KDE::Action.new(icon, text, parent)
-    collection.add_action(data.id.to_s, a)
+    collection[data.id] = a
     if data.opts.has_key?(:checked)
       a.checkable = true
       a.checked = data.opts[:checked]
