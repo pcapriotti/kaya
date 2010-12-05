@@ -1,3 +1,15 @@
+## Version 0.4 (06 Dec 2010)
+
+- Removed C++ extension.
+- German translation.
+- Improve ICS "Observe" and "Examine" mode support.
+- Tabs with activity are now highlighted.
+- Improved clock accuracy.
+- Fixed crash when receiving a castling move on ICS.
+- Overhauled menus.
+- Fixed crash when pressing "Cancel" while loading or saving.
+- Restored game-specific actions.
+
 ## Version 0.3 (20 Jun 2010)
 
 - Qt-only version.
