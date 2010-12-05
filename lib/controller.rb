@@ -96,6 +96,7 @@ class Controller
       @board.highlight(match.history.move)
     end
     set_active_actions(@current)
+    fire :reset
   end
   
   def back

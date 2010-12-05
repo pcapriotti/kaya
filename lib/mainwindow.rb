@@ -51,6 +51,9 @@ class MainWindow < KDE::XmlGuiWindow
         c.on(:changed_active_actions) do
           update_active_actions(c)
         end
+        c.on(:reset) do
+          update_game_actions(c)
+        end
       end
     end
 
@@ -184,8 +187,11 @@ private
 
     @view = MultiView.new(self, movelist_stack, @factories)
     @view.create(:name => game.class.plugin_name)
-    @view.on(:changed) { update_active_actions(controller) }
-    @view.on(:changed) { update_title }
+    @view.on(:changed) do
+      update_active_actions(controller)
+      update_title
+      update_game_actions(controller)
+    end
     @view.clean = true
 
     update_title
@@ -380,14 +386,17 @@ private
     end
   end
   
-  def update_game_actions(match)
+  def update_game_actions(contr)
     unplug_action_list('game_actions')
-    actions = if match.game.respond_to?(:actions)
-      match.game.actions(self, action_collection, controller.policy)
-    else
-      []
+    if contr.match
+      game = contr.match.game
+      actions = if game.respond_to?(:actions)
+        game.actions(self, action_collection, contr.policy)
+      else
+        []
+      end
+      plug_action_list('game_actions', actions)
     end
-    plug_action_list('game_actions', actions)
   end
   
   def update_title
