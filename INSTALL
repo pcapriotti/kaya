@@ -6,11 +6,6 @@
 - [Builder](http://builder.rubyforge.org/)
 - [CMake](http://www.cmake.org)
 
-To compile the extension library (optional, but recommended), you also need:
-
-- A KDE 4 development environment
-- Ruby headers
-
 # Installation
 
 Unpack the Kaya package, change to the package root directory, and type:
@@ -22,6 +17,4 @@ Unpack the Kaya package, change to the package root directory, and type:
     sudo make install
 
 Where KDEDIR is set to the KDE 4 install path.
-
-This will compile the extension library and install Kaya into the specified prefix.
 
