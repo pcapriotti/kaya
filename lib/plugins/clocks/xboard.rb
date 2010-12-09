@@ -61,7 +61,7 @@ class XBoardClock < Qt::GraphicsItemGroup
     Qt::Image.painted(@rect.size) do |p|
       p.fill_rect(Qt::RectF.new(Qt::PointF.new(0, 0), @rect.size), 
                   color)
-      p.alter(:pen) {|pen| pen.width = 2; pen.style = Qt::SolidLine }
+      p.alter(:pen) {|pen| pen.style = Qt::SolidLine }
       p.draw_line(0, 0, @rect.width, 0)
       p.draw_line(0, 0, 0, @rect.height)
       p.draw_line(@rect.width - 1, 0, @rect.width - 1, @rect.height)

@@ -12,7 +12,8 @@ class Object
   end
   
   def alter(property)
-    value = yield(send(property))
+    value = send(property)
+    yield value
     send("#{property}=", value)
   end
 
