@@ -13,7 +13,7 @@ require 'mainwindow'
 require 'require_bundle'
 
 def version
-  "0.3"
+  "0.4"
 end
 
 def start_kaya
