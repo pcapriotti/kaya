@@ -1,0 +1,7 @@
+---
+title: Kaya 0.4 released
+---
+Kaya 0.4 has been [released](download.html)!
+
+This is the first pure ruby version, thanks to the addition of QGraphicsEffect classes to Qt 4.6. This version includes many bugfixes, improved observe and examine modes on ICS, a German translation, and overhauled menus.
+
