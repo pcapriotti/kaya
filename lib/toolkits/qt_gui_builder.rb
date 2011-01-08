@@ -106,6 +106,10 @@ module Qt
         end
 
         def clear
+          @actions.each do |action|
+            action.dispose
+          end
+          @actions = []
         end
       end
       
