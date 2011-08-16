@@ -9,7 +9,7 @@ require 'toolkit'
 
 module AnimationBase
   attr_reader :name
-  
+
   def to_s
     "#<#{self.class.name}:#{name}>"
   end
@@ -17,12 +17,12 @@ end
 
 class Animation
   include AnimationBase
-  
+
   def initialize(name, &blk)
     @name = name
     @anim = blk
   end
-  
+
   def [](t)
     @anim[t]
   end
@@ -30,14 +30,19 @@ end
 
 class SimpleAnimation
   include AnimationBase
-  
-  def initialize(name, length, before, animation, after = nil)
+
+  def initialize(name, length, before, animation, after = nil, opts = { })
     @name = name
     @length = length
     @animation = animation
     @before = before
     @after = after
     @start = nil
+    if opts[:easing]
+      @easing = opts[:easing]
+    else
+      @easing = Qt::EasingCurve.new(Qt::EasingCurve::Linear)
+    end
   end
 
   def [](t)
@@ -45,15 +50,16 @@ class SimpleAnimation
       @start = t
       @before[] if @before
     end
-    
+
     i = (t - @start).to_f / @length
+    i = @easing.valueForProgress(i)
     @animation[i]
     if i >= 1.0
       @after[] if @after
       @start = nil
       return true
     end
-    
+
     return false
   end
 end
@@ -65,14 +71,14 @@ class AnimationField
     @timer = timer_class.every(interval) {|t| tick(t) }
     @ticks = 0
   end
-  
+
   def tick(t)
     @ticks += 1
     @actions.reject! do |action|
       action[t]
     end
   end
-  
+
   def run(action)
     if action
       @actions << action

@@ -10,7 +10,8 @@ require 'factory'
 
 module Animations
   LENGTH = 100
-  
+  EASING = Qt::EasingCurve.new(Qt::EasingCurve::InOutCubic)
+
   def group(*animations)
     unless animations.empty?
       anim = animations.dup.compact
@@ -22,14 +23,14 @@ module Animations
         "group (#{anim.map{|a| a.to_s}.join(',')})"
       end
       Animation.new(name) do |i|
-        anim.reject! do |a| 
+        anim.reject! do |a|
           a[i]
         end
         anim.empty?
       end
     end
   end
-  
+
   def sequence(*animations)
     anim = animations.dup.compact
     return nil if anim.empty?
@@ -46,7 +47,7 @@ module Animations
       anim.empty?
     end
   end
-  
+
   def movement(item, src, dst, path_factory)
     if item
       name = "move to #{dst}"
@@ -55,14 +56,15 @@ module Animations
       else
         item.pos
       end
-        
+
       dst = board.to_real(dst)
       path = path_factory.new(src, dst)
-      
+
       SimpleAnimation.new name, LENGTH,
         lambda { board.raise(item) },
         lambda {|i| item.pos = src + path[i] },
-        lambda { item.pos = dst; board.lower(item) }
+        lambda { item.pos = dst; board.lower(item) },
+        :easing => EASING
     end
   end
 
@@ -74,11 +76,12 @@ module Animations
         SimpleAnimation.new name, LENGTH,
           lambda { item.opacity = 1.0; item.visible = true },
           lambda {|t| item.opacity = 1.0 - t },
-          lambda { item.remove }
+          lambda { item.remove },
+          :easing => EASING
       end
     end
   end
-  
+
   def appear(item, name, opts = { })
     if opts[:instant]
       Animation.new(name) { item.opacity = 1.0; item.visible = true; true }
@@ -86,7 +89,8 @@ module Animations
       SimpleAnimation.new name, LENGTH,
         lambda { item.opacity = 0.0; item.visible = true },
         lambda {|i| item.opacity = i },
-        lambda { item.opacity = 1.0 }
+        lambda { item.opacity = 1.0 },
+        :easing => EASING
     end
   end
 end
