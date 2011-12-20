@@ -127,6 +127,7 @@ module ActionHandler
       a.connect(SIGNAL('triggered(bool)'), &blk)
       a.tool_tip = opts[:tooltip] if opts[:tooltip]
       a.shortcut = opts[:shortcut] if opts[:shortcut]
+      a.enabled = opts.fetch(:enabled, true)
     end
   end
   

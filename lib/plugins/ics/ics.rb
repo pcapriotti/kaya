@@ -61,7 +61,7 @@ class ICSPlugin
         tb.action :disconnect
       end
     end
-    
+
     action(:connect,
            :text => KDE.i18n("&Connect to ICS"),
            :icon => 'network-connect') do |parent|
@@ -69,21 +69,30 @@ class ICSPlugin
     end
     action(:disconnect,
            :text => KDE.i18n("&Disconnect from ICS"),
-           :icon => 'network-disconnect') do |parent|
-      if @connection
-        @connection.stop
-        @connection = nil
-        if @console_obs
-          parent.console.delete_observer(@console_obs)
-          @console_obs = nil
-        end
-      end
+           :icon => 'network-disconnect',
+           :enabled => false) do |parent|
+      disconnect_from_ics(parent)
     end
     action(:configure_ics,
            :icon => 'network-workgroup',
            :text => KDE.i18n("Configure &ICS...")) do |parent|
       dialog = ICS::Preferences.new(parent)
       dialog.show
+    end
+  end
+
+  def disconnect_from_ics(parent)
+    if @connection
+      @connection.stop
+      @connection = nil
+      if @console_obs
+        parent.console.delete_observer(@console_obs)
+        @console_obs = nil
+      end
+
+      # update action states
+      parent.action("connect").enabled = true
+      parent.action("disconnect").enabled = false
     end
   end
 
@@ -116,5 +125,9 @@ class ICSPlugin
     @view = ICSView.new(parent.view)
     @handler = ICS::MatchHandler.new(@view, protocol)
     @connection.start
+
+    # update action states
+    parent.action("connect").enabled = false
+    parent.action("disconnect").enabled = true
   end
 end
