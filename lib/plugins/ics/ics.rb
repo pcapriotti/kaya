@@ -8,11 +8,12 @@
 require 'toolkit'
 require 'plugins/plugin'
 require 'action_provider'
-require_bundle 'ics', 'protocol'
+require_bundle 'ics', 'config'
 require_bundle 'ics', 'connection'
 require_bundle 'ics', 'match_handler'
 require_bundle 'ics', 'preferences'
-require_bundle 'ics', 'config'
+require_bundle 'ics', 'protocol'
+require_bundle 'ics', 'status_observer'
 
 class ICSPlugin
   include Plugin
@@ -60,7 +61,7 @@ class ICSPlugin
         tb.action :disconnect
       end
     end
-    
+
     action(:connect,
            :text => KDE.i18n("&Connect to ICS"),
            :icon => 'network-connect') do |parent|
@@ -68,15 +69,9 @@ class ICSPlugin
     end
     action(:disconnect,
            :text => KDE.i18n("&Disconnect from ICS"),
-           :icon => 'network-disconnect') do |parent|
-      if @connection
-        @connection.stop
-        @connection = nil
-        if @console_obs
-          parent.console.delete_observer(@console_obs)
-          @console_obs = nil
-        end
-      end
+           :icon => 'network-disconnect',
+           :enabled => false) do |parent|
+      disconnect_from_ics(parent)
     end
     action(:configure_ics,
            :icon => 'network-workgroup',
@@ -85,15 +80,36 @@ class ICSPlugin
       dialog.show
     end
   end
-  
+
+  def disconnect_from_ics(parent)
+    if @connection
+      @connection.stop
+      @connection = nil
+      if @console_obs
+        parent.console.delete_observer(@console_obs)
+        @console_obs = nil
+      end
+
+      # update action states
+      parent.action("connect").enabled = true
+      parent.action("disconnect").enabled = false
+    end
+  end
+
   def connect_to_ics(parent)
-    protocol = ICS::Protocol.new(:debug)
+    protocol = ICS::Protocol.new(false)
     @connection = ICS::Connection.new('freechess.org', 23)
+
     config = ICS::Config.load
     protocol.add_observer ICS::AuthModule.new(@connection, 
       config[:username], config[:password])
     protocol.add_observer ICS::StartupModule.new(@connection)
-    protocol.link_to @connection
+    protocol.link_to(@connection)
+
+    status_observer = StatusObserver.new(
+      lambda {|msg| parent.status_bar.show_message(msg, 2000) },
+      lambda {|msg| parent.status_bar.show_permanent_message(msg) })
+    status_observer.link_to(@connection, protocol)
 
     protocol.on :text do |text|
       parent.console.append(text)
@@ -109,5 +125,9 @@ class ICSPlugin
     @view = ICSView.new(parent.view)
     @handler = ICS::MatchHandler.new(@view, protocol)
     @connection.start
+
+    # update action states
+    parent.action("connect").enabled = false
+    parent.action("disconnect").enabled = true
   end
 end

@@ -19,7 +19,7 @@ class Connection < Qt::Object
     super nil
 
     @create_socket = lambda do 
-      puts "connecting to #{host}:#{port}"
+      fire :connecting
       s = Qt::TcpSocket.new(self)
       s.on(:host_found) { fire :host_found }
       s.on(:connected) { fire :established }
@@ -59,6 +59,7 @@ class Connection < Qt::Object
 
   def stop
     @socket.close
+    fire :closed
   end
 
   def send_text(text)

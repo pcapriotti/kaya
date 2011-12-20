@@ -149,6 +149,10 @@ module ActionHandler
     @action_collection ||= { }
   end
 
+  def action(name)
+    @action_collection[name.to_sym]
+  end
+
   def action_list_entries
     @action_list_entries ||= Hash.new {|h, x| h[x] = [] }
   end
@@ -192,6 +196,7 @@ module ActionHandler
     end
     a.shortcut = opts[:shortcut] if opts[:shortcut]
     a.tool_tip = opts[:tooltip] if opts[:tooltip]
+    a.enabled = opts.fetch(:enabled, true)
     a
   end
   
