@@ -24,6 +24,7 @@ require 'engine_prefs'
 require 'theme_prefs'
 require 'view'
 require 'multiview'
+require 'status_bar'
 
 require 'kaya_ui'
 
@@ -209,7 +210,9 @@ private
     console_dock.window_flags = console_dock.window_flags & ~Qt::WindowStaysOnTopHint            
     console_dock.show
     action_collection[:toggle_console] = console_dock.toggle_view_action
-    
+
+    self.status_bar = StatusBar.new(self)
+
     self.central_widget = @view
   end
   

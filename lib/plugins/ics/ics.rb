@@ -8,11 +8,12 @@
 require 'toolkit'
 require 'plugins/plugin'
 require 'action_provider'
-require_bundle 'ics', 'protocol'
+require_bundle 'ics', 'config'
 require_bundle 'ics', 'connection'
 require_bundle 'ics', 'match_handler'
 require_bundle 'ics', 'preferences'
-require_bundle 'ics', 'config'
+require_bundle 'ics', 'protocol'
+require_bundle 'ics', 'status_observer'
 
 class ICSPlugin
   include Plugin
@@ -85,15 +86,21 @@ class ICSPlugin
       dialog.show
     end
   end
-  
+
   def connect_to_ics(parent)
-    protocol = ICS::Protocol.new(:debug)
+    protocol = ICS::Protocol.new(false)
     @connection = ICS::Connection.new('freechess.org', 23)
+
     config = ICS::Config.load
     protocol.add_observer ICS::AuthModule.new(@connection, 
       config[:username], config[:password])
     protocol.add_observer ICS::StartupModule.new(@connection)
-    protocol.link_to @connection
+    protocol.link_to(@connection)
+
+    status_observer = StatusObserver.new(
+      lambda {|msg| parent.status_bar.show_message(msg, 2000) },
+      lambda {|msg| parent.status_bar.show_permanent_message(msg) })
+    status_observer.link_to(@connection, protocol)
 
     protocol.on :text do |text|
       parent.console.append(text)
