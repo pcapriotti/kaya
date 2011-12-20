@@ -3,67 +3,73 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+#: lib/toolkits/kde.rb:37 lib/toolkits/kde.rb:39
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://github.com/pcapriotti/kaya/issues\n"
-"POT-Creation-Date: 2010-02-21 12:24+0000\n"
+"POT-Creation-Date: 2011-12-20 17:13+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: lib/engine_prefs.rb:23
+#: examples/helloworld/hello_world.rb:12
+msgid "Say &Hello World"
+msgstr ""
+
+#: lib/engine_prefs.rb:20
 msgid "&Name:"
 msgstr ""
 
-#: lib/engine_prefs.rb:31
+#: lib/engine_prefs.rb:23
 msgid "&Type:"
 msgstr ""
 
-#: lib/engine_prefs.rb:47 lib/newgame.rb:27
-msgid "&Game:"
+#: lib/engine_prefs.rb:26
+msgid "&Games:"
 msgstr ""
 
-#: lib/engine_prefs.rb:56
+#: lib/engine_prefs.rb:29
 msgid "&Path:"
 msgstr ""
 
-#: lib/engine_prefs.rb:64
-msgid "&Arguments: "
+#: lib/engine_prefs.rb:32
+msgid "&Arguments:"
 msgstr ""
 
-#: lib/engine_prefs.rb:72
+#: lib/engine_prefs.rb:35
 msgid "&Work directory:"
 msgstr ""
 
-#: lib/engine_prefs.rb:116
+#: lib/engine_prefs.rb:94
 msgid "Configure Engines"
 msgstr ""
 
-#: lib/engine_prefs.rb:136
+#: lib/engine_prefs.rb:99
 msgctxt "engine"
 msgid "&New..."
 msgstr ""
 
-#: lib/engine_prefs.rb:139
+#: lib/engine_prefs.rb:102
 msgctxt "engine"
 msgid "&Edit..."
 msgstr ""
 
-#: lib/engine_prefs.rb:142
+#: lib/engine_prefs.rb:105
 msgctxt "engine"
 msgid "&Delete"
 msgstr ""
 
-#: lib/engine_prefs.rb:170
+#: lib/engine_prefs.rb:141
 msgid "New Engine"
 msgstr ""
 
-#: lib/engine_prefs.rb:188
+#: lib/engine_prefs.rb:159
 msgid "Edit Engine"
 msgstr ""
 
@@ -75,87 +81,179 @@ msgstr ""
 msgid "Black"
 msgstr ""
 
-#: lib/kaya.rb:23
+#: lib/kaya.rb:26
 msgid "Kaya"
 msgstr ""
 
-#: lib/kaya.rb:24
+#: lib/kaya.rb:27
 msgid "KDE Board Game Suite"
 msgstr ""
 
-#: lib/kaya.rb:25
+#: lib/kaya.rb:28
 msgid "(C) 2009 Paolo Capriotti"
 msgstr ""
 
-#: lib/kaya.rb:26
+#: lib/kaya.rb:29
 msgid "Paolo Capriotti"
 msgstr ""
 
-#: lib/kaya.rb:27
+#: lib/kaya.rb:30
 msgid "Jani Huhtanen"
 msgstr ""
 
-#: lib/kaya.rb:27
+#: lib/kaya.rb:30
 msgid "Gaussian blur code"
 msgstr ""
 
-#: lib/kaya.rb:28
+#: lib/kaya.rb:31
 msgid "Yann Dirson"
 msgstr ""
 
-#: lib/kaya.rb:28
+#: lib/kaya.rb:31
 msgid "Minishogi"
 msgstr ""
 
-#: lib/kaya.rb:30
+#: lib/kaya.rb:33
 msgid "Initial game"
 msgstr ""
 
-#: lib/mainwindow.rb:69
+#: lib/kaya.rb:34
+msgid "Reload source files when modified"
+msgstr ""
+
+#: lib/kaya_ui.rb:13
+msgid "&Game"
+msgstr ""
+
+#: lib/kaya_ui.rb:25
+msgid "&Edit"
+msgstr ""
+
+#: lib/kaya_ui.rb:30
+msgid "&Move"
+msgstr ""
+
+#: lib/kaya_ui.rb:42
+msgid "&View"
+msgstr ""
+
+#: lib/kaya_ui.rb:55
+msgid "&Main toolbar"
+msgstr ""
+
+#: lib/kaya_ui.rb:61
+msgid "&Edit toolbar"
+msgstr ""
+
+#: lib/kaya_ui.rb:66
+msgid "Mo&ve Toolbar"
+msgstr ""
+
+#: lib/mainwindow.rb:86
+msgid "&New..."
+msgstr ""
+
+#: lib/mainwindow.rb:88
+msgid "Start a new game..."
+msgstr ""
+
+#: lib/mainwindow.rb:94
+msgid "&Load..."
+msgstr ""
+
+#: lib/mainwindow.rb:96
+msgid "Open a saved game..."
+msgstr ""
+
+#: lib/mainwindow.rb:102
+msgid "&Quit"
+msgstr ""
+
+#: lib/mainwindow.rb:104
+msgid "Quit the program"
+msgstr ""
+
+#: lib/mainwindow.rb:110
+msgid "&Save"
+msgstr ""
+
+#: lib/mainwindow.rb:112
+msgid "Save the current game"
+msgstr ""
+
+#: lib/mainwindow.rb:118
+msgid "Save &As..."
+msgstr ""
+
+#: lib/mainwindow.rb:119
+msgid "Save the current game to another file"
+msgstr ""
+
+#: lib/mainwindow.rb:124
 msgid "B&ack"
 msgstr ""
 
-#: lib/mainwindow.rb:73
+#: lib/mainwindow.rb:128
 msgid "&Forward"
 msgstr ""
 
-#: lib/mainwindow.rb:78
+#: lib/mainwindow.rb:133
 msgid "F&lip"
 msgstr ""
 
-#: lib/mainwindow.rb:85
+#: lib/mainwindow.rb:140
 msgid "Configure &Engines..."
 msgstr ""
 
-#: lib/mainwindow.rb:92
+#: lib/mainwindow.rb:147
 msgid "Configure &Themes..."
 msgstr ""
 
-#: lib/mainwindow.rb:129
+#: lib/mainwindow.rb:155
+msgid "Und&o"
+msgstr ""
+
+#: lib/mainwindow.rb:157
+msgid "Undo the last history operation"
+msgstr ""
+
+#: lib/mainwindow.rb:163
+msgid "Re&do"
+msgstr ""
+
+#: lib/mainwindow.rb:165
+msgid "Redo the last history operation"
+msgstr ""
+
+#: lib/mainwindow.rb:183
 msgid "History"
 msgstr ""
 
-#: lib/mainwindow.rb:146
+#: lib/mainwindow.rb:207
 msgid "Console"
 msgstr ""
 
-#: lib/mainwindow.rb:229
+#: lib/mainwindow.rb:293
 msgid "Open game"
 msgstr ""
 
-#: lib/mainwindow.rb:293
+#: lib/mainwindow.rb:359
 msgid "Save game"
 msgstr ""
 
-#: lib/newgame.rb:17
+#: lib/newgame.rb:18
 msgid "New game"
 msgstr ""
 
-#: lib/newgame.rb:23
+#: lib/newgame.rb:20
 msgid "Open in new &tab"
 msgstr ""
 
-#: lib/newgame.rb:90
+#: lib/newgame.rb:23
+msgid "&Game:"
+msgstr ""
+
+#: lib/newgame.rb:94
 msgid "Human"
 msgstr ""
 
@@ -163,27 +261,27 @@ msgstr ""
 msgid "Chess"
 msgstr ""
 
-#: lib/plugins/chess/chess.rb:60
+#: lib/plugins/chess/chess.rb:59
 msgid "Promote to &Queen"
 msgstr ""
 
-#: lib/plugins/chess/chess.rb:64
+#: lib/plugins/chess/chess.rb:63
 msgid "Promote to &Rook"
 msgstr ""
 
-#: lib/plugins/chess/chess.rb:68
+#: lib/plugins/chess/chess.rb:67
 msgid "Promote to &Bishop"
 msgstr ""
 
-#: lib/plugins/chess/chess.rb:72
+#: lib/plugins/chess/chess.rb:71
 msgid "Promote to &Knight"
 msgstr ""
 
-#: lib/plugins/chess/chess.rb:99
+#: lib/plugins/chess/chess.rb:98
 msgid "Chess 5x5"
 msgstr ""
 
-#: lib/plugins/clocks/lib/clock_display.rb:48
+#: lib/plugins/clocks/lib/clock_display.rb:55
 msgid "(unknown)"
 msgstr ""
 
@@ -191,28 +289,56 @@ msgstr ""
 msgid "Crazyhouse"
 msgstr ""
 
-#: lib/plugins/ics/ics.rb:28
+#: lib/plugins/ics/ics.rb:59
+msgid "&ICS Toolbar"
+msgstr ""
+
+#: lib/plugins/ics/ics.rb:66
 msgid "&Connect to ICS"
 msgstr ""
 
-#: lib/plugins/ics/ics.rb:33
+#: lib/plugins/ics/ics.rb:71
 msgid "&Disconnect from ICS"
 msgstr ""
 
-#: lib/plugins/ics/ics.rb:46
+#: lib/plugins/ics/ics.rb:84
 msgid "Configure &ICS..."
 msgstr ""
 
-#: lib/plugins/ics/lib/preferences.rb:21
+#: lib/plugins/ics/lib/preferences.rb:17
+msgid "Configure ICS"
+msgstr ""
+
+#: lib/plugins/ics/lib/preferences.rb:20
 msgid "&Username:"
 msgstr ""
 
-#: lib/plugins/ics/lib/preferences.rb:29
+#: lib/plugins/ics/lib/preferences.rb:26
 msgid "&Password:"
 msgstr ""
 
-#: lib/plugins/ics/lib/preferences.rb:38
-msgid "Configure ICS"
+#: lib/plugins/ics/lib/status_observer.rb:10
+msgid "Disconnected from ICS Server"
+msgstr ""
+
+#: lib/plugins/ics/lib/status_observer.rb:11
+msgid "Connection established"
+msgstr ""
+
+#: lib/plugins/ics/lib/status_observer.rb:12
+msgid "Connecting..."
+msgstr ""
+
+#: lib/plugins/ics/lib/status_observer.rb:13
+msgid "Logging in..."
+msgstr ""
+
+#: lib/plugins/ics/lib/status_observer.rb:14
+msgid "Logged in"
+msgstr ""
+
+#: lib/plugins/ics/lib/status_observer.rb:14
+msgid "Connected to ICS server"
 msgstr ""
 
 #: lib/plugins/movelist/simple_movelist.rb:63
@@ -223,30 +349,58 @@ msgstr ""
 msgid "Shogi"
 msgstr ""
 
-#: lib/plugins/shogi/shogi.rb:79
+#: lib/plugins/shogi/shogi.rb:78
 msgid "MiniShogi"
 msgstr ""
 
-#: lib/theme_prefs.rb:24
-msgid "&Games"
+#: lib/theme_prefs.rb:19
+msgid "&Pieces:"
 msgstr ""
 
-#: lib/theme_prefs.rb:25
-msgid "&Categories"
+#: lib/theme_prefs.rb:20
+msgid "&Board:"
 msgstr ""
 
-#: lib/theme_prefs.rb:42
+#: lib/theme_prefs.rb:21
+msgid "&Layout:"
+msgstr ""
+
+#: lib/theme_prefs.rb:22
+msgid "&Clock:"
+msgstr ""
+
+#: lib/theme_prefs.rb:29
 msgid "Configure themes"
 msgstr ""
 
-#: rc.cpp:3
-msgid "&Game"
+#: lib/theme_prefs.rb:32
+msgid "&Games"
 msgstr ""
 
-#: rc.cpp:6
-msgid "&View"
+#: lib/theme_prefs.rb:35
+msgid "&Categories"
 msgstr ""
 
-#: rc.cpp:9
-msgid "Game Toolbar"
+#: lib/toolkits/compat/qtkde.rb:58
+msgid "&Settings"
+msgstr ""
+
+#: lib/toolkits/compat/qtkde.rb:59
+msgid "&Help"
+msgstr ""
+
+#: lib/toolkits/compat/qtkde.rb:68
+msgid "&About"
+msgstr ""
+
+#: lib/toolkits/compat/qtkde.rb:74
+msgid "About &Qt"
+msgstr ""
+
+#: lib/toolkits/compat/qtkde.rb:210
+msgid "&Undo"
+msgstr ""
+
+#: lib/toolkits/compat/qtkde.rb:211
+msgid "&Redo"
 msgstr ""

@@ -7,11 +7,11 @@
 
 class StatusObserver
   MESSAGES = {
-    :disconnected => { :permanent => '', :temporary => "Disconnected from ICS Server" },
-    :established => { :temporary => "Connection established" },
-    :connecting => { :permanent => "Connecting..." },
-    :logging_in => { :permanent => "Logging in..." },
-    :logged_in => { :temporary => "Logged in", :permanent => "Connected to ICS server" }
+    :disconnected => { :permanent => '', :temporary => KDE.i18n("Disconnected from ICS Server") },
+    :established => { :temporary => KDE.i18n("Connection established") },
+    :connecting => { :permanent => KDE.i18n("Connecting...") },
+    :logging_in => { :permanent => KDE.i18n("Logging in...") },
+    :logged_in => { :temporary => KDE.i18n("Logged in"), :permanent => KDE.i18n("Connected to ICS server") }
   }
 
   def initialize(set_temporary, set_permanent)
