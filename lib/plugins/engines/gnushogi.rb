@@ -47,4 +47,11 @@ class GNUShogiEngine < Engine
     send_command "quit"
     @engine.kill
   end
+  
+  def allow_undo?(player, manager)
+    # gnushogi waits when you tell it to undo
+    send_command "undo"
+    send_command "undo"
+    manager.undo(self, 2)
+  end
 end
