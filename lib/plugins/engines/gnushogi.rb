@@ -50,8 +50,12 @@ class GNUShogiEngine < Engine
   
   def allow_undo?(player, manager)
     # gnushogi waits when you tell it to undo
-    send_command "undo"
-    send_command "undo"
-    manager.undo(self, 2)
+    if @match.current_player == self
+      warn "Please wait until GNU Shogi moves before undoing."
+    else
+      send_command "undo"
+      send_command "undo"
+      manager.undo(self, 2)
+    end
   end
 end

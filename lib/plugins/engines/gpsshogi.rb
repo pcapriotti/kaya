@@ -48,14 +48,18 @@ class GPSShogiEngine < Engine
   def allow_undo?(player, manager)
     # gpsshogi does not wait when you tell it to undo
     # so we stop it from playing before calling undo
-    send_command "force"
-    send_command "undo"
-    send_command "undo"
-    if @color == :black
-      send_command "black"
+    if @match.current_player == self
+      warn "Please wait until GPSShogi moves before undoing."
     else
-      send_command "white"
+      send_command "force"
+      send_command "undo"
+      send_command "undo"
+      if @color == :black
+        send_command "black"
+      else
+        send_command "white"
+      end
+      manager.undo(self, 2)
     end
-    manager.undo(self, 2)
   end
 end
