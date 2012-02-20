@@ -9,28 +9,25 @@ require 'plugins/plugin'
 require 'interaction/match'
 require_bundle 'engines', 'engine'
 
-class GNUShogiEngine < Engine
+class GPSShogiEngine < Engine
   include Plugin
   
-  plugin :name => 'GNUShogi Engine Protocol',
-         :protocol => 'GNUShogi',
+  plugin :name => 'GPSShogi Engine Protocol',
+         :protocol => 'GPSShogi',
          :interface => :engine
-
+  
   def on_move(data)
     text = @serializer.serialize(data[:move], data[:old_state])
     send_command text
-    unless @playing
-      send_command "go"
-      @playing = true
-    end
   end
   
   def on_engine_start
     send_command "new"
-    send_command "force"
     if @color == :black
+      send_command "black"
       send_command "go"
-      @playing = true
+    else
+      send_command "white"
     end
   end
   
@@ -42,16 +39,23 @@ class GNUShogiEngine < Engine
       end
     end
   end
-
+  
   def on_close(data)
     send_command "quit"
     @engine.kill
   end
   
   def allow_undo?(player, manager)
-    # gnushogi waits when you tell it to undo
+    # gpsshogi does not wait when you tell it to undo
+    # so we stop it from playing before calling undo
+    send_command "force"
     send_command "undo"
     send_command "undo"
+    if @color == :black
+      send_command "black"
+    else
+      send_command "white"
+    end
     manager.undo(self, 2)
   end
 end

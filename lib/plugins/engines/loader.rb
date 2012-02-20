@@ -27,6 +27,10 @@ class EngineLoader
       'gnushogi' => { :name => 'GNU Shogi',
                       :game => :shogi,
                       :protocol => 'GNUShogi',
+                      :workdir => '/tmp' },
+      'gpsshogi' => { :name => 'GPSShogi',
+                      :game => :shogi,
+                      :protocol => 'GPSShogi',
                       :workdir => '/tmp' } }
     
     attr_accessor :name
