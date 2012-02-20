@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright (c) 2009 Paolo Capriotti <p.capriotti@gmail.com>
 # 
 # This program is free software; you can redistribute it and/or modify
@@ -24,6 +25,7 @@ class SimpleMoveList < Qt::ListView
       super([])
       @history = match.history
       @serializer = match.game.serializer.new(:compact)
+      @shogi_numbering_style = match.game.class.data(:category) == 'Shogi'
       
       @history.add_observer(self)
       
@@ -76,8 +78,17 @@ class SimpleMoveList < Qt::ListView
         else
           '...'
         end
+        player = if i % 2 == 1
+          '▲'
+        else
+          '△'
+        end
         
-        "#{count}#{dots} #{@history[i].text}"
+        if @shogi_numbering_style
+          "#{i} #{player}#{@history[i].text}"
+        else
+          "#{count}#{dots} #{@history[i].text}"
+        end
       end
     end
     
