@@ -25,7 +25,7 @@ class Game
   attr_reader :size, :state, :board, :pool,
               :policy, :move, :animator, :validator,
               :piece, :players, :types, :serializer,
-              :notation, :game_writer, :game_extensions
+              :notation, :game_writer, :game_extensions, :numbering_style
               
   def initialize
     @size = Point.new(8, 8)
@@ -50,6 +50,7 @@ class Game
     
     @game_writer = chess.game_writer
     @game_extensions = []
+    @numbering_style = chess.numbering_style
   end
 end
   

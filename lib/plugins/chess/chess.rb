@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright (c) 2009 Paolo Capriotti <p.capriotti@gmail.com>
 # 
 # This program is free software; you can redistribute it and/or modify
@@ -15,6 +16,7 @@ require_bundle 'chess', 'validator'
 require_bundle 'chess', 'serializer'
 require_bundle 'chess', 'pgn'
 require_bundle 'chess', 'san'
+require_bundle 'chess', 'numbering_style'
 require 'plugins/plugin'
 require 'games/game_actions'
 require 'lazy'
@@ -33,7 +35,7 @@ class Game
   attr_reader :size, :policy, :state, :board, :move,
               :animator, :validator, :piece, :players,
               :types, :serializer, :game_writer,
-              :game_extensions, :notation
+              :game_extensions, :notation, :numbering_style
               
   def initialize
     @size = Point.new(8, 8)
@@ -54,6 +56,7 @@ class Game
 
     @game_writer = promise { PGN.new(serializer.new(:compact), state) }
     @game_extensions = %w(pgn)
+    @numbering_style = NumberingStyle
     
     action :promote_to_queen,
            :text => KDE::i18n('Promote to &Queen') do |policy| 

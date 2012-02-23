@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright (c) 2009 Paolo Capriotti <p.capriotti@gmail.com>
 # 
 # This program is free software; you can redistribute it and/or modify
@@ -16,6 +17,7 @@ require_bundle 'shogi', 'notation'
 require_bundle 'shogi', 'piece'
 require_bundle 'shogi', 'psn'
 require_bundle 'shogi', 'policy'
+require_bundle 'shogi', 'numbering_style'
 require 'games/game_actions'
 require 'lazy'
 
@@ -34,7 +36,8 @@ class Game
   attr_reader :size, :state, :board, :pool,
               :policy, :move, :animator, :validator,
               :piece, :players, :types, :serializer,
-              :notation, :game_writer, :game_extensions
+              :notation, :game_writer, :game_extensions,
+              :numbering_style
               
   def initialize
     @size = Point.new(9, 9)
@@ -57,6 +60,7 @@ class Game
     
     @game_writer = promise { PSN.new(serializer.new(:compact), state) }
     @game_extensions = %w(psn)
+    @numbering_style = NumberingStyle
               
     action :autopromote, 
            :checked => true,
