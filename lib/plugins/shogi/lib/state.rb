@@ -145,3 +145,33 @@ module MiniShogi
 
   end
 end
+
+module GoroGoroShogi
+  class State < Shogi::State
+    
+    def setup
+      each_color do |color|
+
+        r = row(0, color)
+        set_piece = lambda do |x, type|
+          @board[Point.new(x, r)] = piece_factory.new(color, type)
+        end
+        set_piece[col(0,color), :silver]
+        set_piece[col(1,color), :gold]
+        set_piece[col(2,color), :king]
+        set_piece[col(3,color), :gold]
+        set_piece[col(4,color), :silver]
+
+        r = row(2, color)
+        set_piece[col(1,color), :pawn]
+        set_piece[col(2,color), :pawn]
+        set_piece[col(3,color), :pawn]
+      end
+    end
+
+    def in_promotion_zone?(p, color)
+      (row(5, color) <=> p.y) != (color == :black ? -1 : 1)
+    end
+
+  end
+end
