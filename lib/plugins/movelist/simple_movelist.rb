@@ -24,7 +24,7 @@ class SimpleMoveList < Qt::ListView
       super([])
       @history = match.history
       @serializer = match.game.serializer.new(:compact)
-      
+      @numbering_style = match.game.numbering_style
       @history.add_observer(self)
       
       insert_rows(0, @history.size)
@@ -70,14 +70,7 @@ class SimpleMoveList < Qt::ListView
           @history[i].text ||= "???"
         end
         
-        count = (i + 1) / 2
-        dots = if i % 2 == 1
-          '.'
-        else
-          '...'
-        end
-        
-        "#{count}#{dots} #{@history[i].text}"
+        @numbering_style.format_move(i, @history[i].text)
       end
     end
     
